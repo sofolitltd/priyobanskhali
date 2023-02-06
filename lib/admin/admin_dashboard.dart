@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:priyobanskhali/admin/admins/admin_list.dart';
-import 'package:priyobanskhali/admin/users/users_admin.dart';
+import 'package:priyobanskhali/admin/shop/shop_admin.dart';
 
+import '/admin/admins/admin_list.dart';
+import '/admin/ebook/all_ebook_admin.dart';
+import '/admin/users/users_admin.dart';
 import 'banner/all_banner_admin.dart';
 import 'book/all_book_admin.dart';
 import 'orders/orders.dart';
@@ -21,6 +23,8 @@ class AdminDashboard extends StatelessWidget {
           style: TextStyle(color: Colors.black),
         ),
       ),
+
+      //
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -64,10 +68,38 @@ class AdminDashboard extends StatelessWidget {
               subtitle: Text('Add, edit, delete - Books',
                   style: GoogleFonts.hindSiliguri()),
               onTap: () {
+                //
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const AllBookAdmin()));
+              },
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          // ebooks
+          Card(
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              leading: const Icon(
+                Icons.menu_book_outlined,
+                size: 48,
+              ),
+              title: Text('Ebooks', style: GoogleFonts.hindSiliguri()),
+              subtitle: Text('Add, edit, delete - Ebooks',
+                  style: GoogleFonts.hindSiliguri()),
+              onTap: () {
+                //
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AllEbookAdmin()));
               },
             ),
           ),
@@ -99,6 +131,35 @@ class AdminDashboard extends StatelessWidget {
           ),
 
           const SizedBox(height: 8),
+
+          // shop
+          Card(
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              leading: const Icon(
+                Icons.shopping_bag_outlined,
+                size: 48,
+              ),
+              title: Text('Shop', style: GoogleFonts.hindSiliguri()),
+              subtitle: Text('Add, edit, delete - Products',
+                  style: GoogleFonts.hindSiliguri()),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const ShopAdmin()));
+              },
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Text('Administration'),
+          ),
 
           // users
           Card(

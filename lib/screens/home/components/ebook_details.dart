@@ -6,14 +6,13 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '/screens/payment/place_order.dart';
-import '/screens/pdf_viewer_cached.dart';
 import '/utils/open_app.dart';
 import '/utils/repo.dart';
-import '../home/home.dart';
-import 'book_list.dart';
+import '../pdf_viewer_cached.dart';
+import 'ebook_list.dart';
 
-class BookDetails extends StatefulWidget {
-  const BookDetails({
+class EbookDetails extends StatefulWidget {
+  const EbookDetails({
     Key? key,
     required this.bookId,
     required this.title,
@@ -23,8 +22,7 @@ class BookDetails extends StatefulWidget {
     required this.image,
     required this.fileUrl,
     required this.price,
-    required this.recent,
-    required this.popular,
+    required this.categories,
   }) : super(key: key);
 
   final String bookId;
@@ -35,14 +33,13 @@ class BookDetails extends StatefulWidget {
   final String image;
   final String fileUrl;
   final int price;
-  final bool recent;
-  final bool popular;
+  final List categories;
 
   @override
-  State<BookDetails> createState() => _BookDetailsState();
+  State<EbookDetails> createState() => _EbookDetailsState();
 }
 
-class _BookDetailsState extends State<BookDetails> {
+class _EbookDetailsState extends State<EbookDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,8 +73,8 @@ class _BookDetailsState extends State<BookDetails> {
                 CachedNetworkImage(
                   imageUrl: widget.image,
                   imageBuilder: (context, imageProvider) => Container(
-                    width: 100,
-                    height: 125,
+                    width: 115,
+                    height: 140,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       image: DecorationImage(
@@ -88,8 +85,8 @@ class _BookDetailsState extends State<BookDetails> {
                   ),
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       Container(
-                    width: 100,
-                    height: 125,
+                    width: 115,
+                    height: 140,
                     decoration: BoxDecoration(
                       color: Colors.blue.shade50,
                       borderRadius: const BorderRadius.only(
@@ -129,7 +126,7 @@ class _BookDetailsState extends State<BookDetails> {
                                     .titleMedium!
                                     .copyWith(
                                       fontWeight: FontWeight.w600,
-                                      height: 1.2,
+                                      height: 1.5,
                                     ),
                               ),
                             ),
@@ -245,8 +242,7 @@ class _BookDetailsState extends State<BookDetails> {
                                         'price:',
                                         style: Theme.of(context)
                                             .textTheme
-                                            .labelMedium!
-                                            .copyWith(height: 1),
+                                            .bodySmall,
                                       ),
 
                                       //
@@ -263,7 +259,7 @@ class _BookDetailsState extends State<BookDetails> {
                                               fontWeight: FontWeight.bold,
                                               fontSize: Theme.of(context)
                                                   .textTheme
-                                                  .headline5!
+                                                  .headline6!
                                                   .fontSize,
                                               height: 1.2,
                                             ),
@@ -362,8 +358,9 @@ class _BookDetailsState extends State<BookDetails> {
                                   onTap: () async {
                                     // view pdf
                                     Get.to(PdfViewerCached(
-                                        title: widget.title,
-                                        url: widget.fileUrl));
+                                      title: widget.title,
+                                      url: widget.fileUrl,
+                                    ));
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
@@ -398,110 +395,7 @@ class _BookDetailsState extends State<BookDetails> {
                               : InkWell(
                                   onTap: () async {
                                     //
-                                    showModalBottomSheet<void>(
-                                      context: context,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(8),
-                                          topRight: Radius.circular(8),
-                                        ),
-                                      ),
-                                      builder: (BuildContext context) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(16),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              //
-                                              Text(
-                                                'Choose payment method',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium,
-                                              ),
-
-                                              const Divider(),
-
-                                              //
-                                              Text(
-                                                'price:',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium,
-                                              ),
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  //
-                                                  Text(
-                                                    '${widget.price}',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline5!
-                                                        .copyWith(
-                                                            color: Colors
-                                                                .redAccent,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            height: 1.2),
-                                                  ),
-                                                  const SizedBox(width: 4),
-
-                                                  //
-                                                  Text(
-                                                    AppRepo.kTkSymbol,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .labelMedium,
-                                                  ),
-                                                ],
-                                              ),
-
-                                              const SizedBox(height: 16),
-
-                                              //bkash tile
-                                              ListTile(
-                                                onTap: () async {
-                                                  Get.to(
-                                                    PlaceOrder(
-                                                      method: 'Bkash',
-                                                      id: widget.bookId,
-                                                      title: widget.title,
-                                                      month: widget.month,
-                                                      year: widget.year,
-                                                      price: widget.price,
-                                                    ),
-                                                  );
-                                                },
-                                                shape: RoundedRectangleBorder(
-                                                  side: BorderSide(
-                                                      width: 1,
-                                                      color: Theme.of(context)
-                                                          .dividerColor),
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                                leading: Image.asset(
-                                                  AppRepo.kBkashLogo,
-                                                  width: 56,
-                                                  height: 56,
-                                                ),
-                                                title: const Text('bkash'),
-                                                subtitle: const Text(
-                                                    'pay with your bkash number'),
-                                              ),
-
-                                              const SizedBox(height: 8),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    );
+                                    showPaymentBottomSheet(context);
                                   },
                                   child: Material(
                                     color: Colors.transparent,
@@ -539,7 +433,8 @@ class _BookDetailsState extends State<BookDetails> {
                                 );
                         }
 
-                        var doc = snapshot.data!.docs;
+                        // var doc = snapshot.data!.docs;
+
                         //
                         return InkWell(
                           onTap: () async {
@@ -598,7 +493,7 @@ class _BookDetailsState extends State<BookDetails> {
                           color: Colors.black.withOpacity(.8),
                         ),
                       ),
-                      title: const Text('Support center'),
+                      title: const Text('Call now'),
                       subtitle: const Text('call for more query'),
                       trailing: const Icon(
                         Icons.arrow_right_alt_rounded,
@@ -654,9 +549,100 @@ class _BookDetailsState extends State<BookDetails> {
           const SizedBox(height: 16),
 
           // more books
-          BookList(category: Category.popular.name),
+          EbookList(
+            categoryName: widget.categories[0],
+          ),
         ],
       ),
+    );
+  }
+
+  Future showPaymentBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              //
+              Text(
+                'Choose payment method',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+
+              const Divider(),
+
+              //
+              Text(
+                'price:',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //
+                  Text(
+                    '${widget.price}',
+                    style: Theme.of(context).textTheme.headline5!.copyWith(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2),
+                  ),
+                  const SizedBox(width: 4),
+
+                  //
+                  Text(
+                    AppRepo.kTkSymbol,
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              //bkash tile
+              ListTile(
+                onTap: () async {
+                  Get.to(
+                    PlaceOrder(
+                      method: 'Bkash',
+                      id: widget.bookId,
+                      title: widget.title,
+                      month: widget.month,
+                      year: widget.year,
+                      price: widget.price,
+                    ),
+                  );
+                },
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                      width: 1, color: Theme.of(context).dividerColor),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                leading: Image.asset(
+                  AppRepo.kBkashLogo,
+                  width: 56,
+                  height: 56,
+                ),
+                title: const Text('bkash'),
+                subtitle: const Text('pay with your bkash number'),
+              ),
+
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
     );
   }
 }

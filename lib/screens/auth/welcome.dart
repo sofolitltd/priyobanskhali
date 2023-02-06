@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:priyobanskhali/screens/auth/signup.dart';
+import 'package:priyobanskhali/screens/auth/signup2.dart';
 
 import '../../utils/repo.dart';
 import 'login.dart';
@@ -68,7 +68,10 @@ class Welcome extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () {
                       //
-                      Get.to(const Signup());
+                      Get.to(
+                        const SignUp2(),
+                        transition: Transition.zoom,
+                      );
                     },
                     child: const Text(
                       AppRepo.kCreateAccountText,

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../home_banner_details.dart';
+import 'home_banner_details.dart';
 
 class HomeBanner extends StatelessWidget {
   const HomeBanner({Key? key}) : super(key: key);
@@ -46,7 +46,13 @@ class HomeBanner extends StatelessWidget {
               String message = data[index].get('message');
 
               //
-              Get.to(HomeBannerDetails(image: image, message: message));
+              Get.to(
+                HomeBannerDetails(
+                  image: image,
+                  message: message,
+                ),
+                transition: Transition.fadeIn,
+              );
             },
             autoplay: true,
 

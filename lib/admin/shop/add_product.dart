@@ -1,67 +1,34 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
-class EditBookAdmin extends StatefulWidget {
-  const EditBookAdmin({
-    key,
-    required this.data,
-  }) : super(key: key);
-
-  final QueryDocumentSnapshot data;
+class AddProduct extends StatefulWidget {
+  const AddProduct({Key? key}) : super(key: key);
 
   @override
-  State<EditBookAdmin> createState() => _EditBookAdminState();
+  State<AddProduct> createState() => _AddProductState();
 }
 
-class _EditBookAdminState extends State<EditBookAdmin> {
+class _AddProductState extends State<AddProduct> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
-  final TextEditingController _bookTitleController = TextEditingController();
-  final TextEditingController _bookAuthorController = TextEditingController();
-  final TextEditingController _bookStockController = TextEditingController();
-  final TextEditingController _bookDescriptionController =
-      TextEditingController();
-  final TextEditingController _bookPriceController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _stockController = TextEditingController();
 
-  List categories = [];
-  List _selectedCategories = [];
+  List size = ['s', 'm', 'l', 'xl'];
+  List _selectedSize = [];
 
   XFile? selectedImage;
   UploadTask? task;
-
-  //
-  getCategories() async {
-    var ref =
-        FirebaseFirestore.instance.collection('book_categories').snapshots();
-    await ref.forEach((element) {
-      for (var e in element.docs) {
-        var category = e.get('category');
-        categories.add(category);
-      }
-      print('cat: $categories');
-      setState(() {});
-    });
-  }
-
-  @override
-  void initState() {
-    getCategories();
-    _bookTitleController.text = widget.data.get('title');
-    _bookAuthorController.text = widget.data.get('author');
-    _bookPriceController.text = widget.data.get('price').toString();
-    _bookStockController.text = widget.data.get('stock').toString();
-    _bookDescriptionController.text = widget.data.get('description');
-    _selectedCategories = widget.data.get('categories');
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +37,7 @@ class _EditBookAdminState extends State<EditBookAdmin> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          'Edit book',
+          'Add product',
           style: TextStyle(color: Colors.black),
         ),
       ),
@@ -80,13 +47,64 @@ class _EditBookAdminState extends State<EditBookAdmin> {
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         children: [
+          //
           Form(
             key: _formState,
-            child: Column(
+            child: ListView(
+              shrinkWrap: true,
               children: [
+                //image
+                InkWell(
+                  onTap: () => pickImage(),
+                  child: DottedBorder(
+                    borderType: BorderType.RRect,
+                    radius: const Radius.circular(8),
+                    padding: const EdgeInsets.all(6),
+                    color: Colors.grey,
+                    strokeWidth: 2,
+                    dashPattern: const [5],
+                    child: Container(
+                      height: 180,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: Colors.blue.shade50,
+                      ),
+                      alignment: Alignment.center,
+                      child: selectedImage == null
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.image_outlined,
+                                  size: 100,
+                                  color: Colors.black26,
+                                ),
+
+                                const SizedBox(height: 8),
+
+                                //
+                                ElevatedButton(
+                                  onPressed: () => pickImage(),
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size(40, 40),
+                                  ),
+                                  child: const Text('Choose image'),
+                                )
+                              ],
+                            )
+                          : Image.file(
+                              File(selectedImage!.path),
+                              // fit: BoxFit.contain,
+                            ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
                 // title
                 TextFormField(
-                  controller: _bookTitleController,
+                  controller: _titleController,
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
                   minLines: 1,
@@ -95,27 +113,10 @@ class _EditBookAdminState extends State<EditBookAdmin> {
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                     border: OutlineInputBorder(),
-                    labelText: 'Book name',
-                    hintText: 'Priyo ..',
+                    labelText: 'Product name',
+                    hintText: 'Shirt ..',
                   ),
                   validator: (value) => value!.isEmpty ? "Enter title" : null,
-                ),
-
-                const SizedBox(height: 16),
-
-                // author
-                TextFormField(
-                  controller: _bookAuthorController,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                    border: OutlineInputBorder(),
-                    labelText: 'Author name',
-                    hintText: 'Kazi ..',
-                  ),
-                  validator: (value) => value!.isEmpty ? "Enter author" : null,
                 ),
 
                 const SizedBox(height: 16),
@@ -127,7 +128,7 @@ class _EditBookAdminState extends State<EditBookAdmin> {
                     Expanded(
                       flex: 1,
                       child: TextFormField(
-                        controller: _bookPriceController,
+                        controller: _priceController,
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
@@ -147,7 +148,7 @@ class _EditBookAdminState extends State<EditBookAdmin> {
                     Expanded(
                       flex: 1,
                       child: TextFormField(
-                        controller: _bookStockController,
+                        controller: _stockController,
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           contentPadding: EdgeInsets.symmetric(
@@ -165,83 +166,32 @@ class _EditBookAdminState extends State<EditBookAdmin> {
 
                 const SizedBox(height: 16),
 
-                // des
-                TextFormField(
-                  controller: _bookDescriptionController,
-                  keyboardType: TextInputType.text,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: const InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                    border: OutlineInputBorder(),
-                    labelText: 'Description',
-                    hintText: 'Description',
+                //size
+                MultiSelectDialogField(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black38),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  minLines: 1,
-                  maxLines: 8,
-                  validator: (value) =>
-                      value!.isEmpty ? "Enter description" : null,
-                ),
-
-                const SizedBox(height: 16),
-
-                //
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //
-                    Expanded(
-                      flex: 2,
-                      child: InkWell(
-                        onTap: () => pickImage(),
-                        child: Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(4)),
-                          child: selectedImage == null
-                              ? Image.network(widget.data.get('image'),
-                                  fit: BoxFit.cover)
-                              : Image.file(
-                                  File(selectedImage!.path),
-                                  fit: BoxFit.cover,
-                                ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 16),
-                    //
-                    Expanded(
-                      flex: 5,
-                      child: MultiSelectDialogField(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black38),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        // selectedColor: Colors.blueAccent.shade100,
-                        // selectedItemsTextStyle: const TextStyle(color: Colors.black),
-                        title: const Text('Categories'),
-                        buttonText: const Text('Categories'),
-                        buttonIcon: const Icon(Icons.arrow_drop_down),
-                        initialValue: _selectedCategories,
-                        items: categories
-                            .map((e) => MultiSelectItem(e, e))
-                            .toList(),
-                        listType: MultiSelectListType.CHIP,
-                        onConfirm: (List values) {
-                          setState(() {
-                            _selectedCategories = values;
-                          });
-                        },
-                        validator: (values) =>
-                            (values == null || values.isEmpty)
-                                ? "Select category"
-                                : null,
-                      ),
-                    ),
-                  ],
+                  dialogHeight: 400,
+                  chipDisplay: MultiSelectChipDisplay(
+                    chipColor: Colors.blue.shade50,
+                    textStyle: const TextStyle(color: Colors.black),
+                  ),
+                  title: const Text('Size'),
+                  buttonText: const Text('Size'),
+                  buttonIcon: const Icon(Icons.arrow_drop_down),
+                  // initialValue: _selectedCategories,
+                  items:
+                      size.map((item) => MultiSelectItem(item, item)).toList(),
+                  listType: MultiSelectListType.LIST,
+                  onConfirm: (List values) {
+                    setState(() {
+                      _selectedSize = values;
+                    });
+                  },
+                  validator: (values) => (values == null || values.isEmpty)
+                      ? "Select category"
+                      : null,
                 ),
               ],
             ),
@@ -250,49 +200,38 @@ class _EditBookAdminState extends State<EditBookAdmin> {
           const SizedBox(height: 24),
 
           //
-          SizedBox(
-            height: 50,
-            child: ElevatedButton.icon(
-                icon: const Icon(Icons.cloud_upload_outlined),
-                onPressed: () async {
-                  var id = widget.data.id;
-
-                  if (_formState.currentState!.validate()) {
-                    if (selectedImage != null) {
-                      // fire store
-                      await uploadImageToFireStore(widget.data.get('id'));
-                    } else {
-                      await FirebaseFirestore.instance
-                          .collection('book')
-                          .doc(id)
-                          .update({
-                        'id': id,
-                        'title': _bookTitleController.text.trim(),
-                        'author': _bookAuthorController.text.trim(),
-                        'price': int.parse(_bookPriceController.text.trim()),
-                        'stock': int.parse(_bookStockController.text.trim()),
-                        'description': _bookDescriptionController.text.trim(),
-                        'image': widget.data.get('image'),
-                        'categories': _selectedCategories,
-                      });
-
-                      //
-                      Get.back();
-                    }
-                  }
-                },
-                label: const Text('Update now')),
-          ),
+          ElevatedButton.icon(
+              icon: const Icon(Icons.cloud_upload_outlined),
+              onPressed: () async {
+                if (selectedImage == null) {
+                  ScaffoldMessenger.of(context)
+                    ..clearSnackBars()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: const Text('No image Selected!'),
+                        action: SnackBarAction(
+                          label: 'Choose image',
+                          onPressed: pickImage,
+                        ),
+                      ),
+                    );
+                } else if (_formState.currentState!.validate()) {
+                  // fire image
+                  await uploadImageToFireStore();
+                }
+              },
+              label: const Text('Save')),
         ],
       ),
     );
   }
 
-  // upload file to fire store
-  uploadImageToFireStore(bookId) async {
+// upload file to fire store
+  uploadImageToFireStore() async {
     // fire storage
+    var name = DateTime.now().millisecondsSinceEpoch.toString();
 
-    final filePath = 'images/book/$bookId.jpg';
+    final filePath = 'product/$name.jpg';
 
     var task = FirebaseStorage.instance
         .ref(filePath)
@@ -308,15 +247,14 @@ class _EditBookAdminState extends State<EditBookAdmin> {
     var imageUrl = await snapshot.ref.getDownloadURL();
     // print('Download-Link: $downloadedUrl');
 
+    var id = name;
     //
-    FirebaseFirestore.instance.collection('book').doc(bookId).update({
-      'id': bookId,
-      'categories': _selectedCategories,
-      'title': _bookTitleController.text.trim(),
-      'author': _bookAuthorController.text.trim(),
-      'price': int.parse(_bookPriceController.text.trim()),
-      'stock': int.parse(_bookStockController.text.trim()),
-      'description': _bookDescriptionController.text.trim(),
+    FirebaseFirestore.instance.collection('shop').doc(id).set({
+      'id': id,
+      'title': _titleController.text.trim(),
+      'price': int.parse(_priceController.text.trim()),
+      'stock': int.parse(_stockController.text.trim()),
+      'size': _selectedSize,
       'image': imageUrl,
     });
 
@@ -428,6 +366,7 @@ class _EditBookAdminState extends State<EditBookAdmin> {
     CroppedFile? croppedImage = await imageCropper.cropImage(
       sourcePath: image.path,
       cropStyle: CropStyle.rectangle,
+      compressQuality: 60,
       aspectRatioPresets: [
         CropAspectRatioPreset.original,
         CropAspectRatioPreset.square,

@@ -22,7 +22,10 @@ class ExploreMore extends StatelessWidget {
           ),
           child: Text(
             AppRepo.kExploreText,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium!
+                .copyWith(fontWeight: FontWeight.w600),
           ),
         ),
 
@@ -64,7 +67,7 @@ class ExploreMore extends StatelessWidget {
                       const SizedBox(height: 8),
 
                       //text
-                      Text(AppRepo.kFacebookText,
+                      Text(AppRepo.kFacebookTextBn,
                           style: GoogleFonts.hindSiliguri(
                               textStyle:
                                   Theme.of(context).textTheme.titleSmall)),
@@ -89,7 +92,7 @@ class ExploreMore extends StatelessWidget {
                       const SizedBox(height: 8),
 
                       //text
-                      Text(AppRepo.kWhatsAppText,
+                      Text(AppRepo.kWhatsAppTextBn,
                           style: GoogleFonts.hindSiliguri(
                               textStyle:
                                   Theme.of(context).textTheme.titleSmall)),
@@ -114,7 +117,7 @@ class ExploreMore extends StatelessWidget {
                       const SizedBox(height: 8),
 
                       //text
-                      Text(AppRepo.kEmailText,
+                      Text(AppRepo.kEmailTextBn,
                           style: GoogleFonts.hindSiliguri(
                               textStyle:
                                   Theme.of(context).textTheme.titleSmall)),
@@ -140,7 +143,7 @@ class ExploreMore extends StatelessWidget {
 
                       //text
                       Text(
-                        AppRepo.kYoutubeText,
+                        AppRepo.kYoutubeTextBn,
                         style: GoogleFonts.hindSiliguri(
                           textStyle: Theme.of(context).textTheme.titleSmall,
                         ),

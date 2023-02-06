@@ -1,14 +1,14 @@
 class AppRepo {
   static const kAppName = 'Priyo Banskhali';
-  static const kAdminNumber = '+8801816120472';
+  static const kAdminNumber = '01816120472';
   static const kFacebookLink = 'https://www.facebook.com/priyobanskhali/';
   static const kYoutubeLink = 'https://www.youtube.com/@priyob';
-  static const kWhatsAppLink = 'whatsapp://send?phone=$kAdminNumber';
+  static const kWhatsAppLink = 'whatsapp://send?phone=+88$kAdminNumber';
   static const kEmailLink = 'kaji2171@gmail.com';
   static const kTkSymbol = '৳';
 
 // title text
-  static const kExploreText = 'Explore more';
+  static const kExploreText = 'Explore';
   static const kRecentText = 'Recent books';
   static const kPopularText = 'Popular books';
 
@@ -22,11 +22,10 @@ class AppRepo {
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhIcSOfcoik8NZsWLrBD62gBh3NujSMzSyjcLY9c4ygWBAXBT4UxXmsqEhPfP3iExe3xs&usqp=CAU';
 
 // logo text
-  static const kGoogleText = 'Google';
-  static const kYoutubeText = 'ইউটিউব';
-  static const kFacebookText = 'ফেসবুক';
+  static const kFacebookTextBn = 'ফেসবুক';
+  static const kWhatsAppTextBn = 'হোয়াটস এপ';
   static const kEmailTextBn = 'ই-মেইল';
-  static const kWhatsAppText = 'হোয়াটস এপ';
+  static const kYoutubeTextBn = 'ইউটিউব';
 
 //logo
   static const kAppLogo = 'assets/logo/logo.png';
@@ -35,6 +34,8 @@ class AppRepo {
   static const kFacebookLogo = 'assets/logo/facebook.png';
   static const kEmailLogo = 'assets/logo/gmail.png';
   static const kWhatsAppLogo = 'assets/logo/whatsapp.png';
+
+  static const kPhoneAuth = 'assets/images/phone.png';
 
   // payment
   static const kBkashLogo = 'assets/logo/bkash.png';
@@ -59,7 +60,7 @@ class AppRepo {
 
 // sign up
   static const kCreateAccountText = 'Create account';
-  static const kCreateWith = 'Create account only first time';
+  static const kCreateWith = 'with email and password';
 
   static const kNameText = 'Name';
   static const kMobileText = 'Mobile';
@@ -106,9 +107,12 @@ class AppRepo {
 
   //
   static const kDevName = 'Sofol IT';
-  static const kDevMobile = '+8801704340860';
+  static const kDevMobile = '01704340860';
   static const kDevWebsite = 'www.sofolit.com';
   static const kDevEmail = 'www.sofolitltd@gmail.com';
   static const kDevLogo =
       'https://sofolit.com/wp-content/uploads/2023/01/sofolit-logo-black.png';
+
+  // home
+
 }

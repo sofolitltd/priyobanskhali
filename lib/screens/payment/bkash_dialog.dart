@@ -198,6 +198,7 @@ class _BkashDialogState extends State<BkashDialog> {
                             'userId': userId,
                             'status': 'Pending',
                             'orderId': widget.orderId,
+                            'price': widget.total,
                             'bookId': widget.bookId,
                             'mobileNo': _phoneController.text.trim(),
                             'transactionId': _transactionController.text.trim(),

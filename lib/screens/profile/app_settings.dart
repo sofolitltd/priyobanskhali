@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:priyobanskhali/screens/profile/change_password.dart';
 
+import '/screens/profile/change_password.dart';
 import '/utils/repo.dart';
-import '../utils/open_app.dart';
+import '../../utils/open_app.dart';
 
 class AppSettings extends StatelessWidget {
   const AppSettings({Key? key}) : super(key: key);
@@ -294,7 +293,7 @@ class AppSettings extends StatelessWidget {
                 ListTile(
                   visualDensity: const VisualDensity(vertical: -4),
                   onTap: () {
-                    OpenApp.withNumber(AppRepo.kDevMobile);
+                    OpenApp.withUrl('https://${AppRepo.kDevWebsite}');
                   },
                   title: const Text(AppRepo.kDevWebsite),
                   subtitle: const Text('visit website'),
@@ -308,12 +307,13 @@ class AppSettings extends StatelessWidget {
                 ),
 
                 const Divider(height: 8),
+
                 // email
                 ListTile(
                   visualDensity: const VisualDensity(vertical: -4),
                   onTap: () {
                     //
-                    OpenApp.withEmail(AppRepo.kEmailLink);
+                    OpenApp.withEmail(AppRepo.kDevEmail);
                   },
                   title: const Text(AppRepo.kDevEmail),
                   subtitle: const Text('email address'),

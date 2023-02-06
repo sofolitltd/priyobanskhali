@@ -12,6 +12,7 @@ import 'package:priyobanskhali/screens/dashboard.dart';
 
 import '../../utils/repo.dart';
 
+// 1st
 class Signup extends StatefulWidget {
   const Signup({Key? key}) : super(key: key);
 
@@ -346,6 +347,7 @@ class _SignupState extends State<Signup> {
     CroppedFile? croppedImage = await imageCropper.cropImage(
       sourcePath: image.path,
       cropStyle: CropStyle.circle,
+      compressQuality: 60,
       aspectRatioPresets: [
         CropAspectRatioPreset.original,
         CropAspectRatioPreset.square,
@@ -384,8 +386,16 @@ class _SignupState extends State<Signup> {
       if (user != null) {
         // uid generate
         String idGenerator() {
-          final now = DateTime.now();
-          return now.microsecondsSinceEpoch.toString();
+          var uid = 0;
+          var ref = FirebaseFirestore.instance.collection('categories');
+          ref.snapshots().forEach(
+            (element) {
+              uid = (element.docs.length + 1);
+              print(uid);
+            },
+          );
+          return uid.toString();
+          //
         }
 
         //

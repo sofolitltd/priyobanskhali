@@ -1,17 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
+import 'package:get/route_manager.dart';
 
-class AdminList extends StatelessWidget {
-  const AdminList({Key? key}) : super(key: key);
+class AddEbookCategories extends StatefulWidget {
+  const AddEbookCategories({Key? key}) : super(key: key);
 
   @override
+  State<AddEbookCategories> createState() => _AddEbookCategoriesState();
+}
+
+class _AddEbookCategoriesState extends State<AddEbookCategories> {
+  @override
   Widget build(BuildContext context) {
+    var docId = 0;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Admin',
+          'Ebook categories',
           style: TextStyle(color: Colors.black),
         ),
       ),
@@ -19,7 +26,16 @@ class AdminList extends StatelessWidget {
       //
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          var email = '';
+          //
+          var ref = FirebaseFirestore.instance.collection('ebook_categories');
+          ref.snapshots().forEach(
+            (element) {
+              docId = element.docs.length + 1;
+              print(docId);
+            },
+          );
+
+          var category = '';
 
           //
           showDialog(
@@ -31,7 +47,7 @@ class AdminList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   //
-                  const Text('Add admin'),
+                  const Text('Add Category'),
 
                   //
                   IconButton(
@@ -45,13 +61,13 @@ class AdminList extends StatelessWidget {
                 //
                 TextField(
                   decoration: const InputDecoration(
-                    hintText: 'Enter an email',
+                    hintText: 'Enter category name',
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (val) {
-                    email = val;
+                    category = val.toLowerCase().trim();
                   },
                 ),
 
@@ -61,24 +77,25 @@ class AdminList extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                      onPressed: () {
-                        if (email != '') {
-                          FirebaseFirestore.instance
-                              .collection('admin')
+                      onPressed: () async {
+                        if (category != '') {
+                          //
+                          await FirebaseFirestore.instance
+                              .collection('ebook_categories')
                               .doc()
                               .set(
                             {
-                              'email': email,
-                              'role': 'admin',
+                              'category': category,
+                              'id': docId,
                             },
                           ).then((value) {
                             Get.back();
                           });
+                        } else {
+                          Fluttertoast.showToast(msg: 'Enter category name');
                         }
-                        print('no email');
-                        //
                       },
-                      child: const Text('Add Admin')),
+                      child: const Text('Add category')),
                 )
               ],
             ),
@@ -89,7 +106,10 @@ class AdminList extends StatelessWidget {
 
       //
       body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('admin').snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('ebook_categories')
+              .orderBy('id')
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const Center(child: Text('Something wrong'));
@@ -101,7 +121,7 @@ class AdminList extends StatelessWidget {
             var docs = snapshot.data!.docs;
 
             if (docs.isEmpty) {
-              return const Center(child: Text('No admin found'));
+              return const Center(child: Text('No categories found'));
             }
 
             return ListView.separated(
@@ -117,54 +137,55 @@ class AdminList extends StatelessWidget {
                     //
                   },
                   child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     margin: EdgeInsets.zero,
-                    elevation: 2,
+                    elevation: 3,
                     child: Theme(
                       data: Theme.of(context)
                           .copyWith(dividerColor: Colors.transparent),
                       child: ListTile(
-                        // leading: CircleAvatar(
-                        //   backgroundImage: NetworkImage(
-                        //     data.get('image') == ''
-                        //         ? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png'
-                        //         : data.get('image'),
-                        //   ),
-                        // ),
-                        title: Text(data.get('email')),
-                        subtitle: Text('role: ${data.get('role')}'),
+                        title: Text(data.get('category')),
+                        subtitle: Text('id: ${data.get('id')}'),
                         trailing: IconButton(
                           onPressed: () {
+                            //
                             showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Delete admin'),
+                                title: const Text('Delete category'),
                                 content: const Text(
-                                    'Are you sure to delete this admin?'),
+                                    'Are you sure to delete this category?'),
                                 actions: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                            minimumSize: const Size(40, 40)),
                                         onPressed: () {
                                           Get.back();
                                         },
                                         child: const Text('Cancel'),
                                       ),
 
-                                      const SizedBox(width: 16),
+                                      const SizedBox(width: 8),
 
                                       //
                                       ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            minimumSize: const Size(40, 40)),
                                         onPressed: () {
                                           FirebaseFirestore.instance
-                                              .collection('admin')
+                                              .collection('ebook_categories')
                                               .doc(data.id)
                                               .delete()
                                               .then(
                                             (value) {
                                               Fluttertoast.showToast(
                                                   msg:
-                                                      'Delete admin successfully');
+                                                      'Delete category successfully');
 
                                               //
                                               Get.back();

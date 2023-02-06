@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../admin/admin_dashboard.dart';
-import '../app_settings.dart';
 import '../auth/splash.dart';
+import 'app_settings.dart';
 import 'edit_profile.dart';
 
 class Profile extends StatelessWidget {
@@ -177,7 +177,7 @@ class ProfileCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     //
-                    if (data.get('mobile') != '')
+                    if (data.get('union') != '')
                       // union
                       ListTile(
                         visualDensity: const VisualDensity(vertical: -2),
@@ -198,7 +198,7 @@ class ProfileCard extends StatelessWidget {
                         ),
                       ),
 
-                    if (data.get('mobile') != '') const Divider(height: 2),
+                    if (data.get('union') != '') const Divider(height: 2),
 
                     //email
                     ListTile(
@@ -221,9 +221,9 @@ class ProfileCard extends StatelessWidget {
                     ),
 
                     if (data.get('mobile') != '') const Divider(height: 2),
-                    if (data.get('mobile') != '')
 
-                      //
+                    //
+                    if (data.get('mobile') != '')
                       ListTile(
                         visualDensity: const VisualDensity(vertical: -2),
                         subtitle: Text('Mobile number',
@@ -347,18 +347,51 @@ class ProfileCard extends StatelessWidget {
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
                 subtitle: const Text('leave for now'),
-                onTap: () {
-                  //
-                  FirebaseAuth.instance.signOut();
-
-                  //
-                  Get.offAll(const Splash());
-                },
+                onTap: () => showAlertDialog(context),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  //
+  Future<void> showAlertDialog(context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // <-- SEE HERE
+          title: const Text('Log out!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Are you sure to log out?'),
+              ],
+            ),
+          ),
+          actionsPadding: const EdgeInsets.only(right: 16, bottom: 16),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(minimumSize: const Size(80, 40)),
+              child: const Text('Yes'),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                //
+                Get.offAll(const Splash());
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

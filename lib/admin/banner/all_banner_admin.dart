@@ -3,9 +3,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
-import '../../screens/home_banner_details.dart';
+import '../../screens/home/home_banner_details.dart';
 import 'add_banner.dart';
 import 'edit_banner.dart';
 

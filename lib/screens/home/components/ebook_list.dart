@@ -5,67 +5,29 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:priyobanskhali/screens/home/components/see_more_ebook.dart';
 
-import '../../utils/repo.dart';
-import '../see_more.dart';
-import 'book_details.dart';
+import '../../../utils/repo.dart';
+import 'ebook_details.dart';
 
-class BookList extends StatelessWidget {
-  const BookList({
+class EbookList extends StatelessWidget {
+  const EbookList({
     Key? key,
-    required this.category,
+    required this.categoryName,
   }) : super(key: key);
 
-  final String category;
+  final String categoryName;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //title
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //
-              const Divider(height: 1),
-
-              // text + btn
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // text
-                  Text(
-                    StringUtils.capitalize('$category books'),
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-
-                  //btn
-                  TextButton(
-                      onPressed: () {
-                        //todo
-                        Get.to(SeeMore(category: category));
-                      },
-                      child: const Text(AppRepo.kSeeMoreText))
-                ],
-              ),
-
-              //
-              const Divider(height: 1),
-            ],
-          ),
-        ),
-
-        // recent book list
+        //  book list
         StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
-                .collection('books')
-                .where(category, isEqualTo: true)
+                .collection('ebook')
+                .where('categories', arrayContains: categoryName)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -80,32 +42,71 @@ class BookList extends StatelessWidget {
               }
 
               if (snapshot.data!.size == 0) {
-                return Container(
-                  height: 220,
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'No book Found!',
-                  ),
-                );
+                return Container();
               }
 
               var data = snapshot.data!.docs;
 
               // card
-              return Container(
-                height: 250,
-                // color: Colors.blue,
-                padding: const EdgeInsets.only(top: 8, bottom: 8, left: 16),
-                child: ListView.separated(
-                  padding: const EdgeInsets.only(right: 16),
-                  physics: const BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: data.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: 12),
-                  itemBuilder: (context, index) => BookCard(data: data[index]),
-                ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //title
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Column(
+                      children: [
+                        const Divider(height: 2),
+
+                        //
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // text
+                            Text(
+                              StringUtils.capitalize(categoryName),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(fontWeight: FontWeight.w600),
+                            ),
+
+                            //btn
+                            TextButton(
+                                onPressed: () {
+                                  //todo
+                                  Get.to(
+                                      SeeMoreEbook(categoryName: categoryName));
+                                },
+                                child: const Text(AppRepo.kSeeMoreText))
+                          ],
+                        ),
+
+                        const Divider(height: 4),
+                      ],
+                    ),
+                  ),
+
+                  //
+                  Container(
+                    height: 250,
+                    // color: Colors.blue,
+                    padding: const EdgeInsets.only(top: 8, bottom: 8, left: 16),
+                    child: ListView.separated(
+                      padding: const EdgeInsets.only(right: 16),
+                      physics: const BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: data.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: 12),
+                      itemBuilder: (context, index) =>
+                          EbookCard(data: data[index]),
+                    ),
+                  ),
+                ],
               );
             }),
       ],
@@ -114,8 +115,8 @@ class BookList extends StatelessWidget {
 }
 
 //book card
-class BookCard extends StatelessWidget {
-  const BookCard({
+class EbookCard extends StatelessWidget {
+  const EbookCard({
     Key? key,
     required this.data,
   }) : super(key: key);
@@ -126,18 +127,24 @@ class BookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(
-          BookDetails(
-            bookId: data.get('id'),
-            title: data.get('title'),
-            month: data.get('month'),
-            year: data.get('year'),
-            description: data.get('description'),
-            image: data.get('image'),
-            fileUrl: data.get('fileUrl'),
-            price: data.get('price'),
-            recent: data.get('recent'),
-            popular: data.get('popular'),
+        //
+        print('book id : ${data.get('id')}');
+
+        //
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EbookDetails(
+              bookId: data.get('id'),
+              title: data.get('title'),
+              month: data.get('month'),
+              year: data.get('year'),
+              description: data.get('description'),
+              image: data.get('image'),
+              fileUrl: data.get('fileUrl'),
+              price: data.get('price'),
+              categories: data.get('categories'),
+            ),
           ),
         );
       },
@@ -225,18 +232,18 @@ class BookCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.hindSiliguri(
                       textStyle: Theme.of(context).textTheme.titleSmall,
-                      height: 1,
+                      height: 1.3,
                     ),
                   ),
 
                   //
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        '${data.get('month')}',
+                        '${data.get('month')} - ',
                         style: GoogleFonts.hindSiliguri().copyWith(
-                          height: 1,
+                          height: 1.3,
                           color: Colors.purple,
                         ),
                       ),

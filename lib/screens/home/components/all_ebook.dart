@@ -1,38 +1,74 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'screens/components/book_details.dart';
-import 'utils/repo.dart';
+import '/utils/repo.dart';
+import 'ebook_details.dart';
 
-class Shelf extends StatelessWidget {
-  const Shelf({Key? key}) : super(key: key);
+class AllEbook extends StatefulWidget {
+  const AllEbook({
+    Key? key,
+    required this.categories,
+  }) : super(key: key);
+
+  final List categories;
+
+  @override
+  State<AllEbook> createState() => _AllEbookState();
+}
+
+class _AllEbookState extends State<AllEbook> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+        length: widget.categories.length,
+        child: Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                'All Ebook',
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+
+              //tabs
+              bottom: TabBar(
+                isScrollable: true,
+                labelColor: Colors.black,
+                tabs: widget.categories
+                    .map((category) => Tab(
+                          text: StringUtils.capitalize(category),
+                        ))
+                    .toList(),
+              ),
+            ),
+            //
+            body: TabBarView(
+              children: widget.categories
+                  .map((category) => AllEbookTab(
+                        categoryName: category,
+                      ))
+                  .toList(),
+            )));
+  }
+}
+
+//
+class AllEbookTab extends StatelessWidget {
+  const AllEbookTab({
+    Key? key,
+    required this.categoryName,
+  }) : super(key: key);
+
+  final String categoryName;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        backgroundColor: Colors.white,
-        title: Text(
-          'Shelf',
-          style: GoogleFonts.poppins().copyWith(
-            color: Colors.black,
-          ),
-        ),
-        // actions: [
-        //   IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded)),
-        // ],
-      ),
-
-      //
-      //
-      body: StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection('books')
+            .collection('ebook')
+            .where('categories', arrayContains: categoryName)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -40,71 +76,36 @@ class Shelf extends StatelessWidget {
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container();
+            return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.data!.docs.isEmpty) {
+          if (snapshot.data!.size == 0) {
             return const Center(
               child: Text(
-                'No book Found!',
+                'No ebook Found!',
               ),
             );
           }
 
           var doc = snapshot.data!.docs;
-
+          //
           return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemCount: doc.length,
-            itemBuilder: (context, index) {
-              var data = doc[index];
-              //
-              return StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('books')
-                      .where('id', isEqualTo: data.get('bookId'))
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Center(child: Text('Something wrong'));
-                    }
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemCount: doc.length,
+              padding: const EdgeInsets.all(16),
+              itemBuilder: (context, index) {
+                var data = doc[index];
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (snapshot.data!.size == 0) {
-                      return const Center(
-                        child: Text(
-                          'No book Found!',
-                        ),
-                      );
-                    }
-
-                    var doc = snapshot.data!.docs;
-                    //
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: doc.length,
-                        itemBuilder: (context, index) {
-                          var data = doc[index];
-
-                          //
-                          return BookShelfCard(data: data);
-                        });
-                  });
-              // return BookCardFull(data: data);
-            },
-          );
-        },
-      ),
-    );
+                //
+                return EbookCardFull(data: data);
+              });
+        });
   }
 }
 
-class BookShelfCard extends StatefulWidget {
-  const BookShelfCard({
+//
+class EbookCardFull extends StatefulWidget {
+  const EbookCardFull({
     Key? key,
     required this.data,
   }) : super(key: key);
@@ -112,18 +113,20 @@ class BookShelfCard extends StatefulWidget {
   final QueryDocumentSnapshot data;
 
   @override
-  State<BookShelfCard> createState() => _BookShelfCardState();
+  State<EbookCardFull> createState() => _EbookCardFullState();
 }
 
-class _BookShelfCardState extends State<BookShelfCard> {
+class _EbookCardFullState extends State<EbookCardFull> {
   @override
   Widget build(BuildContext context) {
+    List categories = widget.data.get('categories');
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BookDetails(
+            builder: (context) => EbookDetails(
               bookId: widget.data.get('id'),
               title: widget.data.get('title'),
               month: widget.data.get('month'),
@@ -132,8 +135,7 @@ class _BookShelfCardState extends State<BookShelfCard> {
               image: widget.data.get('image'),
               fileUrl: widget.data.get('fileUrl'),
               price: widget.data.get('price'),
-              recent: widget.data.get('recent'),
-              popular: widget.data.get('popular'),
+              categories: widget.data.get('categories'),
             ),
           ),
         );
@@ -152,8 +154,8 @@ class _BookShelfCardState extends State<BookShelfCard> {
               children: [
                 // image
                 Container(
-                  width: 100,
-                  height: 125,
+                  width: 125,
+                  height: 150,
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
                     borderRadius: const BorderRadius.only(
@@ -199,7 +201,7 @@ class _BookShelfCardState extends State<BookShelfCard> {
             Expanded(
               // flex: 4,
               child: Container(
-                height: 125,
+                height: 150,
                 padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,28 +212,19 @@ class _BookShelfCardState extends State<BookShelfCard> {
                       ///title
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //title, menu
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            //title
-                            Expanded(
-                              child: Text(
-                                widget.data.get('title'),
-                                // style: ,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.hindSiliguri(
-                                  textStyle: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.2),
-                                ),
-                              ),
-                            ),
-                          ],
+                        //title
+                        Text(
+                          widget.data.get('title'),
+                          // style: ,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.hindSiliguri(
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                    fontWeight: FontWeight.w600, height: 1.2),
+                          ),
                         ),
 
                         // month
@@ -239,7 +232,7 @@ class _BookShelfCardState extends State<BookShelfCard> {
                           '${widget.data.get('month')} - ${widget.data.get('year')}',
                           maxLines: 1,
                           style: GoogleFonts.hindSiliguri().copyWith(
-                            color: Colors.purple,
+                            color: Colors.black54,
                             fontSize: Theme.of(context)
                                 .textTheme
                                 .labelLarge!
@@ -251,6 +244,45 @@ class _BookShelfCardState extends State<BookShelfCard> {
                       ],
                     ),
 
+                    //
+                    Row(
+                      children: [
+                        //
+                        Text(
+                          'Categories:  ',
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.hindSiliguri().copyWith(
+                            fontSize: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .fontSize,
+                            height: 1,
+                          ),
+                        ),
+                        //
+
+                        Row(
+                          children: categories
+                              .map(
+                                (category) => Text(
+                                  '$category, ',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.hindSiliguri().copyWith(
+                                    fontSize: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .fontSize,
+                                    height: 1,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ],
+                    ),
+
                     // des
                     Text(
                       '${widget.data.get('description')}',
@@ -259,7 +291,7 @@ class _BookShelfCardState extends State<BookShelfCard> {
                       style: GoogleFonts.hindSiliguri().copyWith(
                         fontSize:
                             Theme.of(context).textTheme.labelMedium!.fontSize,
-                        height: 1,
+                        height: 1.3,
                       ),
                     ),
                   ],

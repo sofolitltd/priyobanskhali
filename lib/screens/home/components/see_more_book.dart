@@ -1,33 +1,25 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/admin/book/edit_book_admin.dart';
-import '../../screens/home/components/book_details.dart';
-import '../../utils/repo.dart';
-import 'add_book_admin.dart';
-import 'add_book_categories.dart';
+import '/utils/repo.dart';
+import 'book_details.dart';
 
-class AllBookAdmin extends StatefulWidget {
-  const AllBookAdmin({
+class SeeMoreBook extends StatelessWidget {
+  const SeeMoreBook({
     Key? key,
+    required this.categoryName,
   }) : super(key: key);
 
-  @override
-  State<AllBookAdmin> createState() => _AllBookAdminState();
-}
+  final String categoryName;
 
-class _AllBookAdminState extends State<AllBookAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          StringUtils.capitalize('Books'),
+          StringUtils.capitalize(categoryName),
           style: const TextStyle(
             color: Colors.black,
           ),
@@ -35,97 +27,44 @@ class _AllBookAdminState extends State<AllBookAdmin> {
       ),
 
       //
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //
-              Row(
-                children: [
-                  // add cat
-                  ElevatedButton(
-                      onPressed: () {
-                        Get.to(
-                          const AddBookCategories(),
-                        );
-                      },
-                      child: const Text('Book categories')),
-                  const SizedBox(
-                    width: 16,
-                  ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('book')
+              .where('categories', arrayContains: categoryName)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Center(child: Text('Something wrong'));
+            }
 
-                  //add book
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(130, 48)),
-                      onPressed: () {
-                        Get.to(
-                          const AddBookAdmin(),
-                        );
-                      },
-                      child: const Text('Add book')),
-                ],
-              ),
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              const SizedBox(height: 24),
+            if (snapshot.data!.size == 0) {
+              return const Center(
+                child: Text(
+                  'No book Found!',
+                ),
+              );
+            }
 
-              Text(
-                'All book',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
+            var doc = snapshot.data!.docs;
+            //
+            return ListView.separated(
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemCount: doc.length,
+                padding: const EdgeInsets.all(16),
+                itemBuilder: (context, index) {
+                  var data = doc[index];
 
-              const Divider(),
-
-              const SizedBox(height: 4),
-
-              //
-              StreamBuilder<QuerySnapshot>(
-                  stream:
-                      FirebaseFirestore.instance.collection('book').snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Center(child: Text('Something wrong'));
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    if (snapshot.data!.size == 0) {
-                      return const Center(
-                        child: Text(
-                          'No book Found!',
-                        ),
-                      );
-                    }
-
-                    var doc = snapshot.data!.docs;
-                    //
-                    return ListView.separated(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12),
-                        itemCount: doc.length,
-                        // padding: const EdgeInsets.all(8),
-                        itemBuilder: (context, index) {
-                          //
-                          return BookCardFull(data: doc[index]);
-                        });
-                  }),
-            ],
-          ),
-        ),
-      ),
+                  //
+                  return BookCardFull(data: data);
+                });
+          }),
     );
   }
 }
-
-enum Menu { edit, delete }
 
 //
 class BookCardFull extends StatefulWidget {
@@ -141,14 +80,13 @@ class BookCardFull extends StatefulWidget {
 }
 
 class _BookCardFullState extends State<BookCardFull> {
-  String _selectedMenu = '';
-
   @override
   Widget build(BuildContext context) {
     List categories = widget.data.get('categories');
 
     return GestureDetector(
       onTap: () {
+        //
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -234,79 +172,18 @@ class _BookCardFullState extends State<BookCardFull> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         //title, menu
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            //title
-                            Expanded(
-                              child: Text(
-                                widget.data.get('title'),
-                                // style: ,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.hindSiliguri(
-                                  textStyle: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.2),
-                                ),
-                              ),
-                            ),
-
-                            //menu
-                            Material(
-                              color: Colors.transparent,
-                              child: SizedBox(
-                                height: 32,
-                                width: 32,
-                                child: PopupMenuButton<Menu>(
-                                    padding: EdgeInsets.zero,
-                                    // Callback that sets the selected popup menu item.
-                                    onSelected: (Menu item) {
-                                      setState(() {
-                                        _selectedMenu = item.name;
-                                        if (_selectedMenu == Menu.edit.name) {
-                                          Get.to(() =>
-                                              EditBookAdmin(data: widget.data));
-                                        } else {
-                                          //
-                                          FirebaseStorage.instance
-                                              .refFromURL(
-                                                  widget.data.get('image'))
-                                              .delete()
-                                              .whenComplete(() {
-                                            //
-                                            FirebaseFirestore.instance
-                                                .collection('book')
-                                                .doc(widget.data.id)
-                                                .delete()
-                                                .whenComplete(() {
-                                              //
-                                              Fluttertoast.showToast(
-                                                  msg: 'Delete successfully');
-                                            });
-                                          });
-                                        }
-                                      });
-                                    },
-                                    itemBuilder: (BuildContext context) =>
-                                        <PopupMenuEntry<Menu>>[
-                                          PopupMenuItem<Menu>(
-                                            value: Menu.edit,
-                                            child: Text(StringUtils.capitalize(
-                                                Menu.edit.name)),
-                                          ),
-                                          PopupMenuItem<Menu>(
-                                            value: Menu.delete,
-                                            child: Text(StringUtils.capitalize(
-                                                Menu.delete.name)),
-                                          ),
-                                        ]),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          widget.data.get('title'),
+                          // style: ,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.hindSiliguri(
+                            textStyle: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                    fontWeight: FontWeight.w600, height: 1.2),
+                          ),
                         ),
 
                         // month

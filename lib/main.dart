@@ -53,8 +53,9 @@ class MyApp extends StatelessWidget {
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.black,
               minimumSize: const Size(48, 48),
-              textStyle: GoogleFonts.poppins().copyWith(
+              textStyle: GoogleFonts.roboto().copyWith(
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
               ),

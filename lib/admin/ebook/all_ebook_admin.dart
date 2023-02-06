@@ -6,28 +6,28 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/admin/book/edit_book_admin.dart';
-import '../../screens/home/components/book_details.dart';
+import '../../screens/home/components/ebook_details.dart';
 import '../../utils/repo.dart';
-import 'add_book_admin.dart';
-import 'add_book_categories.dart';
+import 'add_ebook_admin.dart';
+import 'add_ebook_categories.dart';
+import 'edit_ebook_admin.dart';
 
-class AllBookAdmin extends StatefulWidget {
-  const AllBookAdmin({
+class AllEbookAdmin extends StatefulWidget {
+  const AllEbookAdmin({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<AllBookAdmin> createState() => _AllBookAdminState();
+  State<AllEbookAdmin> createState() => _AllEbookAdminState();
 }
 
-class _AllBookAdminState extends State<AllBookAdmin> {
+class _AllEbookAdminState extends State<AllEbookAdmin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          StringUtils.capitalize('Books'),
+          StringUtils.capitalize('Ebooks'),
           style: const TextStyle(
             color: Colors.black,
           ),
@@ -48,10 +48,10 @@ class _AllBookAdminState extends State<AllBookAdmin> {
                   ElevatedButton(
                       onPressed: () {
                         Get.to(
-                          const AddBookCategories(),
+                          const AddEbookCategories(),
                         );
                       },
-                      child: const Text('Book categories')),
+                      child: const Text('Ebook categories')),
                   const SizedBox(
                     width: 16,
                   ),
@@ -62,17 +62,17 @@ class _AllBookAdminState extends State<AllBookAdmin> {
                           minimumSize: const Size(130, 48)),
                       onPressed: () {
                         Get.to(
-                          const AddBookAdmin(),
+                          const AddEbookAdmin(),
                         );
                       },
-                      child: const Text('Add book')),
+                      child: const Text('Add ebook')),
                 ],
               ),
 
               const SizedBox(height: 24),
 
               Text(
-                'All book',
+                'All ebook',
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
@@ -85,8 +85,9 @@ class _AllBookAdminState extends State<AllBookAdmin> {
 
               //
               StreamBuilder<QuerySnapshot>(
-                  stream:
-                      FirebaseFirestore.instance.collection('book').snapshots(),
+                  stream: FirebaseFirestore.instance
+                      .collection('ebook')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Center(child: Text('Something wrong'));
@@ -99,7 +100,7 @@ class _AllBookAdminState extends State<AllBookAdmin> {
                     if (snapshot.data!.size == 0) {
                       return const Center(
                         child: Text(
-                          'No book Found!',
+                          'No ebook Found!',
                         ),
                       );
                     }
@@ -107,14 +108,13 @@ class _AllBookAdminState extends State<AllBookAdmin> {
                     var doc = snapshot.data!.docs;
                     //
                     return ListView.separated(
-                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         separatorBuilder: (_, __) => const SizedBox(height: 12),
                         itemCount: doc.length,
-                        // padding: const EdgeInsets.all(8),
                         itemBuilder: (context, index) {
                           //
-                          return BookCardFull(data: doc[index]);
+                          return EbookCardFull(data: doc[index]);
                         });
                   }),
             ],
@@ -128,8 +128,8 @@ class _AllBookAdminState extends State<AllBookAdmin> {
 enum Menu { edit, delete }
 
 //
-class BookCardFull extends StatefulWidget {
-  const BookCardFull({
+class EbookCardFull extends StatefulWidget {
+  const EbookCardFull({
     Key? key,
     required this.data,
   }) : super(key: key);
@@ -137,10 +137,10 @@ class BookCardFull extends StatefulWidget {
   final QueryDocumentSnapshot data;
 
   @override
-  State<BookCardFull> createState() => _BookCardFullState();
+  State<EbookCardFull> createState() => _EbookCardFullState();
 }
 
-class _BookCardFullState extends State<BookCardFull> {
+class _EbookCardFullState extends State<EbookCardFull> {
   String _selectedMenu = '';
 
   @override
@@ -152,13 +152,14 @@ class _BookCardFullState extends State<BookCardFull> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BookDetails(
+            builder: (context) => EbookDetails(
               bookId: widget.data.get('id'),
               title: widget.data.get('title'),
-              author: widget.data.get('author'),
-              stock: widget.data.get('stock'),
+              month: widget.data.get('month'),
+              year: widget.data.get('year'),
               description: widget.data.get('description'),
               image: widget.data.get('image'),
+              fileUrl: widget.data.get('fileUrl'),
               price: widget.data.get('price'),
               categories: widget.data.get('categories'),
             ),
@@ -179,8 +180,8 @@ class _BookCardFullState extends State<BookCardFull> {
               children: [
                 // image
                 Container(
-                  width: 110,
-                  height: 140,
+                  width: 125,
+                  height: 150,
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
                     borderRadius: const BorderRadius.only(
@@ -199,14 +200,18 @@ class _BookCardFullState extends State<BookCardFull> {
                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                   margin: const EdgeInsets.only(bottom: 0),
                   decoration: BoxDecoration(
-                      color: Colors.blueAccent.shade100,
+                      color: widget.data.get('price') == 0
+                          ? Colors.green
+                          : Colors.blueAccent.shade100,
                       borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(16),
                         bottomRight: Radius.circular(16),
                         bottomLeft: Radius.circular(8),
                       )),
                   child: Text(
-                    '${widget.data.get('price')} ${AppRepo.kTkSymbol}',
+                    widget.data.get('price') == 0
+                        ? 'Free'
+                        : '${widget.data.get('price')} ${AppRepo.kTkSymbol}',
                     style: GoogleFonts.hindSiliguri(
                         textStyle: Theme.of(context).textTheme.titleMedium,
                         // height: 1,
@@ -222,7 +227,7 @@ class _BookCardFullState extends State<BookCardFull> {
             Expanded(
               // flex: 4,
               child: Container(
-                height: 140,
+                height: 150,
                 padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,21 +270,27 @@ class _BookCardFullState extends State<BookCardFull> {
                                     padding: EdgeInsets.zero,
                                     // Callback that sets the selected popup menu item.
                                     onSelected: (Menu item) {
-                                      setState(() {
+                                      setState(() async {
                                         _selectedMenu = item.name;
                                         if (_selectedMenu == Menu.edit.name) {
-                                          Get.to(() =>
-                                              EditBookAdmin(data: widget.data));
+                                          Get.to(() => EditEbookAdmin(
+                                              data: widget.data));
                                         } else {
-                                          //
-                                          FirebaseStorage.instance
+                                          //delete image
+                                          await FirebaseStorage.instance
+                                              .refFromURL(
+                                                  widget.data.get('fileUrl'))
+                                              .delete();
+
+                                          //delete image
+                                          await FirebaseStorage.instance
                                               .refFromURL(
                                                   widget.data.get('image'))
                                               .delete()
                                               .whenComplete(() {
-                                            //
+                                            // delete info
                                             FirebaseFirestore.instance
-                                                .collection('book')
+                                                .collection('ebook')
                                                 .doc(widget.data.id)
                                                 .delete()
                                                 .whenComplete(() {
@@ -311,7 +322,7 @@ class _BookCardFullState extends State<BookCardFull> {
 
                         // month
                         Text(
-                          '${widget.data.get('author')}',
+                          '${widget.data.get('month')} - ${widget.data.get('year')}',
                           maxLines: 1,
                           style: GoogleFonts.hindSiliguri().copyWith(
                             color: Colors.black54,
@@ -327,59 +338,42 @@ class _BookCardFullState extends State<BookCardFull> {
                     ),
 
                     //
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          //
-                          Text(
-                            'Categories:  ',
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.hindSiliguri().copyWith(
-                              fontSize: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .fontSize,
-                              height: 1,
-                            ),
+                    Row(
+                      children: [
+                        //
+                        Text(
+                          'Categories:  ',
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.hindSiliguri().copyWith(
+                            fontSize: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .fontSize,
+                            height: 1,
                           ),
-                          //
+                        ),
+                        //
 
-                          Row(
-                            children: categories
-                                .map(
-                                  (category) => Text(
-                                    '$category, ',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.hindSiliguri().copyWith(
-                                      fontSize: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .fontSize,
-                                      height: 1,
-                                      color: Colors.purple,
-                                    ),
+                        Row(
+                          children: categories
+                              .map(
+                                (category) => Text(
+                                  '$category, ',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.hindSiliguri().copyWith(
+                                    fontSize: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .fontSize,
+                                    height: 1,
+                                    color: Colors.purple,
                                   ),
-                                )
-                                .toList(),
-                          ),
-
-                          // Text(
-                          //   '$categories',
-                          //   maxLines: 1,
-                          //   overflow: TextOverflow.ellipsis,
-                          //   style: GoogleFonts.hindSiliguri().copyWith(
-                          //     fontSize: Theme.of(context)
-                          //         .textTheme
-                          //         .bodyMedium!
-                          //         .fontSize,
-                          //     height: 1,
-                          //     color: Colors.purple,
-                          //   ),
-                          // ),
-                        ],
-                      ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ],
                     ),
 
                     // des
@@ -390,7 +384,7 @@ class _BookCardFullState extends State<BookCardFull> {
                       style: GoogleFonts.hindSiliguri().copyWith(
                         fontSize:
                             Theme.of(context).textTheme.labelMedium!.fontSize,
-                        height: 1,
+                        height: 1.3,
                       ),
                     ),
                   ],

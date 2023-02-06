@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -6,13 +5,12 @@ class OpenApp {
   //
   static withUrl(String path) async {
     var url = Uri.parse(path);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(
-        url,
-        mode: LaunchMode.externalApplication,
-      );
-    } else {
-      print('error');
+    //
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $url');
     }
   }
 
@@ -36,12 +34,12 @@ class OpenApp {
       Fluttertoast.showToast(msg: 'No number found');
     } else {
       var url = Uri(scheme: 'tel', path: number);
-      if (await canLaunchUrl(url)) {
-        await launchUrl(
-          url,
-        );
-      } else {
-        debugPrint('error');
+
+      if (!await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      )) {
+        throw Exception('Could not launch $url');
       }
     }
   }
@@ -52,10 +50,11 @@ class OpenApp {
       Fluttertoast.showToast(msg: 'No email found');
     } else {
       var url = Uri(scheme: 'mailto', path: email);
-      try {
-        await launchUrl(url);
-      } catch (e) {
-        debugPrint('error');
+      if (!await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      )) {
+        throw Exception('Could not launch $url');
       }
     }
   }

@@ -2,11 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:priyobanskhali/screens/auth/signup2.dart';
 import 'package:priyobanskhali/screens/dashboard.dart';
 
 import '../../utils/repo.dart';
 import 'forget_password.dart';
-import 'signup.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -191,7 +191,7 @@ class _LoginState extends State<Login> {
                 InkWell(
                   onTap: () {
                     //
-                    Get.to(const Signup());
+                    Get.to(const SignUp2());
                   },
                   child: Container(
                     padding:

@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '/utils/repo.dart';
-import 'components/book_details.dart';
+import 'ebook_details.dart';
 
-class SeeMore extends StatelessWidget {
-  const SeeMore({
+class SeeMoreEbook extends StatelessWidget {
+  const SeeMoreEbook({
     Key? key,
-    required this.category,
+    required this.categoryName,
   }) : super(key: key);
 
-  final String category;
+  final String categoryName;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          StringUtils.capitalize('$category books'),
+          StringUtils.capitalize(categoryName),
           style: const TextStyle(
             color: Colors.black,
           ),
@@ -29,8 +29,8 @@ class SeeMore extends StatelessWidget {
       //
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
-              .collection('books')
-              .where(category, isEqualTo: true)
+              .collection('ebook')
+              .where('categories', arrayContains: categoryName)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -44,7 +44,7 @@ class SeeMore extends StatelessWidget {
             if (snapshot.data!.size == 0) {
               return const Center(
                 child: Text(
-                  'No book Found!',
+                  'No ebook Found!',
                 ),
               );
             }
@@ -59,7 +59,7 @@ class SeeMore extends StatelessWidget {
                   var data = doc[index];
 
                   //
-                  return BookCardFull(data: data);
+                  return EbookCardFull(data: data);
                 });
           }),
     );
@@ -67,8 +67,8 @@ class SeeMore extends StatelessWidget {
 }
 
 //
-class BookCardFull extends StatelessWidget {
-  const BookCardFull({
+class EbookCardFull extends StatefulWidget {
+  const EbookCardFull({
     Key? key,
     required this.data,
   }) : super(key: key);
@@ -76,23 +76,29 @@ class BookCardFull extends StatelessWidget {
   final QueryDocumentSnapshot data;
 
   @override
+  State<EbookCardFull> createState() => _EbookCardFullState();
+}
+
+class _EbookCardFullState extends State<EbookCardFull> {
+  @override
   Widget build(BuildContext context) {
+    List categories = widget.data.get('categories');
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BookDetails(
-              bookId: data.get('id'),
-              title: data.get('title'),
-              month: data.get('month'),
-              year: data.get('year'),
-              description: data.get('description'),
-              image: data.get('image'),
-              fileUrl: data.get('fileUrl'),
-              price: data.get('price'),
-              recent: data.get('recent'),
-              popular: data.get('popular'),
+            builder: (context) => EbookDetails(
+              bookId: widget.data.get('id'),
+              title: widget.data.get('title'),
+              month: widget.data.get('month'),
+              year: widget.data.get('year'),
+              description: widget.data.get('description'),
+              image: widget.data.get('image'),
+              fileUrl: widget.data.get('fileUrl'),
+              price: widget.data.get('price'),
+              categories: widget.data.get('categories'),
             ),
           ),
         );
@@ -111,8 +117,8 @@ class BookCardFull extends StatelessWidget {
               children: [
                 // image
                 Container(
-                  width: 100,
-                  height: 125,
+                  width: 125,
+                  height: 150,
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
                     borderRadius: const BorderRadius.only(
@@ -121,7 +127,7 @@ class BookCardFull extends StatelessWidget {
                     image: DecorationImage(
                       fit: BoxFit.cover,
                       scale: 2,
-                      image: NetworkImage(data.get('image')),
+                      image: NetworkImage(widget.data.get('image')),
                     ),
                   ),
                 ),
@@ -131,7 +137,7 @@ class BookCardFull extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                   margin: const EdgeInsets.only(bottom: 0),
                   decoration: BoxDecoration(
-                      color: data.get('price') == 0
+                      color: widget.data.get('price') == 0
                           ? Colors.green
                           : Colors.blueAccent.shade100,
                       borderRadius: const BorderRadius.only(
@@ -140,9 +146,9 @@ class BookCardFull extends StatelessWidget {
                         bottomLeft: Radius.circular(8),
                       )),
                   child: Text(
-                    data.get('price') == 0
+                    widget.data.get('price') == 0
                         ? 'Free'
-                        : '${data.get('price')} ${AppRepo.kTkSymbol}',
+                        : '${widget.data.get('price')} ${AppRepo.kTkSymbol}',
                     style: GoogleFonts.hindSiliguri(
                         textStyle: Theme.of(context).textTheme.titleMedium,
                         // height: 1,
@@ -158,7 +164,7 @@ class BookCardFull extends StatelessWidget {
             Expanded(
               // flex: 4,
               child: Container(
-                height: 125,
+                height: 150,
                 padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,8 +175,9 @@ class BookCardFull extends StatelessWidget {
                       ///title
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        //title
                         Text(
-                          data.get('title'),
+                          widget.data.get('title'),
                           // style: ,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -185,7 +192,7 @@ class BookCardFull extends StatelessWidget {
 
                         // month
                         Text(
-                          '${data.get('month')} - ${data.get('year')}',
+                          '${widget.data.get('month')} - ${widget.data.get('year')}',
                           maxLines: 1,
                           style: GoogleFonts.hindSiliguri().copyWith(
                             color: Colors.black54,
@@ -200,15 +207,54 @@ class BookCardFull extends StatelessWidget {
                       ],
                     ),
 
+                    //
+                    Row(
+                      children: [
+                        //
+                        Text(
+                          'Categories:  ',
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.hindSiliguri().copyWith(
+                            fontSize: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .fontSize,
+                            height: 1,
+                          ),
+                        ),
+                        //
+
+                        Row(
+                          children: categories
+                              .map(
+                                (category) => Text(
+                                  '$category, ',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.hindSiliguri().copyWith(
+                                    fontSize: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .fontSize,
+                                    height: 1,
+                                    color: Colors.purple,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ],
+                    ),
+
                     // des
                     Text(
-                      '${data.get('description')}',
+                      '${widget.data.get('description')}',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.hindSiliguri().copyWith(
                         fontSize:
                             Theme.of(context).textTheme.labelMedium!.fontSize,
-                        height: 1,
+                        height: 1.3,
                       ),
                     ),
                   ],
