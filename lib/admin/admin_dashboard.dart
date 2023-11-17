@@ -63,7 +63,7 @@ class AdminDashboard extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
               leading: const Icon(
-                Icons.near_me_outlined,
+                Icons.book_outlined,
                 size: 48,
               ),
               title: Text('Blogs', style: GoogleFonts.hindSiliguri()),

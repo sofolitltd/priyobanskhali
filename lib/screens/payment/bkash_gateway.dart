@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,20 @@ class BkashGateway {
 
     final flutterBkash = FlutterBkash(bkashCredentials: credentials);
 
+    // tranId
+    String generateInvoiceNumber() {
+      // Create a random number generator.
+      final Random random = Random();
+
+      // Generate a random number in the range 10000 to 99999.
+      final int randomNumber = random.nextInt(90000) + 10000;
+
+      // Convert the random number to a string.
+      final String random5DigitNumber = randomNumber.toString();
+
+      // Return the random 5-digit number.
+      return random5DigitNumber.toString();
+    }
     /// Goto BkashPayment page & pass the params
     try {
       /// call pay method to pay without agreement as parameter pass the context, amount, merchantInvoiceNumber
@@ -37,8 +53,9 @@ class BkashGateway {
         context: context,
         amount: 1,
         // need it double type
-        payerReference: "01619777283",
-        merchantInvoiceNumber: "tranId",
+        // payerReference: "01619777283",
+        payerReference: "00011122233",
+        merchantInvoiceNumber: generateInvoiceNumber(),
       );
 
       /// if the payment is success then show the log

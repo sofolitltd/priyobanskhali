@@ -43,7 +43,7 @@ class _DashboardState extends State<Dashboard> {
           ),
           //
           BottomNavigationBarItem(
-            icon: Icon(Icons.pages_outlined),
+            icon: Icon(Icons.book_outlined),
             label: 'Blog',
           ),
 
