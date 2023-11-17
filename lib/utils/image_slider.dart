@@ -47,7 +47,15 @@ class _ImageSliderState extends State<ImageSlider> {
             controller: _pageController,
             itemCount: widget.imageUrls.length,
             itemBuilder: (context, index) {
-              return Image.network(widget.imageUrls[index]);
+              return Container(
+                  decoration: BoxDecoration(
+                    // color: Colors.blue.shade50,
+                    image: DecorationImage(
+                      image: NetworkImage(widget.imageUrls[index]),
+                    )
+                  ),
+                  // child: Image.network(widget.imageUrls[index]),
+              );
             },
           ),
         ),

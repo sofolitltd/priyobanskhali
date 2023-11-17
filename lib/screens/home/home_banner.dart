@@ -39,7 +39,7 @@ class _HomeBannerState extends State<HomeBanner> {
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                color: Colors.blue.shade100,
                 borderRadius: BorderRadius.circular(8),
               ),
             );

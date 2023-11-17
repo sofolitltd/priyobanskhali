@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:priyobanskhali/admin/emergency/emergency_admin.dart';
+import 'package:priyobanskhali/admin/blog/blog_screen.dart';
+import '/admin/emergency/emergency_admin.dart';
 
 import '/admin/admins/admin_list.dart';
 import '/admin/ebook/all_ebook_admin.dart';
@@ -11,7 +12,7 @@ import 'book/all_book_admin.dart';
 import 'orders/orders.dart';
 
 class AdminDashboard extends StatelessWidget {
-  const AdminDashboard({Key? key}) : super(key: key);
+  const AdminDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +48,30 @@ class AdminDashboard extends StatelessWidget {
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const Orders()));
+              },
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          // blog
+          Card(
+            elevation: 0,
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              leading: const Icon(
+                Icons.near_me_outlined,
+                size: 48,
+              ),
+              title: Text('Blogs', style: GoogleFonts.hindSiliguri()),
+              subtitle: Text('Add, edit, delete - blogs',
+                  style: GoogleFonts.hindSiliguri()),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const BlogScreen()));
               },
             ),
           ),

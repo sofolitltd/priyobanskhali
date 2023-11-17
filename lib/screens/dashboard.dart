@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:priyobanskhali/screens/profile/profile.dart';
-import 'package:priyobanskhali/screens/shop/shop.dart';
+import '/screens/profile/profile.dart';
+import '/screens/shop/shop.dart';
 
+import 'blog/blog_screen.dart';
 import 'home/home.dart';
 import 'shelf/shelf.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({Key? key}) : super(key: key);
+  const Dashboard({super.key});
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -14,8 +15,8 @@ class Dashboard extends StatefulWidget {
 
 List screenList = [
   const Home(),
+  const BlogScreen(),
   const Shop(),
-  const Shelf(),
   const Profile(),
 ];
 
@@ -40,15 +41,17 @@ class _DashboardState extends State<Dashboard> {
             icon: Icon(Icons.home_outlined),
             label: 'Home',
           ),
+          //
+          BottomNavigationBarItem(
+            icon: Icon(Icons.pages_outlined),
+            label: 'Blog',
+          ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_bag_outlined),
             label: 'Shop',
           ),
-          //
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book_outlined),
-            label: 'Shelf',
-          ),
+
           //
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),

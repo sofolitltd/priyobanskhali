@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../admin/admin_dashboard.dart';
 import '../auth/splash.dart';
+import '../shelf/shelf.dart';
 import 'app_settings.dart';
 import 'edit_profile.dart';
 
@@ -70,7 +71,7 @@ class Profile extends StatelessWidget {
 
 // card
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({Key? key, required this.data}) : super(key: key);
+  const ProfileCard({super.key, required this.data});
   final DocumentSnapshot data;
 
   @override
@@ -251,6 +252,46 @@ class ProfileCard extends StatelessWidget {
                       ),
                   ],
                 ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // shelf title
+            Text(
+              'Shelf',
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+            ),
+
+            const SizedBox(height: 8),
+
+            // shelf
+            Card(
+              margin: EdgeInsets.zero,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              child: ListTile(
+                trailing: const Icon(Icons.arrow_right_alt_outlined),
+                leading:  CircleAvatar(
+                  backgroundColor: Colors.green.shade900.withOpacity(.8),
+                  child: const Icon(
+                    (Icons.book_outlined),
+                    color: Colors.white,
+                  ),
+                ),
+                title: Text(
+                  'Book Shelf',
+                  // textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+                subtitle: const Text('Books that you already have.'),
+                onTap: () {
+                  Get.to(const Shelf());
+                },
               ),
             ),
 
