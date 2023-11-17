@@ -34,7 +34,6 @@ dependencies:
   http: ^1.1.0
   firebase_messaging: ^14.6.1
   flutter_local_notifications: ^16.1.0
-  carousel_slider: ^4.2.1
   flutter_bkash: ^0.2.0
 
 

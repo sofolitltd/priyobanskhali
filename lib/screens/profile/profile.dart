@@ -11,7 +11,7 @@ import 'app_settings.dart';
 import 'edit_profile.dart';
 
 class Profile extends StatelessWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
