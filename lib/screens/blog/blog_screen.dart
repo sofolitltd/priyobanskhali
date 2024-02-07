@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import '/models/blog_model.dart';
 import '/widgets/blog_card.dart';
-
 
 class BlogScreen extends StatelessWidget {
   const BlogScreen({super.key});
@@ -13,11 +12,14 @@ class BlogScreen extends StatelessWidget {
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
+      // backgroundColor: Colors.red,
       appBar: AppBar(
         centerTitle: false,
-        title: const Text('Blog', style: TextStyle(color: Colors.black),),
+        title: const Text(
+          'Blog',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
-
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('blog')
@@ -44,8 +46,7 @@ class BlogScreen extends StatelessWidget {
               horizontal: size.width > 1000 ? size.width * .2 : 12,
               vertical: 12,
             ),
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: 16),
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
             itemCount: data.length,
             itemBuilder: (context, index) {
               BlogModel blog = BlogModel.fromJson(

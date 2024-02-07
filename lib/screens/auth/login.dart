@@ -66,7 +66,10 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
               child: Text(
                 AppRepo.kEmailText,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: Colors.black54),
               ),
             ),
 
@@ -74,12 +77,14 @@ class _LoginState extends State<Login> {
             TextFormField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              style: Theme.of(context).textTheme.subtitle1,
-              decoration: const InputDecoration(
+              style: Theme.of(context).textTheme.titleMedium,
+              decoration: InputDecoration(
                 hintText: AppRepo.kEmailHint,
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                border: OutlineInputBorder(),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+
                 // suffixIcon: regExp.hasMatch(_emailController.text.trim())
                 //     ? const Icon(Icons.check, color: Colors.green)
                 //     : const Icon(Icons.check),
@@ -101,20 +106,24 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
               child: Text(
                 AppRepo.kPasswordText,
-                style: Theme.of(context).textTheme.titleSmall,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: Colors.black54),
               ),
             ),
 
             //password
             TextFormField(
               controller: _passwordController,
-              style: Theme.of(context).textTheme.subtitle1,
+              style: Theme.of(context).textTheme.titleMedium,
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
                 hintText: AppRepo.kPasswordHint,
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                border: const OutlineInputBorder(),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                 suffixIcon: IconButton(
                   onPressed: () {
                     setState(() => _isObscure = !_isObscure);
@@ -199,6 +208,7 @@ class _LoginState extends State<Login> {
                     child: const Text(
                       AppRepo.kCreateAccountText,
                       style: TextStyle(
+                        fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
                       ),
                     ),

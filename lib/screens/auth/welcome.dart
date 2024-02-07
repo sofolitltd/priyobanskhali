@@ -6,7 +6,7 @@ import '../../utils/repo.dart';
 import 'login.dart';
 
 class Welcome extends StatelessWidget {
-  const Welcome({Key? key}) : super(key: key);
+  const Welcome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +43,13 @@ class Welcome extends StatelessWidget {
 
             Column(
               children: [
-                const Text(AppRepo.kAlreadyAccText),
-                const SizedBox(height: 4),
+                const Text(
+                  AppRepo.kAlreadyAccText,
+                  style: TextStyle(
+                    color: Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 8),
 
                 //log in
                 SizedBox(
@@ -57,10 +62,15 @@ class Welcome extends StatelessWidget {
                       child: const Text('Log in')),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
 
-                const Text(AppRepo.kNoAccountText),
-                const SizedBox(height: 4),
+                const Text(
+                  AppRepo.kNoAccountText,
+                  style: TextStyle(
+                    color: Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 8),
 
                 //create new account
                 SizedBox(

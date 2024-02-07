@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/route_manager.dart';
-import '/utils/date_time_formatter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../models/blog_model.dart';
 import '../screens/blog/blog_details.dart';
+import '/utils/date_time_formatter.dart';
 
 class BlogCardAdmin extends StatelessWidget {
   const BlogCardAdmin({
@@ -53,33 +53,43 @@ class BlogCardAdmin extends StatelessWidget {
             Expanded(
               child: SizedBox(
                 height: 100,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
+                child: Stack(
+                  alignment: Alignment.bottomRight,
                   children: [
-                    const SizedBox(height: 4),
-                    Text(
-                      DTFormatter.dateFormat(blog.date),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                            wordSpacing: 1.2,
-                            // height: 1.3,
-                            letterSpacing: .2,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.blueGrey,
-                          ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      blog.title,
-                      maxLines: 6,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: .4,
-                            height: 1.2,
-                          ),
+                    //
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        const SizedBox(height: 4),
+                        Text(
+                          DTFormatter.dateFormat(blog.date),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.labelMedium!.copyWith(
+                                    wordSpacing: 1.2,
+                                    // height: 1.3,
+                                    letterSpacing: .2,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.blueGrey,
+                                  ),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          blog.title,
+                          maxLines: 6,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: .4,
+                                    height: 1.2,
+                                    fontFamily:
+                                        GoogleFonts.hindSiliguri().fontFamily,
+                                  ),
+                        ),
+                      ],
                     ),
 
                     //delete,  edit
@@ -103,13 +113,12 @@ class BlogCardAdmin extends StatelessWidget {
                                   .delete()
                                   .whenComplete(
                                     () => Fluttertoast.showToast(
-                                    msg:
-                                    'Delete successfully'),
-                              );
+                                        msg: 'Delete successfully'),
+                                  );
                             },
                             icon: const Icon(
                               Icons.delete,
-                              size: 20,
+                              size: 18,
                             ),
                           ),
                         ),

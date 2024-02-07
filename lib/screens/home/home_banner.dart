@@ -1,10 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../../utils/image_slider.dart';
-import 'home_banner_details.dart';
 
 class HomeBanner extends StatefulWidget {
   const HomeBanner({super.key});
@@ -35,11 +32,11 @@ class _HomeBannerState extends State<HomeBanner> {
 
           if (data.isEmpty) {
             return Container(
-              height: 200,
+              height: 180,
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.blue.shade100,
+                color: Colors.white54,
                 borderRadius: BorderRadius.circular(8),
               ),
             );
@@ -51,7 +48,6 @@ class _HomeBannerState extends State<HomeBanner> {
             imgList.add(img);
           }
           return ImageSlider(imageUrls: imgList);
-
         },
       ),
     );

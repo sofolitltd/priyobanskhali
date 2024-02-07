@@ -8,9 +8,9 @@ import 'ebook_details.dart';
 
 class SeeMoreEbook extends StatelessWidget {
   const SeeMoreEbook({
-    Key? key,
+    super.key,
     required this.categoryName,
-  }) : super(key: key);
+  });
 
   final String categoryName;
 
@@ -208,18 +208,29 @@ class _EbookCardFullState extends State<EbookCardFull> {
                     ),
 
                     //
+                    Text(
+                      '${widget.data.get('description')}',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.hindSiliguri().copyWith(
+                        fontSize:
+                            Theme.of(context).textTheme.labelMedium!.fontSize,
+                        height: 1.4,
+                      ),
+                    ),
+
+                    // des
                     Row(
                       children: [
                         //
                         Text(
                           'Categories:  ',
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.hindSiliguri().copyWith(
+                          style: GoogleFonts.poppins().copyWith(
                             fontSize: Theme.of(context)
                                 .textTheme
                                 .labelMedium!
                                 .fontSize,
-                            height: 1,
                           ),
                         ),
                         //
@@ -227,35 +238,32 @@ class _EbookCardFullState extends State<EbookCardFull> {
                         Row(
                           children: categories
                               .map(
-                                (category) => Text(
-                                  '$category, ',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.hindSiliguri().copyWith(
-                                    fontSize: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .fontSize,
-                                    height: 1,
-                                    color: Colors.purple,
+                                (category) => Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 4),
+                                  margin: const EdgeInsets.only(right: 4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: Colors.black12.withOpacity(.05),
+                                  ),
+                                  child: Text(
+                                    '$category',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.hindSiliguri().copyWith(
+                                      fontSize: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .fontSize,
+                                      height: 1,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
                               )
                               .toList(),
                         ),
                       ],
-                    ),
-
-                    // des
-                    Text(
-                      '${widget.data.get('description')}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.hindSiliguri().copyWith(
-                        fontSize:
-                            Theme.of(context).textTheme.labelMedium!.fontSize,
-                        height: 1.3,
-                      ),
                     ),
                   ],
                 ),

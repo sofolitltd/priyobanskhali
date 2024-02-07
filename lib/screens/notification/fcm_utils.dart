@@ -52,7 +52,7 @@ class FCMUtils {
       // If `onMessage` is triggered with a notification, construct our own
       // local notification to show to users using the created channel.
       if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin!.show(
+        flutterLocalNotificationsPlugin?.show(
             notification.hashCode,
             notification.title,
             notification.body,

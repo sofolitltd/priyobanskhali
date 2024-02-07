@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageSlider extends StatefulWidget {
@@ -25,8 +26,18 @@ class _ImageSliderState extends State<ImageSlider> {
         if (_currentIndex >= widget.imageUrls.length) {
           _currentIndex = 0;
         }
-        _pageController.animateToPage(_currentIndex,
-            duration: const Duration(milliseconds: 250), curve: Curves.easeInOut);
+        _pageController.animateToPage(
+          _currentIndex,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.fastOutSlowIn,
+        );
+      });
+    });
+
+    // Listen for page changes using addListener
+    _pageController.addListener(() {
+      setState(() {
+        _currentIndex = _pageController.page!.toInt();
       });
     });
   }
@@ -48,31 +59,41 @@ class _ImageSliderState extends State<ImageSlider> {
             itemCount: widget.imageUrls.length,
             itemBuilder: (context, index) {
               return Container(
-                  decoration: BoxDecoration(
-                    // color: Colors.blue.shade50,
-                    image: DecorationImage(
-                      image: NetworkImage(widget.imageUrls[index]),
-                    )
+                decoration: BoxDecoration(
+                  color: Colors.white54,
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                        widget.imageUrls[index]), // Use cached_network_image
+                    fit: BoxFit.contain,
                   ),
-                  // child: Image.network(widget.imageUrls[index]),
+                ),
+                // child: Image.network(widget.imageUrls[index]),
               );
             },
           ),
         ),
+        const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             for (int i = 0; i < widget.imageUrls.length; i++)
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                margin: const EdgeInsets.all(5),
-                width: _currentIndex == i ? 24 : 10,
-                height: _currentIndex == i ? 12 : 10,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(32),
-                  color: _currentIndex == i
-                      ? const Color(0xff1A6642)
-                      : Colors.grey,
+              GestureDetector(
+                onTap: () {
+                  _pageController.animateToPage(i,
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut);
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.all(5),
+                  width: _currentIndex == i ? 24 : 10,
+                  height: _currentIndex == i ? 12 : 10,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(32),
+                    color: _currentIndex == i
+                        ? const Color(0xff1A6642)
+                        : Colors.grey,
+                  ),
                 ),
               ),
           ],
@@ -81,4 +102,3 @@ class _ImageSliderState extends State<ImageSlider> {
     );
   }
 }
-

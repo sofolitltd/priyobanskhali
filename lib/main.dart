@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
       title: AppRepo.kAppName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+          useMaterial3: false,
           canvasColor: const Color(0xfff4f7fa),
           // canvasColor: Colors.grey,
           primaryColor: const Color(0xff2849a0),
@@ -50,12 +51,16 @@ class MyApp extends StatelessWidget {
           ),
           // cardColor: Colors.blue.shade50,
           fontFamily: GoogleFonts.poppins().fontFamily,
+
+          // elevated btn
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppStyle.kPrimaryColor,
+              foregroundColor: Colors.white,
               minimumSize: const Size(48, 48),
               textStyle: GoogleFonts.poppins().copyWith(
                 fontWeight: FontWeight.w600,
+                letterSpacing: .4,
               ),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
@@ -65,8 +70,9 @@ class MyApp extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.black,
               minimumSize: const Size(48, 48),
-              textStyle: GoogleFonts.roboto().copyWith(
+              textStyle: GoogleFonts.poppins().copyWith(
                 fontWeight: FontWeight.w600,
+                letterSpacing: .4,
                 color: Colors.black,
               ),
               shape: RoundedRectangleBorder(

@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../models/blog_model.dart';
 
-
 class AddBlog extends StatefulWidget {
   const AddBlog({super.key});
 
@@ -38,7 +37,10 @@ class _AddBlogState extends State<AddBlog> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Blog'),
+        title: const Text(
+          'Add Blog',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
 
       //
@@ -72,7 +74,7 @@ class _AddBlogState extends State<AddBlog> {
             TextFormField(
               controller: _contentController,
               minLines: 3,
-              maxLines: 10,
+              maxLines: 16,
               decoration: const InputDecoration(
                 hintText: 'Content',
                 label: Text('Content'),
@@ -207,6 +209,7 @@ class _AddBlogState extends State<AddBlog> {
     }
 
     BlogModel blog = BlogModel(
+      blogId: uid,
       title: title,
       content: content,
       date: Timestamp.fromDate(DateTime.now()),

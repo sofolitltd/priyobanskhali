@@ -69,9 +69,9 @@ class SeeMoreBook extends StatelessWidget {
 //
 class BookCardFull extends StatefulWidget {
   const BookCardFull({
-    Key? key,
+    super.key,
     required this.data,
-  }) : super(key: key);
+  });
 
   final QueryDocumentSnapshot data;
 
@@ -204,20 +204,32 @@ class _BookCardFullState extends State<BookCardFull> {
                     ),
 
                     //
+                    Text(
+                      '${widget.data.get('description')}',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.hindSiliguri().copyWith(
+                        fontSize:
+                            Theme.of(context).textTheme.labelMedium!.fontSize,
+                        height: 1.4,
+                      ),
+                    ),
+
+                    // des
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           //
                           Text(
                             'Categories:  ',
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.hindSiliguri().copyWith(
+                            style: GoogleFonts.poppins().copyWith(
                               fontSize: Theme.of(context)
                                   .textTheme
                                   .labelMedium!
                                   .fontSize,
-                              height: 1,
                             ),
                           ),
                           //
@@ -225,49 +237,33 @@ class _BookCardFullState extends State<BookCardFull> {
                           Row(
                             children: categories
                                 .map(
-                                  (category) => Text(
-                                    '$category, ',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.hindSiliguri().copyWith(
-                                      fontSize: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .fontSize,
-                                      height: 1,
-                                      color: Colors.purple,
+                                  (category) => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 2, horizontal: 4),
+                                    margin: const EdgeInsets.only(right: 8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: Colors.black12.withOpacity(.05),
+                                    ),
+                                    child: Text(
+                                      '$category',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style:
+                                          GoogleFonts.hindSiliguri().copyWith(
+                                        fontSize: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .fontSize,
+                                        height: 1,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                   ),
                                 )
                                 .toList(),
                           ),
-
-                          // Text(
-                          //   '$categories',
-                          //   maxLines: 1,
-                          //   overflow: TextOverflow.ellipsis,
-                          //   style: GoogleFonts.hindSiliguri().copyWith(
-                          //     fontSize: Theme.of(context)
-                          //         .textTheme
-                          //         .bodyMedium!
-                          //         .fontSize,
-                          //     height: 1,
-                          //     color: Colors.purple,
-                          //   ),
-                          // ),
                         ],
-                      ),
-                    ),
-
-                    // des
-                    Text(
-                      '${widget.data.get('description')}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.hindSiliguri().copyWith(
-                        fontSize:
-                            Theme.of(context).textTheme.labelMedium!.fontSize,
-                        height: 1,
                       ),
                     ),
                   ],
