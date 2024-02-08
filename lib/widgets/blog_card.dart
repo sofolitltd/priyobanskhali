@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -54,7 +57,7 @@ class BlogCard extends StatelessWidget {
               ),
               padding: const EdgeInsets.all(4),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             Expanded(
               child: SizedBox(
                 height: 100,
@@ -91,37 +94,13 @@ class BlogCard extends StatelessWidget {
                     const Spacer(),
 
                     //
-                    // likeCommentShare(),
 
                     Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // //
-                        // Container(
-                        //   padding: const EdgeInsets.symmetric(
-                        //     vertical: 5,
-                        //     horizontal: 8,
-                        //   ),
-                        //   decoration: BoxDecoration(
-                        //     color: Colors.blueAccent.shade100.withOpacity(.2),
-                        //     borderRadius: BorderRadius.circular(4),
-                        //   ),
-                        //   child: const Row(
-                        //     children: [
-                        //       Icon(
-                        //         Icons.favorite_outline_rounded,
-                        //         size: 16,
-                        //       ),
-                        //       SizedBox(width: 8),
-                        //       Text(
-                        //         "1 ",
-                        //         style: TextStyle(fontSize: 12),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        //
-                        // const SizedBox(width: 8),
+                        LikeCounter(blogId: blog.blogId),
+
+                        const SizedBox(width: 8),
 
                         //
                         Material(
@@ -148,9 +127,9 @@ class BlogCard extends StatelessWidget {
                                     Icons.comment_bank_outlined,
                                     size: 16,
                                   ),
-                                  SizedBox(width: 8),
+                                  SizedBox(width: 4),
                                   Text(
-                                    "Comments",
+                                    "Comment",
                                     style: TextStyle(
                                       fontSize: 12,
                                     ),
@@ -191,22 +170,11 @@ class BlogCard extends StatelessWidget {
                             child: const Padding(
                               padding: EdgeInsets.symmetric(
                                 vertical: 5,
-                                horizontal: 12,
+                                horizontal: 10,
                               ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.share,
-                                    size: 16,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    "Share",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
+                              child: Icon(
+                                Icons.share,
+                                size: 16,
                               ),
                             ),
                           ),
@@ -224,93 +192,101 @@ class BlogCard extends StatelessWidget {
   }
 }
 
-Widget likeCommentShare() {
-  //
-  return Row(
-    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      // //
-      // Container(
-      //   padding: const EdgeInsets.symmetric(
-      //     vertical: 5,
-      //     horizontal: 8,
-      //   ),
-      //   decoration: BoxDecoration(
-      //     color: Colors.blueAccent.shade100.withOpacity(.2),
-      //     borderRadius: BorderRadius.circular(4),
-      //   ),
-      //   child: const Row(
-      //     children: [
-      //       Icon(
-      //         Icons.favorite_outline_rounded,
-      //         size: 16,
-      //       ),
-      //       SizedBox(width: 8),
-      //       Text(
-      //         "1 ",
-      //         style: TextStyle(fontSize: 12),
-      //       ),
-      //     ],
-      //   ),
-      // ),
-      //
-      // const SizedBox(width: 8),
+//
+class LikeCounter extends StatefulWidget {
+  const LikeCounter({super.key, required this.blogId});
 
-      //
-      Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 5,
-          horizontal: 8,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.blueAccent.shade100.withOpacity(.2),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: const Row(
-          children: [
-            Icon(
-              Icons.comment_bank_outlined,
-              size: 16,
-            ),
-            SizedBox(width: 8),
-            Text(
-              "Comments",
-              style: TextStyle(
-                fontSize: 12,
-              ),
-            ),
-          ],
+  final String blogId;
+
+  @override
+  State<LikeCounter> createState() => _LikeCounterState();
+}
+
+class _LikeCounterState extends State<LikeCounter> {
+  late String _userId;
+  late CollectionReference _likesRef;
+
+  @override
+  void initState() {
+    super.initState();
+    _userId = FirebaseAuth.instance.currentUser!.uid;
+    _likesRef = FirebaseFirestore.instance
+        .collection('blog')
+        .doc(widget.blogId)
+        .collection('likes');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black12.withOpacity(.05),
+      borderRadius: BorderRadius.circular(5),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: _likesRef.snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError ||
+                snapshot.connectionState == ConnectionState.waiting) {
+              return _buildLikeButton(0, false);
+            }
+
+            final data = snapshot.data!.docs;
+            final likeCount = data.length;
+            final userLiked = data.any((doc) => doc.id == _userId);
+
+            return StreamBuilder<DocumentSnapshot>(
+              stream: _likesRef.doc(_userId).snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError ||
+                    snapshot.connectionState == ConnectionState.waiting) {
+                  return _buildLikeButton(likeCount, userLiked);
+                }
+
+                final userData = snapshot.data!;
+                final userExists = userData.exists;
+
+                return _buildLikeButton(likeCount, userLiked, userExists);
+              },
+            );
+          },
         ),
       ),
+    );
+  }
 
-      const SizedBox(width: 8),
-
-      //
-      Material(
-        color: Colors.blueAccent.shade100.withOpacity(.2),
-        borderRadius: BorderRadius.circular(4),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(4),
-          onTap: () {
-            //
-            Share.share("");
-          },
-          child: const Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 5,
-              horizontal: 12,
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.share,
-                  size: 16,
-                ),
-              ],
+  Widget _buildLikeButton(int likeCount, bool userLiked,
+      [bool userExists = true]) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 40),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () async {
+              if (userLiked) {
+                Fluttertoast.showToast(msg: 'Unlike');
+                await _likesRef.doc(_userId).delete();
+              } else {
+                Fluttertoast.showToast(msg: 'Like');
+                await _likesRef.doc(_userId).set({'uid': _userId});
+              }
+            },
+            child: Icon(
+              userLiked ? Icons.favorite : Icons.favorite_outline_rounded,
+              size: 16,
+              color: userLiked ? Colors.red : Colors.black,
             ),
           ),
-        ),
+          const SizedBox(width: 4),
+          Container(
+              constraints: const BoxConstraints(minWidth: 24),
+              color: Colors.transparent,
+              child: Text(
+                '${likeCount}00',
+                textAlign: TextAlign.center,
+              )),
+        ],
       ),
-    ],
-  );
+    );
+  }
 }
