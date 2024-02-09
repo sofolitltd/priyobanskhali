@@ -12,6 +12,8 @@ import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
+import '../../notification/fcm_sender.dart';
+
 class AddBookAdmin extends StatefulWidget {
   const AddBookAdmin({super.key});
 
@@ -278,6 +280,17 @@ class _AddBookAdminState extends State<AddBookAdmin> {
                 } else if (_formState.currentState!.validate()) {
                   // fire image
                   await uploadImageToFireStore();
+
+                  //
+                  FCMSender().sendPushMessage(
+                    topic: 'book',
+                    title: _bookTitleController.text.trim(),
+                    body: _bookDescriptionController.text
+                        .trim()
+                        .characters
+                        .take(150)
+                        .toString(),
+                  );
                 }
               },
               label: const Text('Save')),

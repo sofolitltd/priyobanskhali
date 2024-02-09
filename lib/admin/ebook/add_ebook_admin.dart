@@ -13,6 +13,8 @@ import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
+import '../../notification/fcm_sender.dart';
+
 class AddEbookAdmin extends StatefulWidget {
   const AddEbookAdmin({super.key});
 
@@ -310,6 +312,16 @@ class _AddEbookAdminState extends State<AddEbookAdmin> {
                     await uploadFileToFireStore(
                         fileUrl: downloadedUrl, name: fileName);
 
+                    //
+                    FCMSender().sendPushMessage(
+                      topic: 'ebook',
+                      title: _bookTitleController.text.trim(),
+                      body: _bookDescriptionController.text
+                          .trim()
+                          .characters
+                          .take(150)
+                          .toString(),
+                    );
                     //
                     if (!context.mounted) return;
                     Navigator.pop(this.context);

@@ -1,21 +1,15 @@
-import 'dart:developer';
-
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'database/firebase_options.dart';
+import 'notification/fcm_api.dart';
 import 'screens/auth/splash.dart';
 import 'utils/repo.dart';
 import 'utils/style.dart';
 
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  log("Handling a background message: ${message.messageId}");
-}
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   // init firebase
@@ -23,7 +17,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // await FCMUtils().initialization();
+
+  // fcm
+  await FCMApi().initNotifications();
+
   // run main app
   runApp(const MyApp());
 }

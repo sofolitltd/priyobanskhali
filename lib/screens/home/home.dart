@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-import 'package:priyobanskhali/screens/home/search/search_screen.dart';
 
 import '/screens/home/book_section.dart';
+import '/screens/home/search/search_screen.dart';
 import '/utils/repo.dart';
 import 'ebook_section.dart';
 import 'explore_more.dart';
@@ -25,14 +25,6 @@ class Home extends StatelessWidget {
 
         //todo: add notification
         actions: [
-          // IconButton(
-          //   onPressed: () {
-          //     Get.to(() => const NotificationScreen());
-          //   },
-          //   icon: const Icon(Icons.notifications_outlined),
-          // ),
-          const SizedBox(width: 8),
-
           IconButton(
             onPressed: () {
               Get.to(() => const SearchScreen());
@@ -42,6 +34,12 @@ class Home extends StatelessWidget {
               size: 20,
             ),
           ),
+          // IconButton(
+          //   onPressed: () {
+          //     Get.to(() => const NotificationScreen());
+          //   },
+          //   icon: const Icon(Icons.notifications_outlined, size: 20),
+          // ),
           const SizedBox(width: 8),
         ],
       ),
