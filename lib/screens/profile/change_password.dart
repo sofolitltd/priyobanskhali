@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../utils/repo.dart';
 
 class ChangePassword extends StatefulWidget {
-  const ChangePassword({Key? key}) : super(key: key);
+  const ChangePassword({super.key});
 
   @override
   State<ChangePassword> createState() => _ChangePasswordState();
@@ -172,7 +174,7 @@ class _ChangePasswordState extends State<ChangePassword> {
       loginWithEmail(
           email: currentUser.email.toString(), password: newPassword);
     }).catchError((error) {
-      print(error.toString());
+      log(error.toString());
     });
   }
 

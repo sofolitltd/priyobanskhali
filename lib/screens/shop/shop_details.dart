@@ -6,13 +6,13 @@ import '/utils/repo.dart';
 
 class ShopDetails extends StatefulWidget {
   const ShopDetails({
-    Key? key,
+    super.key,
     required this.title,
     required this.image,
     required this.price,
     required this.stock,
     required this.size,
-  }) : super(key: key);
+  });
 
   final String title;
   final String image;

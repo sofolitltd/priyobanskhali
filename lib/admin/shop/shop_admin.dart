@@ -7,14 +7,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/admin/shop/add_product.dart';
 import '../../screens/shop/shop_details.dart';
+import '/admin/shop/add_product.dart';
 import 'edit_product.dart';
 
 enum Menu { edit, delete }
 
 class ShopAdmin extends StatelessWidget {
-  const ShopAdmin({Key? key}) : super(key: key);
+  const ShopAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +101,7 @@ class ShopAdmin extends StatelessWidget {
 
 //
 class ProductCard extends StatefulWidget {
-  const ProductCard({Key? key, required this.data}) : super(key: key);
+  const ProductCard({super.key, required this.data});
   final List data;
 
   @override

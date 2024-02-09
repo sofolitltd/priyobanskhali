@@ -13,9 +13,7 @@ import 'add_ebook_categories.dart';
 import 'edit_ebook_admin.dart';
 
 class AllEbookAdmin extends StatefulWidget {
-  const AllEbookAdmin({
-    Key? key,
-  }) : super(key: key);
+  const AllEbookAdmin({super.key});
 
   @override
   State<AllEbookAdmin> createState() => _AllEbookAdminState();
@@ -130,9 +128,9 @@ enum Menu { edit, delete }
 //
 class EbookCardFull extends StatefulWidget {
   const EbookCardFull({
-    Key? key,
+    super.key,
     required this.data,
-  }) : super(key: key);
+  });
 
   final QueryDocumentSnapshot data;
 

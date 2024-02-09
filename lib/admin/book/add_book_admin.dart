@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +13,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
 class AddBookAdmin extends StatefulWidget {
-  const AddBookAdmin({key}) : super(key: key);
+  const AddBookAdmin({super.key});
 
   @override
   State<AddBookAdmin> createState() => _AddBookAdminState();
@@ -42,7 +43,7 @@ class _AddBookAdminState extends State<AddBookAdmin> {
         var category = e.get('category');
         categories.add(category);
       }
-      print('cat: $categories');
+      log('cat: $categories');
       setState(() {});
     });
   }

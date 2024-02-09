@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +13,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
 class EditEbookAdmin extends StatefulWidget {
-  const EditEbookAdmin({key, required this.data}) : super(key: key);
+  const EditEbookAdmin({super.key, required this.data});
 
   final QueryDocumentSnapshot data;
 
@@ -45,7 +46,7 @@ class _EditEbookAdminState extends State<EditEbookAdmin> {
         var category = e.get('category');
         categories.add(category);
       }
-      print('cat: $categories');
+      log('cat: $categories');
       setState(() {});
     });
   }
@@ -326,6 +327,7 @@ class _EditEbookAdminState extends State<EditEbookAdmin> {
                       'price': int.parse(_bookPriceController.text.trim()),
                       'categories': _selectedCategories,
                     });
+                    if (!context.mounted) return;
                     Navigator.pop(this.context);
                   } else if (selectedImage != null) {
                     // fire store
@@ -351,6 +353,7 @@ class _EditEbookAdminState extends State<EditEbookAdmin> {
                     await uploadFileToFireStore(
                         fileUrl: downloadedUrl, name: id);
 
+                    if (!context.mounted) return;
                     Navigator.pop(this.context);
                   }
                 },
@@ -434,7 +437,7 @@ class _EditEbookAdminState extends State<EditEbookAdmin> {
       final ref = FirebaseStorage.instance.ref(path);
       return ref.putFile(file);
     } on FirebaseException catch (e) {
-      print(e);
+      log(e.toString());
       return null;
     }
   }

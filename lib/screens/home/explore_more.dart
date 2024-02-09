@@ -50,17 +50,18 @@ class ExploreMore extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-                // color: Colors.blue.shade50,
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.blueGrey.shade100,
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade100),
-                  BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade100),
-                ]),
+              // color: Colors.blue.shade50,
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Colors.blueGrey.shade100,
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade100),
+                BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade100),
+              ],
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -8,9 +8,9 @@ import 'package:image_picker/image_picker.dart';
 
 class EditBanner extends StatefulWidget {
   const EditBanner({
-    Key? key,
+    super.key,
     required this.data,
-  }) : super(key: key);
+  });
   final QueryDocumentSnapshot data;
 
   @override

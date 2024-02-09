@@ -9,7 +9,7 @@ import 'add_banner.dart';
 import 'edit_banner.dart';
 
 class AllBannerAdmin extends StatelessWidget {
-  const AllBannerAdmin({Key? key}) : super(key: key);
+  const AllBannerAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,8 @@ class AllBannerAdmin extends StatelessWidget {
                                   data[index].get('message'),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
                                 ),
                               ),
 

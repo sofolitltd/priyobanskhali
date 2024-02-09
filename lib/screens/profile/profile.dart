@@ -197,7 +197,7 @@ class ProfileCard extends StatelessWidget {
                         ),
                         title: Text(
                           data.get('union'),
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         leading: CircleAvatar(
                           backgroundColor: Colors.blue.shade50,
@@ -219,7 +219,7 @@ class ProfileCard extends StatelessWidget {
                       ),
                       title: Text(
                         data.get('email'),
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                       leading: CircleAvatar(
                         backgroundColor: Colors.blue.shade50,
@@ -240,7 +240,7 @@ class ProfileCard extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodySmall),
                         title: Text(
                           data.get('mobile'),
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         leading: CircleAvatar(
                           backgroundColor: Colors.blue.shade50,
@@ -273,7 +273,7 @@ class ProfileCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8)),
               child: ListTile(
                 trailing: const Icon(Icons.arrow_right_alt_outlined),
-                leading:  CircleAvatar(
+                leading: CircleAvatar(
                   backgroundColor: Colors.green.shade900.withOpacity(.8),
                   child: const Icon(
                     (Icons.book_outlined),
@@ -415,9 +415,9 @@ class ProfileCard extends StatelessWidget {
         return AlertDialog(
           // <-- SEE HERE
           title: const Text('Log out!'),
-          content: SingleChildScrollView(
+          content: const SingleChildScrollView(
             child: ListBody(
-              children: const <Widget>[
+              children: <Widget>[
                 Text('Are you sure to log out?'),
               ],
             ),

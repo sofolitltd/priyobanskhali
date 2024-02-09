@@ -4,7 +4,7 @@ import 'package:priyobanskhali/screens/auth/welcome.dart';
 import 'package:priyobanskhali/screens/dashboard.dart';
 
 class WrapperScreen extends StatelessWidget {
-  const WrapperScreen({Key? key}) : super(key: key);
+  const WrapperScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

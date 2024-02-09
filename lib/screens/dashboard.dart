@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+
 import '/screens/profile/profile.dart';
 import '/screens/shop/shop.dart';
-
 import 'blog/blog_screen.dart';
 import 'home/home.dart';
-import 'shelf/shelf.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});

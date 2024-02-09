@@ -5,10 +5,10 @@ import 'package:priyobanskhali/utils/repo.dart';
 
 class HomeBannerDetails extends StatelessWidget {
   const HomeBannerDetails({
-    Key? key,
+    super.key,
     required this.image,
     required this.message,
-  }) : super(key: key);
+  });
 
   final String image;
   final String message;

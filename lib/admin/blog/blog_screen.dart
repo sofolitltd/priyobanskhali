@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:priyobanskhali/widgets/blog_card_admin.dart';
-import '/models/blog_model.dart';
-import '/widgets/blog_card.dart';
+
 import '../blog/add_blog.dart';
+import '/models/blog_model.dart';
+import '/widgets/blog_card_admin.dart';
 
 class BlogScreen extends StatelessWidget {
   const BlogScreen({super.key});
@@ -16,19 +15,22 @@ class BlogScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: const Text('Blog', style: TextStyle(color: Colors.black),),
+        title: const Text(
+          'Blog',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AddBlog(),
-                      ),
-                    );
-                  },
-                  child: const Icon(Icons.add),
-                ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const AddBlog(),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('blog')
@@ -55,8 +57,7 @@ class BlogScreen extends StatelessWidget {
               horizontal: size.width > 1000 ? size.width * .2 : 12,
               vertical: 12,
             ),
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: 16),
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
             itemCount: data.length,
             itemBuilder: (context, index) {
               BlogModel blog = BlogModel.fromJson(

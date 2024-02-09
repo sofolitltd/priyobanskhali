@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../utils/open_app.dart';
 import '/screens/profile/change_password.dart';
 import '/utils/repo.dart';
-import '../../utils/open_app.dart';
 
 class AppSettings extends StatelessWidget {
-  const AppSettings({Key? key}) : super(key: key);
+  const AppSettings({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class AppSettings extends StatelessWidget {
               ),
               title: Text(
                 'Change Password',
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               leading: CircleAvatar(
                 backgroundColor: Colors.blue.shade50,
@@ -92,7 +92,7 @@ class AppSettings extends StatelessWidget {
                   ),
                   title: Text(
                     'Call us',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   leading: CircleAvatar(
                     backgroundColor: Colors.blue.shade50,
@@ -122,7 +122,7 @@ class AppSettings extends StatelessWidget {
                   ),
                   title: Text(
                     'Facebook',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   leading: CircleAvatar(
                     backgroundColor: Colors.blue.shade50,
@@ -153,7 +153,7 @@ class AppSettings extends StatelessWidget {
                   ),
                   title: Text(
                     'WhatsApp',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   leading: CircleAvatar(
                     backgroundColor: Colors.blue.shade50,
@@ -184,7 +184,7 @@ class AppSettings extends StatelessWidget {
                   ),
                   title: Text(
                     'Email',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   leading: CircleAvatar(
                     backgroundColor: Colors.blue.shade50,
@@ -215,7 +215,7 @@ class AppSettings extends StatelessWidget {
                   ),
                   title: Text(
                     'Youtube',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   leading: CircleAvatar(
                     backgroundColor: Colors.blue.shade50,
@@ -251,7 +251,7 @@ class AppSettings extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               title: Text(
                 'Sofol IT',
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               subtitle: Text(
                 'Contact to developer',

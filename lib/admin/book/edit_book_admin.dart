@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,10 +12,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
 class EditBookAdmin extends StatefulWidget {
-  const EditBookAdmin({
-    key,
-    required this.data,
-  }) : super(key: key);
+  const EditBookAdmin({super.key, required this.data});
 
   final QueryDocumentSnapshot data;
 
@@ -46,7 +44,7 @@ class _EditBookAdminState extends State<EditBookAdmin> {
         var category = e.get('category');
         categories.add(category);
       }
-      print('cat: $categories');
+      log('cat: $categories');
       setState(() {});
     });
   }

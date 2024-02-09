@@ -49,7 +49,6 @@ class BookSection extends StatelessWidget {
         // new
         ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 250),
-
           child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('book_categories')
@@ -83,7 +82,6 @@ class BookSection extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-
                     //
                     ListView.separated(
                       shrinkWrap: true,

@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '/utils/open_app.dart';
 
 class UsersAdmin extends StatelessWidget {
-  const UsersAdmin({Key? key}) : super(key: key);
+  const UsersAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +139,7 @@ class UsersAdmin extends StatelessWidget {
 }
 
 class UserDetails extends StatelessWidget {
-  const UserDetails({Key? key, required this.data}) : super(key: key);
+  const UserDetails({super.key, required this.data});
 
   final QueryDocumentSnapshot data;
 

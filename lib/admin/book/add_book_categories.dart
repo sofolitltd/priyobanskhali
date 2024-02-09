@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
 
 class AddBookCategories extends StatefulWidget {
-  const AddBookCategories({Key? key}) : super(key: key);
+  const AddBookCategories({super.key});
 
   @override
   State<AddBookCategories> createState() => _AddBookCategoriesState();
@@ -31,7 +33,7 @@ class _AddBookCategoriesState extends State<AddBookCategories> {
           ref.snapshots().forEach(
             (element) {
               docId = element.docs.length + 1;
-              print(docId);
+              log(docId.toString());
             },
           );
 

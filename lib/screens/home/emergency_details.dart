@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '/utils/open_app.dart';
 
 class EmergencyDetails extends StatelessWidget {
-  const EmergencyDetails({Key? key}) : super(key: key);
+  const EmergencyDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +119,7 @@ class EmergencyDetails extends StatelessWidget {
 }
 
 class EmergencyCategory extends StatelessWidget {
-  const EmergencyCategory({Key? key, required this.category}) : super(key: key);
+  const EmergencyCategory({super.key, required this.category});
 
   final String category;
 

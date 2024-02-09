@@ -140,7 +140,7 @@ class NotificationScreen extends StatelessWidget {
 
 //
 class AddNotification extends StatefulWidget {
-  const AddNotification({Key? key}) : super(key: key);
+  const AddNotification({super.key});
 
   @override
   State<AddNotification> createState() => _AddNotificationState();

@@ -9,7 +9,7 @@ import 'package:priyobanskhali/screens/auth/signup1.dart';
 import '../../utils/repo.dart';
 
 class SignUp2 extends StatefulWidget {
-  const SignUp2({Key? key}) : super(key: key);
+  const SignUp2({super.key});
 
   @override
   State<SignUp2> createState() => _SignUp2State();
@@ -46,7 +46,7 @@ class _SignUp2State extends State<SignUp2> {
             // signup
             Text(
               'User information',
-              style: Theme.of(context).textTheme.headline5!.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,

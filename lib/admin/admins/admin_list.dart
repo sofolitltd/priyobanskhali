@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class AdminList extends StatelessWidget {
-  const AdminList({Key? key}) : super(key: key);
+  const AdminList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +76,9 @@ class AdminList extends StatelessWidget {
                             Get.back();
                           });
                         }
-                        print('no email');
+                        if (kDebugMode) {
+                          print('no email');
+                        }
                         //
                       },
                       child: const Text('Add Admin')),

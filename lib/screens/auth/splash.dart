@@ -6,7 +6,7 @@ import 'package:priyobanskhali/screens/auth/wrapper.dart';
 import '/utils/repo.dart';
 
 class Splash extends StatefulWidget {
-  const Splash({Key? key}) : super(key: key);
+  const Splash({super.key});
 
   @override
   State<Splash> createState() => _SplashState();

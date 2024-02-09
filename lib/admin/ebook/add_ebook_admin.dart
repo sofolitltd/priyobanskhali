@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +14,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
 class AddEbookAdmin extends StatefulWidget {
-  const AddEbookAdmin({key}) : super(key: key);
+  const AddEbookAdmin({super.key});
 
   @override
   State<AddEbookAdmin> createState() => _AddEbookAdminState();
@@ -44,7 +45,7 @@ class _AddEbookAdminState extends State<AddEbookAdmin> {
         var category = e.get('category');
         categories.add(category);
       }
-      print('cat: $categories');
+      log('cat: $categories');
       setState(() {});
     });
   }
@@ -83,9 +84,9 @@ class _AddEbookAdminState extends State<AddEbookAdmin> {
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(4)),
                 child: selectedImage == null
-                    ? Column(
+                    ? const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.image_outlined),
                           Text('Add image'),
                         ],
@@ -310,6 +311,7 @@ class _AddEbookAdminState extends State<AddEbookAdmin> {
                         fileUrl: downloadedUrl, name: fileName);
 
                     //
+                    if (!context.mounted) return;
                     Navigator.pop(this.context);
                   }
                 },
@@ -393,7 +395,7 @@ class _AddEbookAdminState extends State<AddEbookAdmin> {
       final ref = FirebaseStorage.instance.ref(path);
       return ref.putFile(file);
     } on FirebaseException catch (e) {
-      print(e);
+      log(e.toString());
       return null;
     }
   }

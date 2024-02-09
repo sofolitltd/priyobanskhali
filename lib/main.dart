@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'database/firebase_options.dart';
 import 'screens/auth/splash.dart';
-import 'screens/notification/fcm_utils.dart';
 import 'utils/repo.dart';
 import 'utils/style.dart';
 
@@ -24,7 +23,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FCMUtils().initialization();
+  // await FCMUtils().initialization();
   // run main app
   runApp(const MyApp());
 }
@@ -39,8 +38,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           useMaterial3: false,
-          canvasColor: const Color(0xfff4f7fa),
-          // canvasColor: Colors.grey,
+          canvasColor: const Color(0xfff8f8f8),
           primaryColor: const Color(0xff2849a0),
           appBarTheme: const AppBarTheme(
             elevation: 0,

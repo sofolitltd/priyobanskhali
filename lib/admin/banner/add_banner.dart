@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddBanner extends StatefulWidget {
-  const AddBanner({Key? key}) : super(key: key);
+  const AddBanner({super.key});
 
   @override
   State<AddBanner> createState() => _AddBannerState();

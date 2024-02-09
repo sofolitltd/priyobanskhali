@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../utils/repo.dart';
 
 class EditProfile extends StatefulWidget {
-  const EditProfile({Key? key, required this.data}) : super(key: key);
+  const EditProfile({super.key, required this.data});
 
   final DocumentSnapshot data;
 
@@ -266,7 +267,7 @@ class _EditProfileState extends State<EditProfile> {
 
                         //
                         if (_pickedImage == null) {
-                          print('update profile image with out change image');
+                          log('update profile image with out change image');
 
                           //
                           FirebaseFirestore.instance

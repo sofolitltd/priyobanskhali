@@ -1,4 +1,6 @@
 //book list
+import 'dart:developer';
+
 import 'package:basic_utils/basic_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -103,7 +105,7 @@ class EbookList extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       itemCount: data.length,
                       separatorBuilder: (context, index) =>
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 16),
                       itemBuilder: (context, index) =>
                           EbookCard(data: data[index]),
                     ),
@@ -130,7 +132,7 @@ class EbookCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         //
-        print('book id : ${data.get('id')}');
+        log('book id : ${data.get('id')}');
 
         //
         Navigator.push(

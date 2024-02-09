@@ -25,43 +25,17 @@ class BlogDetails extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white10.withOpacity(.01),
         automaticallyImplyLeading: false,
         centerTitle: false,
-        title: const CircleAvatar(
-          backgroundColor: Colors.white,
+        title: CircleAvatar(
+          backgroundColor: Colors.white.withOpacity(.8),
           foregroundColor: Colors.black,
-          child: BackButton(),
+          child: const BackButton(),
         ),
         actions: [
           //
-
-          //
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-            child: IconButton(
-                onPressed: () async {
-                  // app link
-                  String appLink =
-                      "https://play.google.com/store/apps/details?id=com.sofolit.priyobanskhali";
-
-                  //
-                  final imageUrl = blog.image;
-                  final url = Uri.parse(imageUrl);
-                  final response = await http.get(url);
-                  final bytes = response.bodyBytes;
-
-                  final temp = await getTemporaryDirectory();
-                  final path = '${temp.path}/image.png';
-                  File(path).writeAsBytesSync(bytes);
-                  //
-                  Share.shareXFiles([XFile(path)],
-                      text:
-                          '${blog.title} \n\n${blog.content} \n\nMore on: $appLink');
-                },
-                icon: const Icon(Icons.share)),
-          ),
+          ShareButton(blog: blog),
           const SizedBox(width: 8),
         ],
       ),
@@ -72,25 +46,27 @@ class BlogDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 8,
-              ),
-              Container(
-                height: 300,
-                alignment: Alignment.centerLeft,
-                margin: const EdgeInsets.only(top: 16),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8),
+              const SizedBox(height: 16),
+              Hero(
+                tag: blog.blogId,
+                child: Container(
+                  height: 300,
+                  alignment: Alignment.centerLeft,
+                  margin: const EdgeInsets.only(top: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
+                    ),
+                    color: Colors.green.shade300.withOpacity(.1),
+                    image: DecorationImage(
+                      fit:
+                          size.width > 1000 ? BoxFit.contain : BoxFit.fitHeight,
+                      image: NetworkImage(blog.image),
+                    ),
                   ),
-                  color: Colors.green.shade300.withOpacity(.1),
-                  image: DecorationImage(
-                    fit: size.width > 1000 ? BoxFit.contain : BoxFit.fitHeight,
-                    image: NetworkImage(blog.image),
-                  ),
+                  padding: const EdgeInsets.all(4),
                 ),
-                padding: const EdgeInsets.all(4),
               ),
               Padding(
                 padding:
@@ -99,30 +75,40 @@ class BlogDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Text(
-                      DTFormatter.dateFormat(blog.date),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                            wordSpacing: 1.2,
-                            // height: 1.3,
-                            letterSpacing: .2,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.blueGrey,
-                          ),
+                    Hero(
+                      tag: blog.date,
+                      child: Text(
+                        DTFormatter.dateFormat(blog.date),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            Theme.of(context).textTheme.labelMedium!.copyWith(
+                                  wordSpacing: 1.2,
+                                  // height: 1.3,
+                                  letterSpacing: .2,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.blueGrey,
+                                ),
+                      ),
                     ),
 
                     const SizedBox(height: 8),
-                    Text(
-                      blog.title,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            letterSpacing: .4,
-                            height: 1.2,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: GoogleFonts.hindSiliguri().fontFamily,
-                          ),
+                    Hero(
+                      tag: blog.title,
+                      child: Text(
+                        blog.title,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                              letterSpacing: .4,
+                              height: 1.2,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: GoogleFonts.hindSiliguri().fontFamily,
+                            ),
+                      ),
                     ),
 
                     const SizedBox(height: 16),
@@ -210,7 +196,7 @@ class BlogDetails extends StatelessWidget {
 
                         var data = snapshot.data!.docs;
                         if (data.isEmpty) {
-                          return const Center(child: Text('No comments yet!'));
+                          return const Text('No comments yet!');
                         }
                         //
 
@@ -367,6 +353,66 @@ class BlogDetails extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ShareButton extends StatefulWidget {
+  const ShareButton({super.key, required this.blog});
+  final BlogModel blog;
+
+  @override
+  State<ShareButton> createState() => _ShareButtonState();
+}
+
+class _ShareButtonState extends State<ShareButton> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      backgroundColor: Colors.white.withOpacity(.8),
+      foregroundColor: Colors.black,
+      child: IconButton(
+        tooltip: 'Share',
+        onPressed: () async {
+          // app link
+          String appLink =
+              "https://play.google.com/store/apps/details?id=com.sofolit.priyobanskhali";
+
+          //
+          setState(() {
+            _isLoading = true;
+          });
+          //
+          final imageUrl = widget.blog.image;
+          final url = Uri.parse(imageUrl);
+          final response = await http.get(url);
+          final bytes = response.bodyBytes;
+
+          final temp = await getTemporaryDirectory();
+          final path = '${temp.path}/image.png';
+          File(path).writeAsBytesSync(bytes);
+
+          //
+          setState(() {
+            _isLoading = false;
+          });
+          //
+          Share.shareXFiles([XFile(path)],
+              text:
+                  '${widget.blog.title} \n\n${widget.blog.content} \n\nMore on: $appLink');
+        },
+        icon: _isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.black,
+                ))
+            : const Icon(Icons.share, size: 20),
       ),
     );
   }

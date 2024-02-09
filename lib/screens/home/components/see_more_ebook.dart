@@ -52,7 +52,7 @@ class SeeMoreEbook extends StatelessWidget {
             var doc = snapshot.data!.docs;
             //
             return ListView.separated(
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                separatorBuilder: (_, __) => const SizedBox(height: 16),
                 itemCount: doc.length,
                 padding: const EdgeInsets.all(16),
                 itemBuilder: (context, index) {
@@ -69,9 +69,9 @@ class SeeMoreEbook extends StatelessWidget {
 //
 class EbookCardFull extends StatefulWidget {
   const EbookCardFull({
-    Key? key,
+    super.key,
     required this.data,
-  }) : super(key: key);
+  });
 
   final QueryDocumentSnapshot data;
 
@@ -117,8 +117,8 @@ class _EbookCardFullState extends State<EbookCardFull> {
               children: [
                 // image
                 Container(
-                  width: 125,
-                  height: 150,
+                  width: 110,
+                  height: 145,
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
                     borderRadius: const BorderRadius.only(
@@ -164,7 +164,7 @@ class _EbookCardFullState extends State<EbookCardFull> {
             Expanded(
               // flex: 4,
               child: Container(
-                height: 150,
+                height: 145,
                 padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,6 +207,8 @@ class _EbookCardFullState extends State<EbookCardFull> {
                       ],
                     ),
 
+                    const Spacer(),
+
                     //
                     Text(
                       '${widget.data.get('description')}',
@@ -214,56 +216,61 @@ class _EbookCardFullState extends State<EbookCardFull> {
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.hindSiliguri().copyWith(
                         fontSize:
-                            Theme.of(context).textTheme.labelMedium!.fontSize,
-                        height: 1.4,
+                            Theme.of(context).textTheme.bodySmall!.fontSize,
+                        height: 1.3,
                       ),
                     ),
 
+                    const Spacer(),
                     // des
-                    Row(
-                      children: [
-                        //
-                        Text(
-                          'Categories:  ',
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.poppins().copyWith(
-                            fontSize: Theme.of(context)
-                                .textTheme
-                                .labelMedium!
-                                .fontSize,
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          //
+                          Text(
+                            'Categories:  ',
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins().copyWith(
+                              fontSize: Theme.of(context)
+                                  .textTheme
+                                  .labelMedium!
+                                  .fontSize,
+                            ),
                           ),
-                        ),
-                        //
+                          //
 
-                        Row(
-                          children: categories
-                              .map(
-                                (category) => Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 2, horizontal: 4),
-                                  margin: const EdgeInsets.only(right: 4),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: Colors.black12.withOpacity(.05),
-                                  ),
-                                  child: Text(
-                                    '$category',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.hindSiliguri().copyWith(
-                                      fontSize: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .fontSize,
-                                      height: 1,
-                                      color: Colors.black,
+                          Row(
+                            children: categories
+                                .map(
+                                  (category) => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 2, horizontal: 4),
+                                    margin: const EdgeInsets.only(right: 4),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: Colors.black12.withOpacity(.05),
+                                    ),
+                                    child: Text(
+                                      '$category',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style:
+                                          GoogleFonts.hindSiliguri().copyWith(
+                                        fontSize: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .fontSize,
+                                        height: 1,
+                                        color: Colors.black,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ],
+                                )
+                                .toList(),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

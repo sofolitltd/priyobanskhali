@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class Orders extends StatelessWidget {
-  const Orders({Key? key}) : super(key: key);
+  const Orders({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -176,12 +175,11 @@ class Orders extends StatelessWidget {
                                   const Text(
                                     'Complete',
                                     style: TextStyle(
-                                        color:Colors.green,
+                                        color: Colors.green,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
-
                             ],
                           ),
                         ],

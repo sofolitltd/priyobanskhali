@@ -46,6 +46,7 @@ class BkashGateway {
       // Return the random 5-digit number.
       return random5DigitNumber.toString();
     }
+
     /// Goto BkashPayment page & pass the params
     try {
       /// call pay method to pay without agreement as parameter pass the context, amount, merchantInvoiceNumber
@@ -59,7 +60,7 @@ class BkashGateway {
       );
 
       /// if the payment is success then show the log
-      print(result.toString());
+      // print(result.toString());
       Navigator.pop(context);
 
       // place order
@@ -82,28 +83,26 @@ class BkashGateway {
           'bookId': bookId,
         }).then((value) {
           // toast
-          Fluttertoast.showToast(
-              msg:
-              'Congratulations. Payment successfully');
+          Fluttertoast.showToast(msg: 'Congratulations. Payment successfully');
         });
-
       });
-
     } on BkashFailure catch (e, st) {
       /// if something went wrong then show the log
-      print(e.message);
-      print(st);
+      // print(e.message);
+      // print(st);
 
       Navigator.pop(context);
+
       /// if something went wrong then show the snack-bar
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar( SnackBar(content: Text(e.message)));
+        ..showSnackBar(SnackBar(content: Text(e.message)));
     } catch (e, st) {
       /// if something went wrong then show the log
-      print(e);
-      print(st);
+      // print(e);
+      // print(st);
       Navigator.pop(context);
+
       /// if something went wrong then show the snack-bar
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
@@ -112,5 +111,4 @@ class BkashGateway {
 
     return;
   }
-
 }

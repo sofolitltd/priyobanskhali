@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,12 +14,12 @@ import '../dashboard.dart';
 
 class Signup1 extends StatefulWidget {
   const Signup1({
-    Key? key,
+    super.key,
     required this.name,
     required this.mobile,
     required this.union,
     required this.image,
-  }) : super(key: key);
+  });
 
   final String name;
   final String mobile;
@@ -60,7 +61,7 @@ class _Signup1State extends State<Signup1> {
 
   @override
   Widget build(BuildContext context) {
-    print(userId.toString());
+    log(userId.toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -82,7 +83,7 @@ class _Signup1State extends State<Signup1> {
             // signup
             Text(
               AppRepo.kCreateAccountText,
-              style: Theme.of(context).textTheme.headline5!.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,
@@ -222,7 +223,7 @@ class _Signup1State extends State<Signup1> {
       if (user != null) {
         if (widget.image == null) {
           //
-          print('login without => image');
+          log('login without => image');
           FirebaseFirestore.instance.collection('users').doc(user.uid).set({
             'uid': userId.toString(),
             'name': widget.name,
@@ -234,7 +235,7 @@ class _Signup1State extends State<Signup1> {
           });
         } else {
           //
-          print('login with => image');
+          log('login with => image');
           final destination = 'users/${user.uid}.jpg';
 
           var task = FirebaseStorage.instance
@@ -282,6 +283,7 @@ class _Signup1State extends State<Signup1> {
       } else if (e.code == 'email-already-in-use') {
         setState(() => _isLoading = false);
         //
+        if (!context.mounted) return;
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -300,12 +302,12 @@ class _Signup1State extends State<Signup1> {
             msg: 'The account already exists for that email.');
       }
       Fluttertoast.showToast(msg: '${e.message}');
-      print('${e.message}');
+      log('${e.message}');
       setState(() => _isLoading = false);
     } catch (e) {
       setState(() => _isLoading = false);
       Fluttertoast.showToast(msg: 'Some thing wrong.');
-      print(e);
+      log(e.toString());
     }
   }
 }

@@ -4,12 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/screens/payment/bkash_gateway.dart';
 
-import '/screens/payment/place_order.dart';
+import '../pdf_viewer_cached.dart';
+import '/screens/payment/bkash_gateway.dart';
 import '/utils/open_app.dart';
 import '/utils/repo.dart';
-import '../pdf_viewer_cached.dart';
 import 'ebook_list.dart';
 
 class EbookDetails extends StatefulWidget {
@@ -163,7 +162,7 @@ class _EbookDetailsState extends State<EbookDetails> {
                                           color: Colors.purple,
                                           fontSize: Theme.of(context)
                                               .textTheme
-                                              .subtitle1!
+                                              .titleMedium!
                                               .fontSize,
                                           height: 1.2,
                                         ),
@@ -214,73 +213,76 @@ class _EbookDetailsState extends State<EbookDetails> {
                           ],
                         ),
 
-                        const SizedBox(height: 16,),
+                        const SizedBox(
+                          height: 16,
+                        ),
                         // price
                         Column(
                           children: [
                             //
-                            if (widget.price == 0) Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
-                                      horizontal: 8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4),
-                                      color: Colors.green,
-                                    ),
-                                    child: const Text(
-                                      'Free',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ) else Column(
+                            if (widget.price == 0)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 1,
+                                  horizontal: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: Colors.green,
+                                ),
+                                child: const Text(
+                                  'Free',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )
+                            else
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //
+                                  Text(
+                                    'price:',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+
+                                  //
+                                  Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      //
+                                      // price
                                       Text(
-                                        'price:',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall,
+                                        '${widget.price}',
+                                        style:
+                                            GoogleFonts.hindSiliguri().copyWith(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!
+                                              .fontSize,
+                                          height: 1.2,
+                                        ),
                                       ),
 
-                                      //
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // price
-                                          Text(
-                                            '${widget.price}',
-                                            style: GoogleFonts.hindSiliguri()
-                                                .copyWith(
-                                              color: Colors.redAccent,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: Theme.of(context)
-                                                  .textTheme
-                                                  .headlineSmall!
-                                                  .fontSize,
-                                              height: 1.2,
-                                            ),
-                                          ),
+                                      const SizedBox(width: 4),
 
-                                          const SizedBox(width: 4),
-
-                                          //title
-                                          Text(
-                                            AppRepo.kTkSymbol,
-                                            style: GoogleFonts.lato().copyWith(
-                                              fontSize: Theme.of(context)
-                                                  .textTheme
-                                                  .labelLarge!
-                                                  .fontSize,
-                                              height: 1.5,
-                                            ),
-                                          ),
-                                        ],
+                                      //title
+                                      Text(
+                                        AppRepo.kTkSymbol,
+                                        style: GoogleFonts.lato().copyWith(
+                                          fontSize: Theme.of(context)
+                                              .textTheme
+                                              .labelLarge!
+                                              .fontSize,
+                                          height: 1.5,
+                                        ),
                                       ),
                                     ],
                                   ),
+                                ],
+                              ),
                           ],
                         ),
                       ],
@@ -523,8 +525,9 @@ class _EbookDetailsState extends State<EbookDetails> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Description',
-                      style: Theme.of(context).textTheme.titleMedium,
+                  Text(
+                    'Description',
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
 
                   const Divider(height: 8),
@@ -536,7 +539,8 @@ class _EbookDetailsState extends State<EbookDetails> {
                     maxLines: 10,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.hindSiliguri().copyWith(
-                      fontSize: Theme.of(context).textTheme.bodyMedium!.fontSize,
+                      fontSize:
+                          Theme.of(context).textTheme.bodyMedium!.fontSize,
                       height: 1.4,
                     ),
                   ),
@@ -568,7 +572,10 @@ class _EbookDetailsState extends State<EbookDetails> {
         ),
       ),
       builder: (BuildContext context) {
-        return  ChosePayment(price: 10, bookId: widget.bookId,);
+        return ChosePayment(
+          price: 10,
+          bookId: widget.bookId,
+        );
       },
     );
   }
@@ -622,10 +629,13 @@ class _PaymentState extends State<ChosePayment> {
                       //
                       Text(
                         '${widget.price}',
-                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                            color: Colors.redAccent,
-                            fontWeight: FontWeight.bold,
-                            height: 1.2),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall!
+                            .copyWith(
+                                color: Colors.redAccent,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2),
                       ),
                       const SizedBox(width: 4),
 
@@ -640,7 +650,7 @@ class _PaymentState extends State<ChosePayment> {
               ),
 
               //
-              isLoading? const CircularProgressIndicator() : Container(),
+              isLoading ? const CircularProgressIndicator() : Container(),
             ],
           ),
 
@@ -649,14 +659,16 @@ class _PaymentState extends State<ChosePayment> {
           //bkash tile
           ListTile(
             tileColor: isLoading ? Colors.pink.shade50 : null,
-            onTap: isLoading ? null : () async {
-              setState(() => isLoading = true);
-              await BkashGateway.paymentCheckout(context, 1, widget.bookId);
-              setState(() => isLoading = true);
-            },
+            onTap: isLoading
+                ? null
+                : () async {
+                    setState(() => isLoading = true);
+                    await BkashGateway.paymentCheckout(
+                        context, 1, widget.bookId);
+                    setState(() => isLoading = true);
+                  },
             shape: RoundedRectangleBorder(
-              side: BorderSide(
-                  width: 1, color: Theme.of(context).dividerColor),
+              side: BorderSide(width: 1, color: Theme.of(context).dividerColor),
               borderRadius: BorderRadius.circular(8),
             ),
             leading: Image.asset(

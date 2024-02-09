@@ -12,7 +12,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
 class EditProduct extends StatefulWidget {
-  const EditProduct({Key? key, required this.data}) : super(key: key);
+  const EditProduct({super.key, required this.data});
 
   final dynamic data;
 

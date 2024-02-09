@@ -8,9 +8,9 @@ import 'book_details.dart';
 
 class SeeMoreBook extends StatelessWidget {
   const SeeMoreBook({
-    Key? key,
+    super.key,
     required this.categoryName,
-  }) : super(key: key);
+  });
 
   final String categoryName;
 
@@ -52,7 +52,7 @@ class SeeMoreBook extends StatelessWidget {
             var doc = snapshot.data!.docs;
             //
             return ListView.separated(
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                separatorBuilder: (_, __) => const SizedBox(height: 16),
                 itemCount: doc.length,
                 padding: const EdgeInsets.all(16),
                 itemBuilder: (context, index) {
@@ -118,7 +118,7 @@ class _BookCardFullState extends State<BookCardFull> {
                 // image
                 Container(
                   width: 110,
-                  height: 140,
+                  height: 145,
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
                     borderRadius: const BorderRadius.only(
@@ -160,7 +160,7 @@ class _BookCardFullState extends State<BookCardFull> {
             Expanded(
               // flex: 4,
               child: Container(
-                height: 140,
+                height: 145,
                 padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,6 +203,8 @@ class _BookCardFullState extends State<BookCardFull> {
                       ],
                     ),
 
+                    const Spacer(),
+
                     //
                     Text(
                       '${widget.data.get('description')}',
@@ -210,10 +212,12 @@ class _BookCardFullState extends State<BookCardFull> {
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.hindSiliguri().copyWith(
                         fontSize:
-                            Theme.of(context).textTheme.labelMedium!.fontSize,
-                        height: 1.4,
+                            Theme.of(context).textTheme.bodySmall!.fontSize,
+                        height: 1.3,
                       ),
                     ),
+
+                    const Spacer(),
 
                     // des
                     SingleChildScrollView(
@@ -253,7 +257,7 @@ class _BookCardFullState extends State<BookCardFull> {
                                           GoogleFonts.hindSiliguri().copyWith(
                                         fontSize: Theme.of(context)
                                             .textTheme
-                                            .bodyMedium!
+                                            .bodySmall!
                                             .fontSize,
                                         height: 1,
                                         color: Colors.black,

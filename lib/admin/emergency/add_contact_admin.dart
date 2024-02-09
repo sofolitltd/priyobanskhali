@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AddContactAdmin extends StatefulWidget {
-  const AddContactAdmin({Key? key, required this.category}) : super(key: key);
+  const AddContactAdmin({super.key, required this.category});
 
   final String category;
 

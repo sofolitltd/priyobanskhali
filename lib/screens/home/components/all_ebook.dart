@@ -3,14 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/utils/repo.dart';
-import 'ebook_details.dart';
+import 'see_more_ebook.dart';
 
 class AllEbook extends StatefulWidget {
   const AllEbook({
-    Key? key,
+    super.key,
     required this.categories,
-  }) : super(key: key);
+  });
 
   final List categories;
 
@@ -22,44 +21,51 @@ class _AllEbookState extends State<AllEbook> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: widget.categories.length,
-        child: Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'All Ebook',
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-
-              //tabs
-              bottom: TabBar(
-                isScrollable: true,
-                labelColor: Colors.black,
-                tabs: widget.categories
-                    .map((category) => Tab(
-                          text: StringUtils.capitalize(category),
-                        ))
-                    .toList(),
-              ),
+      length: widget.categories.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'All Ebook',
+            style: TextStyle(
+              color: Colors.black,
             ),
-            //
-            body: TabBarView(
-              children: widget.categories
-                  .map((category) => AllEbookTab(
-                        categoryName: category,
-                      ))
-                  .toList(),
-            )));
+          ),
+
+          //tabs
+          bottom: TabBar(
+            isScrollable: true,
+            unselectedLabelColor: Colors.black54,
+            labelColor: Colors.black,
+            labelStyle: GoogleFonts.hindSiliguri().copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+            tabs: widget.categories
+                .map((category) => Tab(
+                      text: StringUtils.capitalize(category),
+                    ))
+                .toList(),
+          ),
+        ),
+        //
+        body: TabBarView(
+          physics: const BouncingScrollPhysics(),
+          children: widget.categories
+              .map((category) => AllEbookTab(
+                    categoryName: category,
+                  ))
+              .toList(),
+        ),
+      ),
+    );
   }
 }
 
 //
 class AllEbookTab extends StatelessWidget {
   const AllEbookTab({
-    Key? key,
+    super.key,
     required this.categoryName,
-  }) : super(key: key);
+  });
 
   final String categoryName;
 
@@ -90,7 +96,7 @@ class AllEbookTab extends StatelessWidget {
           var doc = snapshot.data!.docs;
           //
           return ListView.separated(
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
               itemCount: doc.length,
               padding: const EdgeInsets.all(16),
               itemBuilder: (context, index) {
@@ -100,207 +106,5 @@ class AllEbookTab extends StatelessWidget {
                 return EbookCardFull(data: data);
               });
         });
-  }
-}
-
-//
-class EbookCardFull extends StatefulWidget {
-  const EbookCardFull({
-    Key? key,
-    required this.data,
-  }) : super(key: key);
-
-  final QueryDocumentSnapshot data;
-
-  @override
-  State<EbookCardFull> createState() => _EbookCardFullState();
-}
-
-class _EbookCardFullState extends State<EbookCardFull> {
-  @override
-  Widget build(BuildContext context) {
-    List categories = widget.data.get('categories');
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => EbookDetails(
-              bookId: widget.data.get('id'),
-              title: widget.data.get('title'),
-              month: widget.data.get('month'),
-              year: widget.data.get('year'),
-              description: widget.data.get('description'),
-              image: widget.data.get('image'),
-              fileUrl: widget.data.get('fileUrl'),
-              price: widget.data.get('price'),
-              categories: widget.data.get('categories'),
-            ),
-          ),
-        );
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //image, price
-            Stack(
-              alignment: Alignment.bottomLeft,
-              children: [
-                // image
-                Container(
-                  width: 125,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8)),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      scale: 2,
-                      image: NetworkImage(widget.data.get('image')),
-                    ),
-                  ),
-                ),
-
-                // price
-                Container(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                  margin: const EdgeInsets.only(bottom: 0),
-                  decoration: BoxDecoration(
-                      color: widget.data.get('price') == 0
-                          ? Colors.green
-                          : Colors.blueAccent.shade100,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(16),
-                        bottomRight: Radius.circular(16),
-                        bottomLeft: Radius.circular(8),
-                      )),
-                  child: Text(
-                    widget.data.get('price') == 0
-                        ? 'Free'
-                        : '${widget.data.get('price')} ${AppRepo.kTkSymbol}',
-                    style: GoogleFonts.hindSiliguri(
-                        textStyle: Theme.of(context).textTheme.titleMedium,
-                        // height: 1,
-                        color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(width: 8),
-
-            // text
-            Expanded(
-              // flex: 4,
-              child: Container(
-                height: 150,
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // title, sub
-                    Column(
-                      ///title
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //title
-                        Text(
-                          widget.data.get('title'),
-                          // style: ,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.hindSiliguri(
-                            textStyle: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(
-                                    fontWeight: FontWeight.w600, height: 1.2),
-                          ),
-                        ),
-
-                        // month
-                        Text(
-                          '${widget.data.get('month')} - ${widget.data.get('year')}',
-                          maxLines: 1,
-                          style: GoogleFonts.hindSiliguri().copyWith(
-                            color: Colors.black54,
-                            fontSize: Theme.of(context)
-                                .textTheme
-                                .labelLarge!
-                                .fontSize,
-                          ),
-                        ),
-
-                        //
-                      ],
-                    ),
-
-                    //
-                    Row(
-                      children: [
-                        //
-                        Text(
-                          'Categories:  ',
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.hindSiliguri().copyWith(
-                            fontSize: Theme.of(context)
-                                .textTheme
-                                .labelMedium!
-                                .fontSize,
-                            height: 1,
-                          ),
-                        ),
-                        //
-
-                        Row(
-                          children: categories
-                              .map(
-                                (category) => Text(
-                                  '$category, ',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.hindSiliguri().copyWith(
-                                    fontSize: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .fontSize,
-                                    height: 1,
-                                    color: Colors.purple,
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ],
-                    ),
-
-                    // des
-                    Text(
-                      '${widget.data.get('description')}',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.hindSiliguri().copyWith(
-                        fontSize:
-                            Theme.of(context).textTheme.labelMedium!.fontSize,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,12 +10,12 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '/screens/dashboard.dart';
 import '../../utils/repo.dart';
+import '/screens/dashboard.dart';
 
 // 1st
 class Signup extends StatefulWidget {
-  const Signup({Key? key}) : super(key: key);
+  const Signup({super.key});
 
   @override
   State<Signup> createState() => _SignupState();
@@ -57,7 +58,7 @@ class _SignupState extends State<Signup> {
             // signup
             Text(
               AppRepo.kCreateAccountText,
-              style: Theme.of(context).textTheme.headline5!.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,
@@ -391,7 +392,7 @@ class _SignupState extends State<Signup> {
           ref.snapshots().forEach(
             (element) {
               uid = (element.docs.length + 1);
-              print(uid);
+              log(uid.toString());
             },
           );
           return uid.toString();
@@ -400,7 +401,7 @@ class _SignupState extends State<Signup> {
 
         //
         if (_pickedImage == null) {
-          print('login with out image');
+          log('login with out image');
 
           //
           FirebaseFirestore.instance.collection('users').doc(user.uid).set({
@@ -460,6 +461,7 @@ class _SignupState extends State<Signup> {
       } else if (e.code == 'email-already-in-use') {
         setState(() => _isLoading = false);
         //
+        if (!context.mounted) return;
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -478,12 +480,12 @@ class _SignupState extends State<Signup> {
             msg: 'The account already exists for that email.');
       }
       Fluttertoast.showToast(msg: '${e.message}');
-      print('${e.message}');
+      log('${e.message}');
       setState(() => _isLoading = false);
     } catch (e) {
       setState(() => _isLoading = false);
       Fluttertoast.showToast(msg: 'Some thing wrong.');
-      print(e);
+      log(e.toString());
     }
   }
 }

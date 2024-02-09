@@ -13,7 +13,7 @@ import 'add_contact_admin.dart';
 enum Menu { edit, delete }
 
 class EmergencyAdmin extends StatelessWidget {
-  const EmergencyAdmin({Key? key}) : super(key: key);
+  const EmergencyAdmin({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -120,8 +120,7 @@ class EmergencyAdmin extends StatelessWidget {
 
 // cart card
 class EmergencyCategoryAdminCard extends StatefulWidget {
-  const EmergencyCategoryAdminCard({Key? key, required this.data})
-      : super(key: key);
+  const EmergencyCategoryAdminCard({super.key, required this.data});
 
   final QueryDocumentSnapshot data;
 
@@ -260,8 +259,7 @@ class _EmergencyCategoryAdminCardState
 
 // cat
 class EmergencyCategoryAdmin extends StatelessWidget {
-  const EmergencyCategoryAdmin({Key? key, required this.category})
-      : super(key: key);
+  const EmergencyCategoryAdmin({super.key, required this.category});
 
   final String category;
 

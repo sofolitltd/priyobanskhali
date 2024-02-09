@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/screens/home/components/ebook_details.dart';
 
 import '../../utils/repo.dart';
+import '/screens/home/components/ebook_details.dart';
 
 class Shelf extends StatelessWidget {
   const Shelf({super.key});
@@ -25,7 +27,6 @@ class Shelf extends StatelessWidget {
         //   IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded)),
         // ],
       ),
-
 
       //
       body: StreamBuilder<QuerySnapshot>(
@@ -53,7 +54,7 @@ class Shelf extends StatelessWidget {
 
           var doc = snapshot.data!.docs;
           List<String> books = [];
-          for (var element in doc) { 
+          for (var element in doc) {
             books.add(element.id);
           }
 
@@ -94,7 +95,7 @@ class Shelf extends StatelessWidget {
                         itemCount: doc.length,
                         itemBuilder: (context, index) {
                           var data = doc[index];
-                          print(data.id);
+                          log(data.id);
 
                           //
                           return BookShelfCard(data: data);

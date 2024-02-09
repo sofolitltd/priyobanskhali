@@ -6,14 +6,14 @@ import 'bkash_dialog.dart';
 
 class PlaceOrder extends StatelessWidget {
   const PlaceOrder({
-    Key? key,
+    super.key,
     required this.method,
     required this.id,
     required this.title,
     required this.month,
     required this.year,
     required this.price,
-  }) : super(key: key);
+  });
   final String method;
   final String id;
   final String title;
@@ -123,7 +123,7 @@ class PlaceOrder extends StatelessWidget {
                       //
                       Text(
                         title,
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             fontWeight: FontWeight.w700, color: Colors.black),
                       )
                     ],
@@ -132,7 +132,7 @@ class PlaceOrder extends StatelessWidget {
                   //
                   Text(
                     '$month - $year',
-                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           color: Colors.purple,
                           fontWeight: FontWeight.w400,
                         ),
@@ -147,9 +147,10 @@ class PlaceOrder extends StatelessWidget {
                       //
                       Text(
                         'Price',
-                        style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
                       ),
                       //
                       Row(
@@ -160,7 +161,7 @@ class PlaceOrder extends StatelessWidget {
                             price.toString(),
                             style: Theme.of(context)
                                 .textTheme
-                                .headline5!
+                                .headlineSmall!
                                 .copyWith(
                                     color: Colors.redAccent,
                                     fontWeight: FontWeight.bold,

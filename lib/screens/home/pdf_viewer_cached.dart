@@ -3,10 +3,10 @@ import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 
 class PdfViewerCached extends StatelessWidget {
   const PdfViewerCached({
-    Key? key,
+    super.key,
     required this.title,
     required this.url,
-  }) : super(key: key);
+  });
 
   final String title;
   final String url;

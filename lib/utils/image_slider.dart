@@ -28,7 +28,7 @@ class _ImageSliderState extends State<ImageSlider> {
         }
         _pageController.animateToPage(
           _currentIndex,
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 350),
           curve: Curves.fastOutSlowIn,
         );
       });
@@ -54,25 +54,36 @@ class _ImageSliderState extends State<ImageSlider> {
     return Column(
       children: [
         Expanded(
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: widget.imageUrls.length,
-            itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white54,
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                        widget.imageUrls[index]), // Use cached_network_image
-                    fit: BoxFit.contain,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade50),
+                BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade100),
+              ],
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: widget.imageUrls.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                          widget.imageUrls[index]), // Use cached_network_image
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
-                // child: Image.network(widget.imageUrls[index]),
-              );
-            },
+                  // child: Image.network(widget.imageUrls[index]),
+                );
+              },
+            ),
           ),
         ),
-        const SizedBox(height: 8),
+        // const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -80,7 +91,7 @@ class _ImageSliderState extends State<ImageSlider> {
               GestureDetector(
                 onTap: () {
                   _pageController.animateToPage(i,
-                      duration: const Duration(milliseconds: 250),
+                      duration: const Duration(milliseconds: 200),
                       curve: Curves.easeInOut);
                 },
                 child: AnimatedContainer(

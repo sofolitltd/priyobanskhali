@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,7 +26,7 @@ class OpenApp {
         webOnlyWindowName: '_blank',
       );
     } else {
-      print('error');
+      log('error');
     }
   }
 

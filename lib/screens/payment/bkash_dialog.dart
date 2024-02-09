@@ -8,11 +8,11 @@ import 'package:priyobanskhali/utils/repo.dart';
 
 class BkashDialog extends StatefulWidget {
   const BkashDialog({
-    Key? key,
+    super.key,
     required this.orderId,
     required this.bookId,
     required this.total,
-  }) : super(key: key);
+  });
 
   final String orderId;
   final String bookId;
@@ -103,7 +103,7 @@ class _BkashDialogState extends State<BkashDialog> {
                       'bKash account number',
                       style: Theme.of(context)
                           .textTheme
-                          .subtitle1!
+                          .titleMedium!
                           .copyWith(color: Colors.white),
                     ),
 
@@ -140,7 +140,7 @@ class _BkashDialogState extends State<BkashDialog> {
                       'Enter transaction ID',
                       style: Theme.of(context)
                           .textTheme
-                          .subtitle1!
+                          .titleMedium!
                           .copyWith(color: Colors.white),
                     ),
                     //

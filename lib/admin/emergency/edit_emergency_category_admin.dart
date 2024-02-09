@@ -8,8 +8,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditEmergencyCategoryAdmin extends StatefulWidget {
-  const EditEmergencyCategoryAdmin({Key? key, required this.data})
-      : super(key: key);
+  const EditEmergencyCategoryAdmin({super.key, required this.data});
 
   final QueryDocumentSnapshot data;
 

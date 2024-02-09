@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
+import 'package:priyobanskhali/screens/home/search/search_screen.dart';
 
 import '/screens/home/book_section.dart';
 import '/utils/repo.dart';
@@ -13,24 +15,35 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // centerTitle: false,
-        backgroundColor: Colors.white,
+        centerTitle: false,
+        backgroundColor: Colors.white12,
         title: Image.asset(
           AppRepo.kAppLogo,
-          height: 32,
+          height: 28,
           fit: BoxFit.cover,
         ),
 
         //todo: add notification
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       Get.to(() => const NotificationScreen());
-        //     },
-        //     icon: const Icon(Icons.notifications_outlined),
-        //   ),
-        //   const SizedBox(width: 8),
-        // ],
+        actions: [
+          // IconButton(
+          //   onPressed: () {
+          //     Get.to(() => const NotificationScreen());
+          //   },
+          //   icon: const Icon(Icons.notifications_outlined),
+          // ),
+          const SizedBox(width: 8),
+
+          IconButton(
+            onPressed: () {
+              Get.to(() => const SearchScreen());
+            },
+            icon: const Icon(
+              Icons.search,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       // body
       body: const SingleChildScrollView(

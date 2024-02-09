@@ -1,13 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bkash/flutter_bkash.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:priyobanskhali/screens/payment/place_order.dart';
 
-import '../../payment/credentials.dart';
-import '/utils/repo.dart';
 import '../../../utils/open_app.dart';
+import '/screens/payment/place_order.dart';
+import '/utils/repo.dart';
 import 'book_list.dart';
 
 class BookDetails extends StatefulWidget {
@@ -148,7 +146,7 @@ class _BookDetailsState extends State<BookDetails> {
                                     color: Colors.black87,
                                     fontSize: Theme.of(context)
                                         .textTheme
-                                        .subtitle1!
+                                        .titleMedium!
                                         .fontSize,
                                     height: 1.2,
                                   ),
@@ -185,7 +183,7 @@ class _BookDetailsState extends State<BookDetails> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: Theme.of(context)
                                             .textTheme
-                                            .headline6!
+                                            .titleLarge!
                                             .fontSize,
                                         height: 1.2,
                                       ),
@@ -606,7 +604,8 @@ class _BookDetailsState extends State<BookDetails> {
                     maxLines: 10,
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.hindSiliguri().copyWith(
-                      fontSize: Theme.of(context).textTheme.bodyText2!.fontSize,
+                      fontSize:
+                          Theme.of(context).textTheme.bodyMedium!.fontSize,
                       height: 1.4,
                     ),
                   ),
@@ -665,7 +664,7 @@ class _BookDetailsState extends State<BookDetails> {
                   //
                   Text(
                     '${widget.price}',
-                    style: Theme.of(context).textTheme.headline5!.copyWith(
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                         color: Colors.redAccent,
                         fontWeight: FontWeight.bold,
                         height: 1.2),
@@ -686,8 +685,7 @@ class _BookDetailsState extends State<BookDetails> {
               ListTile(
                 onTap: () async {
                   //todo: fix later
-                 // await paymentCheckout(1);
-
+                  // await paymentCheckout(1);
 
                   // fix: bkash
                   Get.to(
@@ -722,7 +720,4 @@ class _BookDetailsState extends State<BookDetails> {
       },
     );
   }
-
-
 }
-

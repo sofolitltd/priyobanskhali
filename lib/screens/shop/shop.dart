@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'shop_details.dart';
 
 class Shop extends StatelessWidget {
-  const Shop({Key? key}) : super(key: key);
+  const Shop({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class Shop extends StatelessWidget {
               //
               Text(
                 'Our\nCollection',
-                style: Theme.of(context).textTheme.headline4!.copyWith(
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                       fontWeight: FontWeight.bold,
                       height: 1,
                     ),

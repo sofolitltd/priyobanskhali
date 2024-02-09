@@ -44,18 +44,21 @@ class BlogCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              height: 100,
-              width: 100,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.blue.shade50,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(blog.image),
+            Hero(
+              tag: blog.blogId,
+              child: Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.blue.shade50,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(blog.image),
+                  ),
                 ),
+                padding: const EdgeInsets.all(4),
               ),
-              padding: const EdgeInsets.all(4),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -66,29 +69,35 @@ class BlogCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     const SizedBox(height: 0),
-                    Text(
-                      DTFormatter.dateFormat(blog.date),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                            wordSpacing: 1.2,
-                            // height: 1.3,
-                            letterSpacing: .2,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.blueGrey,
-                          ),
+                    Hero(
+                      tag: blog.date,
+                      child: Text(
+                        DTFormatter.dateFormat(blog.date),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              wordSpacing: 1.2,
+                              // height: 1.3,
+                              letterSpacing: .2,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.blueGrey,
+                            ),
+                      ),
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      blog.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            fontWeight: FontWeight.w500,
-                            letterSpacing: .4,
-                            height: 1.2,
-                            fontFamily: GoogleFonts.hindSiliguri().fontFamily,
-                          ),
+                    const SizedBox(height: 4),
+                    Hero(
+                      tag: blog.title,
+                      child: Text(
+                        blog.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              letterSpacing: .4,
+                              height: 1.2,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: GoogleFonts.hindSiliguri().fontFamily,
+                            ),
+                      ),
                     ),
 
                     const Spacer(),
@@ -118,7 +127,7 @@ class BlogCard extends StatelessWidget {
                             },
                             child: const Padding(
                               padding: EdgeInsets.symmetric(
-                                vertical: 5,
+                                vertical: 6,
                                 horizontal: 10,
                               ),
                               child: Row(
@@ -139,46 +148,8 @@ class BlogCard extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         const SizedBox(width: 8),
-
-                        //
-                        Material(
-                          color: Colors.black12.withOpacity(.05),
-                          borderRadius: BorderRadius.circular(5),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(4),
-                            onTap: () async {
-                              // app link
-                              String appLink =
-                                  "https://play.google.com/store/apps/details?id=com.sofolit.priyobanskhali";
-
-                              //
-                              final imageUrl = blog.image;
-                              final url = Uri.parse(imageUrl);
-                              final response = await http.get(url);
-                              final bytes = response.bodyBytes;
-
-                              final temp = await getTemporaryDirectory();
-                              final path = '${temp.path}/image.png';
-                              File(path).writeAsBytesSync(bytes);
-                              //
-                              Share.shareXFiles([XFile(path)],
-                                  text:
-                                      '${blog.title} \n\n${blog.content} \n\nMore on: $appLink');
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 5,
-                                horizontal: 10,
-                              ),
-                              child: Icon(
-                                Icons.share,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ),
+                        ShareButtonRec(blog: blog),
                       ],
                     )
                   ],
@@ -192,7 +163,7 @@ class BlogCard extends StatelessWidget {
   }
 }
 
-//
+// like btn
 class LikeCounter extends StatefulWidget {
   const LikeCounter({super.key, required this.blogId});
 
@@ -222,7 +193,7 @@ class _LikeCounterState extends State<LikeCounter> {
       color: Colors.black12.withOpacity(.05),
       borderRadius: BorderRadius.circular(5),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4.5, horizontal: 5),
         child: StreamBuilder<QuerySnapshot>(
           stream: _likesRef.snapshots(),
           builder: (context, snapshot) {
@@ -257,35 +228,101 @@ class _LikeCounterState extends State<LikeCounter> {
 
   Widget _buildLikeButton(int likeCount, bool userLiked,
       [bool userExists = true]) {
-    return Container(
-      constraints: const BoxConstraints(minWidth: 40),
-      child: Row(
-        children: [
-          InkWell(
-            onTap: () async {
-              if (userLiked) {
-                Fluttertoast.showToast(msg: 'Unlike');
-                await _likesRef.doc(_userId).delete();
-              } else {
-                Fluttertoast.showToast(msg: 'Like');
-                await _likesRef.doc(_userId).set({'uid': _userId});
-              }
-            },
-            child: Icon(
+    return InkWell(
+      onTap: () async {
+        if (userLiked) {
+          Fluttertoast.showToast(msg: 'Unlike');
+          await _likesRef.doc(_userId).delete();
+        } else {
+          Fluttertoast.showToast(msg: 'Like');
+          await _likesRef.doc(_userId).set({'uid': _userId});
+        }
+      },
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 40),
+        child: Row(
+          children: [
+            Icon(
               userLiked ? Icons.favorite : Icons.favorite_outline_rounded,
               size: 16,
               color: userLiked ? Colors.red : Colors.black,
             ),
+            const SizedBox(width: 4),
+            Container(
+                constraints: const BoxConstraints(minWidth: 24),
+                color: Colors.transparent,
+                child: Text(
+                  '$likeCount',
+                  textAlign: TextAlign.center,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//
+class ShareButtonRec extends StatefulWidget {
+  const ShareButtonRec({super.key, required this.blog});
+
+  final BlogModel blog;
+
+  @override
+  State<ShareButtonRec> createState() => _ShareButtonRecState();
+}
+
+class _ShareButtonRecState extends State<ShareButtonRec> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black12.withOpacity(.05),
+      borderRadius: BorderRadius.circular(5),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: () async {
+          // app link
+          String appLink =
+              "https://play.google.com/store/apps/details?id=com.sofolit.priyobanskhali";
+          setState(() {
+            _isLoading = true;
+          });
+          //
+          final imageUrl = widget.blog.image;
+          final url = Uri.parse(imageUrl);
+          final response = await http.get(url);
+          final bytes = response.bodyBytes;
+
+          final temp = await getTemporaryDirectory();
+          final path = '${temp.path}/image.png';
+          File(path).writeAsBytesSync(bytes);
+
+          //
+          setState(() {
+            _isLoading = false;
+          });
+          //
+          Share.shareXFiles([XFile(path)],
+              text:
+                  '${widget.blog.title} \n\n${widget.blog.content} \n\nMore on: $appLink');
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 5,
+            horizontal: 10,
           ),
-          const SizedBox(width: 4),
-          Container(
-              constraints: const BoxConstraints(minWidth: 24),
-              color: Colors.transparent,
-              child: Text(
-                '${likeCount}00',
-                textAlign: TextAlign.center,
-              )),
-        ],
+          child: _isLoading
+              ? const SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.black,
+                  ))
+              : const Icon(Icons.share, size: 20),
+        ),
       ),
     );
   }

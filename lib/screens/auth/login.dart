@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,7 +11,7 @@ import '../../utils/repo.dart';
 import 'forget_password.dart';
 
 class Login extends StatefulWidget {
-  const Login({Key? key}) : super(key: key);
+  const Login({super.key});
 
   @override
   State<Login> createState() => _LoginState();
@@ -46,7 +48,7 @@ class _LoginState extends State<Login> {
             // login
             Text(
               AppRepo.kLoginText,
-              style: Theme.of(context).textTheme.headline5!.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
               textAlign: TextAlign.center,
@@ -252,11 +254,11 @@ class _LoginState extends State<Login> {
         setState(() => _isLoading = false);
       } else {
         setState(() => _isLoading = false);
-        print('No user found');
+        log('No user found');
         Fluttertoast.showToast(msg: 'login failed: No user found');
       }
     } on FirebaseAuthException catch (e) {
-      print('login error: $e');
+      log('login error: $e');
       if (e.code == 'user-not-found') {
         setState(() => _isLoading = false);
         Fluttertoast.showToast(msg: 'No user found for that email.');
@@ -269,7 +271,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       setState(() => _isLoading = false);
       Fluttertoast.showToast(msg: 'Some thing wrong.');
-      print(e);
+      log(e.toString());
     }
   }
 }
