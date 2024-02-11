@@ -207,12 +207,12 @@ class _EbookCardFullState extends State<EbookCardFull> {
                       ],
                     ),
 
-                    const Spacer(),
+                    const SizedBox(height: 8),
 
                     //
                     Text(
                       '${widget.data.get('description')}',
-                      maxLines: 3,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.hindSiliguri().copyWith(
                         fontSize:
@@ -229,13 +229,10 @@ class _EbookCardFullState extends State<EbookCardFull> {
                         children: [
                           //
                           Text(
-                            'Categories:  ',
+                            'Category:  ',
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.poppins().copyWith(
-                              fontSize: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium!
-                                  .fontSize,
+                              fontSize: 10,
                             ),
                           ),
                           //
@@ -244,11 +241,11 @@ class _EbookCardFullState extends State<EbookCardFull> {
                             children: categories
                                 .map(
                                   (category) => Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 2, horizontal: 4),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(4, 4, 4, 2),
                                     margin: const EdgeInsets.only(right: 4),
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4),
+                                      borderRadius: BorderRadius.circular(8),
                                       color: Colors.black12.withOpacity(.05),
                                     ),
                                     child: Text(

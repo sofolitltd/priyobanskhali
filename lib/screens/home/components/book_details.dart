@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../utils/open_app.dart';
-import '/screens/payment/place_order.dart';
 import '/utils/repo.dart';
 import 'book_list.dart';
+import 'ebook_details.dart';
 
 class BookDetails extends StatefulWidget {
   const BookDetails({
@@ -499,8 +499,74 @@ class _BookDetailsState extends State<BookDetails> {
                   // buy
                   GestureDetector(
                     onTap: () {
-                      //todo: fix payment
-                      showPaymentBottomSheet(context);
+                      String address = '';
+                      //
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Address'),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.clear),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                titlePadding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 10),
+                                actions: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          if (address == '') {
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    'Enter address to continue.');
+                                          } else {
+                                            Navigator.pop(context);
+
+                                            //
+                                            showPaymentBottomSheet(
+                                              context,
+                                              bookType: 'book',
+                                              bookId: widget.bookId,
+                                              price: widget.price.toDouble(),
+                                              address: address,
+                                            );
+                                          }
+                                        },
+                                        child: const Text('Continue')),
+                                  ),
+                                ],
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 10),
+                                content: TextField(
+                                  onChanged: (value) {
+                                    address = value;
+                                  },
+                                  minLines: 5,
+                                  maxLines: 7,
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        vertical: 4,
+                                        horizontal: 8,
+                                      ),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      hintText: 'Enter your address ...'),
+                                ),
+                              ));
                     },
                     child: Container(
                         padding: const EdgeInsets.symmetric(
@@ -624,100 +690,6 @@ class _BookDetailsState extends State<BookDetails> {
           ),
         ],
       ),
-    );
-  }
-
-  //
-  Future showPaymentBottomSheet(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(8),
-        ),
-      ),
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              //
-              Text(
-                'Choose payment method',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-
-              const Divider(),
-
-              //
-              Text(
-                'price:',
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //
-                  Text(
-                    '${widget.price}',
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold,
-                        height: 1.2),
-                  ),
-                  const SizedBox(width: 4),
-
-                  //
-                  Text(
-                    AppRepo.kTkSymbol,
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              //bkash tile
-              ListTile(
-                onTap: () async {
-                  //todo: fix later
-                  // await paymentCheckout(1);
-
-                  // fix: bkash
-                  Get.to(
-                    PlaceOrder(
-                      method: 'Bkash',
-                      id: widget.bookId,
-                      title: widget.title,
-                      month: widget.author,
-                      year: widget.stock.toString(),
-                      price: widget.price,
-                    ),
-                  );
-                },
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                      width: 1, color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                leading: Image.asset(
-                  AppRepo.kBkashLogo,
-                  width: 56,
-                  height: 56,
-                ),
-                title: const Text('bkash'),
-                subtitle: const Text('pay with your bkash number'),
-              ),
-
-              const SizedBox(height: 8),
-            ],
-          ),
-        );
-      },
     );
   }
 }

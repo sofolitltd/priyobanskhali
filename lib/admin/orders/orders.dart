@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:priyobanskhali/utils/date_time_formatter.dart';
 
 class Orders extends StatelessWidget {
   const Orders({super.key});
@@ -18,10 +21,11 @@ class Orders extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('orders')
-              .orderBy(
-                'orderId',
-                descending: true,
-              )
+              .where('bookType', isEqualTo: 'book')
+              // .orderBy(
+              //   'orderId',
+              //   descending: true,
+              // )
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -60,103 +64,294 @@ class Orders extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           //order id
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              //title
-                              Text('order id:',
+                              //
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //title
+                                  Text('ORDER ID',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!
+                                          .copyWith(height: 1)),
+
+                                  //order
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      //
+                                      Text(
+                                        data.get('orderId'),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                height: 1),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              //
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 2,
+                                  horizontal: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: Colors.green.withOpacity(1),
+                                ),
+                                child: Text(
+                                  data.get('bookType'),
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodySmall!
-                                      .copyWith(height: 1)),
-
-                              const SizedBox(width: 8),
-
-                              //order
-                              Text(
-                                data.get('orderId'),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(fontWeight: FontWeight.w600),
+                                      .bodyMedium!
+                                      .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                ),
                               ),
                             ],
                           ),
 
+                          const SizedBox(height: 10),
+
+                          // book
+                          if (data.get('bookType') == 'book')
+                            Container(
+                              height: 72,
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Theme.of(context).dividerColor),
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: StreamBuilder<DocumentSnapshot>(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('book')
+                                      .doc(data.get('bookId'))
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasError) {
+                                      return const SizedBox();
+                                    }
+
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const SizedBox();
+                                    }
+                                    var data = snapshot.data!;
+
+                                    if (!data.exists) {
+                                      return const SizedBox();
+                                    }
+
+                                    // card
+                                    return Row(
+                                      children: [
+                                        //
+                                        CachedNetworkImage(
+                                          imageUrl: data.get('image'),
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            height: 64,
+                                            width: 64,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft: Radius.circular(8),
+                                                topRight: Radius.circular(8),
+                                              ),
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          progressIndicatorBuilder: (context,
+                                                  url, downloadProgress) =>
+                                              Container(
+                                            height: 64,
+                                            width: 64,
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue.shade50,
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft: Radius.circular(8),
+                                                topRight: Radius.circular(8),
+                                              ),
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
+
+                                        //
+                                        //title
+                                        Expanded(
+                                          child: Container(
+                                            constraints: const BoxConstraints(
+                                                minHeight: 64),
+                                            padding: const EdgeInsets.all(8),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.stretch,
+                                              children: [
+                                                // title
+                                                Text(
+                                                  data.get('title'),
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style:
+                                                      GoogleFonts.hindSiliguri(
+                                                    textStyle: Theme.of(context)
+                                                        .textTheme
+                                                        .titleSmall,
+                                                    height: 1,
+                                                  ),
+                                                ),
+
+                                                const SizedBox(height: 8),
+                                                // author
+                                                Text(
+                                                  '${data.get('author')}',
+                                                  style:
+                                                      GoogleFonts.hindSiliguri()
+                                                          .copyWith(
+                                                    height: 1.3,
+                                                    color: Colors.blueGrey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }),
+                            ),
+
                           const SizedBox(height: 8),
 
-                          // payment
-                          Text('Payment Id:',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(height: 1)),
-
-                          //mobile and trans
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            margin: const EdgeInsets.symmetric(vertical: 4),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).dividerColor),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    //title
-                                    Text('Mobile No:',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall),
-
-                                    const SizedBox(width: 8),
-
-                                    //mobile
-                                    Text(
-                                      data.get('mobileNo'),
+                          //address, mobile
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              //add
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //title
+                                  Text('Address: ',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyMedium!
+                                          .bodySmall!
                                           .copyWith(
-                                              fontWeight: FontWeight.w600),
-                                    ),
-                                  ],
-                                ),
+                                            height: 1.2,
+                                            color: Colors.blueGrey,
+                                          )),
 
-                                //transactionId
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    //title
-                                    Text('User Id:',
+                                  const SizedBox(height: 4),
+
+                                  //address
+                                  Text(
+                                    data.get('address'),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.2,
+                                        ),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 4),
+
+                              // mobile, date
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // mobile,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      //title
+                                      Text('Mobile :  ',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(
+                                                color: Colors.blueGrey,
+                                                height: 1.2,
+                                              )),
+
+                                      //mobile
+                                      Text(
+                                        data.get('mobile'),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodySmall),
+                                            .bodyMedium!
+                                            .copyWith(
+                                              fontWeight: FontWeight.w400,
+                                              height: 1.2,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
 
-                                    const SizedBox(width: 8),
+                                  // date,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      //title
+                                      Text('Date:',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(
+                                                color: Colors.blueGrey,
+                                                height: 1.2,
+                                              )),
 
-                                    //mobile
-                                    Text(
-                                      data.get('userId'),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                              fontWeight: FontWeight.w600),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                      //mobile
+                                      Text(
+                                        DTFormatter.dateTimeFormat(
+                                            data.get('date')),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              fontWeight: FontWeight.w400,
+                                              height: 1.2,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
 
+                          const Divider(),
                           //
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               //status
                               Column(
@@ -165,20 +360,60 @@ class Orders extends StatelessWidget {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 8),
                                     child: Text(
-                                      'status:',
+                                      'STATUS',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall!
                                           .copyWith(height: 1),
                                     ),
                                   ),
-                                  const Text(
-                                    'Complete',
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
+                                  Text(
+                                    data.get('status'),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                          color: data.get('status') == "Pending"
+                                              ? Colors.orange
+                                              : Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1.2,
+                                        ),
                                   ),
                                 ],
+                              ),
+
+                              // btn
+                              GestureDetector(
+                                onTap: data.get('status') == 'Pending'
+                                    ? () async {
+                                        await FirebaseFirestore.instance
+                                            .collection('orders')
+                                            .doc(data.get('paymentId'))
+                                            .update({'status': 'Complete'});
+                                      }
+                                    : () async {
+                                        await FirebaseFirestore.instance
+                                            .collection('orders')
+                                            .doc(data.get('paymentId'))
+                                            .update({'status': 'Pending'});
+                                      },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: data.get('status') == 'Pending'
+                                        ? Colors.blueAccent
+                                        : Colors.red,
+                                  ),
+                                  child: Text(
+                                    data.get('status') == 'Pending'
+                                        ? 'Confirm'
+                                        : 'Cancel',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
                               ),
                             ],
                           ),

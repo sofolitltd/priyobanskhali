@@ -311,7 +311,7 @@ class _EbookDetailsState extends State<EbookDetails> {
                       stream: FirebaseFirestore.instance
                           .collection('users')
                           .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .collection('books')
+                          .collection('ebook')
                           .where('bookId', isEqualTo: widget.bookId)
                           .snapshots(),
                       builder: (context, snapshot) {
@@ -397,7 +397,13 @@ class _EbookDetailsState extends State<EbookDetails> {
                               : InkWell(
                                   onTap: () async {
                                     //
-                                    showPaymentBottomSheet(context);
+                                    showPaymentBottomSheet(
+                                      context,
+                                      bookType: 'ebook',
+                                      bookId: widget.bookId,
+                                      price: widget.price.toDouble(),
+                                      address: '',
+                                    );
                                   },
                                   child: Material(
                                     color: Colors.transparent,
@@ -561,37 +567,55 @@ class _EbookDetailsState extends State<EbookDetails> {
       ),
     );
   }
-
-  Future showPaymentBottomSheet(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(8),
-        ),
-      ),
-      builder: (BuildContext context) {
-        return ChosePayment(
-          price: 10,
-          bookId: widget.bookId,
-        );
-      },
-    );
-  }
 }
 
-//
-class ChosePayment extends StatefulWidget {
-  const ChosePayment({super.key, required this.price, required this.bookId});
-  final double price;
+// show payment
+Future showPaymentBottomSheet(
+  BuildContext context, {
+  required String bookType,
+  required String bookId,
+  required double price,
+  required String address,
+}) {
+  return showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(8),
+        topRight: Radius.circular(8),
+      ),
+    ),
+    builder: (BuildContext context) {
+      return ChoosePayment(
+        bookType: bookType,
+        bookId: bookId,
+        price: price,
+        address: address,
+      );
+    },
+  );
+}
+
+// Choose Payment
+class ChoosePayment extends StatefulWidget {
+  const ChoosePayment({
+    super.key,
+    required this.bookType,
+    required this.bookId,
+    required this.price,
+    required this.address,
+  });
+
+  final String bookType;
   final String bookId;
+  final double price;
+  final String address;
 
   @override
-  State<ChosePayment> createState() => _PaymentState();
+  State<ChoosePayment> createState() => _ChoosePaymentState();
 }
 
-class _PaymentState extends State<ChosePayment> {
+class _ChoosePaymentState extends State<ChoosePayment> {
   bool isLoading = false;
 
   @override
@@ -664,8 +688,13 @@ class _PaymentState extends State<ChosePayment> {
                 : () async {
                     setState(() => isLoading = true);
                     await BkashGateway.paymentCheckout(
-                        context, 1, widget.bookId);
-                    setState(() => isLoading = true);
+                      context,
+                      bookType: widget.bookType,
+                      bookId: widget.bookId,
+                      bookPrice: widget.price,
+                      address: widget.address,
+                    );
+                    setState(() => isLoading = false);
                   },
             shape: RoundedRectangleBorder(
               side: BorderSide(width: 1, color: Theme.of(context).dividerColor),
