@@ -2,30 +2,66 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:priyobanskhali/utils/date_time_formatter.dart';
 
-class Orders extends StatelessWidget {
+import '../../utils/open_app.dart';
+import '/utils/date_time_formatter.dart';
+
+const List<String> list = <String>['Book', 'Ebook'];
+
+class Orders extends StatefulWidget {
   const Orders({super.key});
+
+  @override
+  State<Orders> createState() => _OrdersState();
+}
+
+class _OrdersState extends State<Orders> {
+  String dropdownValue = list.first;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
         title: const Text(
           'Orders',
           style: TextStyle(color: Colors.black),
         ),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: DropdownMenu<String>(
+                width: 120,
+                initialSelection: list.first,
+                inputDecorationTheme: const InputDecorationTheme(
+                  contentPadding: EdgeInsets.only(left: 12),
+                  isDense: true,
+                  border: OutlineInputBorder(gapPadding: 0),
+                  constraints: BoxConstraints(maxHeight: 40),
+                ),
+                onSelected: (String? value) {
+                  // This is called when the user selects an item.
+                  setState(() {
+                    dropdownValue = value!;
+                  });
+                },
+                dropdownMenuEntries:
+                    list.map<DropdownMenuEntry<String>>((String value) {
+                  return DropdownMenuEntry<String>(value: value, label: value);
+                }).toList(),
+              ),
+            ),
+          ),
+        ],
       ),
 
       //
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('orders')
-              .where('bookType', isEqualTo: 'book')
-              // .orderBy(
-              //   'orderId',
-              //   descending: true,
-              // )
+              .where('bookType', isEqualTo: dropdownValue.toLowerCase())
+              // .orderBy('date', descending: true)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -42,6 +78,7 @@ class Orders extends StatelessWidget {
             }
 
             return ListView.separated(
+              physics: const BouncingScrollPhysics(),
               itemCount: docs.length,
               padding: const EdgeInsets.all(16),
               separatorBuilder: (BuildContext context, int index) =>
@@ -68,34 +105,49 @@ class Orders extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               //
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //title
-                                  Text('ORDER ID',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!
-                                          .copyWith(height: 1)),
+                              Container(
+                                  constraints:
+                                      const BoxConstraints(minWidth: 40),
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(color: Colors.black12),
+                                  ),
+                                  child: Text('${docs.length - index}')),
 
-                                  //order
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      //
-                                      Text(
-                                        data.get('orderId'),
+                              const SizedBox(width: 16),
+                              //
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //title
+                                    Text('ORDER ID',
                                         style: Theme.of(context)
                                             .textTheme
-                                            .titleMedium!
-                                            .copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                height: 1),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                            .bodySmall!
+                                            .copyWith(height: 1)),
+
+                                    //order
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        //
+                                        Text(
+                                          data.get('orderId'),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleMedium!
+                                              .copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
 
                               //
@@ -106,7 +158,9 @@ class Orders extends StatelessWidget {
                                 ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(16),
-                                  color: Colors.green.withOpacity(1),
+                                  color: data.get('bookType') == 'book'
+                                      ? Colors.green.withOpacity(1)
+                                      : Colors.red.shade500.withOpacity(.8),
                                 ),
                                 child: Text(
                                   data.get('bookType'),
@@ -125,157 +179,161 @@ class Orders extends StatelessWidget {
                           const SizedBox(height: 10),
 
                           // book
-                          if (data.get('bookType') == 'book')
-                            Container(
-                              height: 72,
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Theme.of(context).dividerColor),
-                                  borderRadius: BorderRadius.circular(4)),
-                              child: StreamBuilder<DocumentSnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection('book')
-                                      .doc(data.get('bookId'))
-                                      .snapshots(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasError) {
-                                      return const SizedBox();
-                                    }
+                          Container(
+                            height: 72,
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Theme.of(context).dividerColor),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: StreamBuilder<DocumentSnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection(dropdownValue.toLowerCase())
+                                    .doc(data.get('bookId'))
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return const SizedBox();
+                                  }
 
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return const SizedBox();
-                                    }
-                                    var data = snapshot.data!;
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const SizedBox();
+                                  }
+                                  var data = snapshot.data!;
 
-                                    if (!data.exists) {
-                                      return const SizedBox();
-                                    }
+                                  if (!data.exists) {
+                                    return const SizedBox();
+                                  }
 
-                                    // card
-                                    return Row(
-                                      children: [
-                                        //
-                                        CachedNetworkImage(
-                                          imageUrl: data.get('image'),
-                                          imageBuilder:
-                                              (context, imageProvider) =>
-                                                  Container(
-                                            height: 64,
-                                            width: 64,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                topLeft: Radius.circular(8),
-                                                topRight: Radius.circular(8),
-                                              ),
-                                              image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover,
-                                              ),
+                                  // card
+                                  return Row(
+                                    children: [
+                                      //
+                                      CachedNetworkImage(
+                                        imageUrl: data.get('image'),
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          height: 64,
+                                          width: 64,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(8),
+                                              topRight: Radius.circular(8),
                                             ),
-                                          ),
-                                          progressIndicatorBuilder: (context,
-                                                  url, downloadProgress) =>
-                                              Container(
-                                            height: 64,
-                                            width: 64,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade50,
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                topLeft: Radius.circular(8),
-                                                topRight: Radius.circular(8),
-                                              ),
-                                            ),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                        ),
-
-                                        //
-                                        //title
-                                        Expanded(
-                                          child: Container(
-                                            constraints: const BoxConstraints(
-                                                minHeight: 64),
-                                            padding: const EdgeInsets.all(8),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.stretch,
-                                              children: [
-                                                // title
-                                                Text(
-                                                  data.get('title'),
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style:
-                                                      GoogleFonts.hindSiliguri(
-                                                    textStyle: Theme.of(context)
-                                                        .textTheme
-                                                        .titleSmall,
-                                                    height: 1,
-                                                  ),
-                                                ),
-
-                                                const SizedBox(height: 8),
-                                                // author
-                                                Text(
-                                                  '${data.get('author')}',
-                                                  style:
-                                                      GoogleFonts.hindSiliguri()
-                                                          .copyWith(
-                                                    height: 1.3,
-                                                    color: Colors.blueGrey,
-                                                  ),
-                                                ),
-                                              ],
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    );
-                                  }),
-                            ),
+                                        progressIndicatorBuilder:
+                                            (context, url, downloadProgress) =>
+                                                Container(
+                                          height: 64,
+                                          width: 64,
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue.shade50,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(8),
+                                              topRight: Radius.circular(8),
+                                            ),
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      ),
+
+                                      //
+                                      //title
+                                      Expanded(
+                                        child: Container(
+                                          constraints: const BoxConstraints(
+                                              minHeight: 64),
+                                          padding: const EdgeInsets.all(8),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              // title
+                                              Text(
+                                                data.get('title'),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.hindSiliguri(
+                                                  textStyle: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall,
+                                                  height: 1,
+                                                ),
+                                              ),
+
+                                              const Spacer(),
+
+                                              // author
+                                              Text(
+                                                dropdownValue.toLowerCase() ==
+                                                        'book'
+                                                    ? '${data.get('author')}'
+                                                    : '${data.get('month')}-${data.get('year')}',
+                                                style:
+                                                    GoogleFonts.hindSiliguri()
+                                                        .copyWith(
+                                                  fontSize: 12,
+                                                  height: 1,
+                                                  color: Colors.blueGrey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                          ),
 
                           const SizedBox(height: 8),
 
                           //address, mobile
+
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               //add
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //title
-                                  Text('Address: ',
+                              if (dropdownValue.toLowerCase() == 'book')
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //title
+                                    Text('Address: ',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              height: 1.2,
+                                              color: Colors.blueGrey,
+                                            )),
+
+                                    const SizedBox(height: 4),
+
+                                    //address
+                                    Text(
+                                      data.get('address'),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodySmall!
+                                          .bodyMedium!
                                           .copyWith(
+                                            fontWeight: FontWeight.w400,
                                             height: 1.2,
-                                            color: Colors.blueGrey,
-                                          )),
-
-                                  const SizedBox(height: 4),
-
-                                  //address
-                                  Text(
-                                    data.get('address'),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium!
-                                        .copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2,
-                                        ),
-                                  ),
-                                ],
-                              ),
+                                          ),
+                                    ),
+                                  ],
+                                ),
 
                               const SizedBox(height: 4),
 
@@ -285,32 +343,50 @@ class Orders extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   // mobile,
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      //title
-                                      Text('Mobile :  ',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall!
-                                              .copyWith(
-                                                color: Colors.blueGrey,
-                                                height: 1.2,
-                                              )),
+                                  InkWell(
+                                    onTap: () {
+                                      OpenApp.withNumber(data.get('mobile'));
+                                    },
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        //icon
+                                        const Icon(
+                                          Icons.phone_android_outlined,
+                                          color: Colors.blueGrey,
+                                        ),
 
-                                      //mobile
-                                      Text(
-                                        data.get('mobile'),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                              fontWeight: FontWeight.w400,
-                                              height: 1.2,
+                                        //
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            //title
+                                            Text('Mobile :  ',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall!
+                                                    .copyWith(
+                                                      color: Colors.blueGrey,
+                                                      height: 1.2,
+                                                    )),
+
+                                            //mobile
+                                            Text(
+                                              data.get('mobile'),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium!
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.w400,
+                                                    height: 1.2,
+                                                  ),
                                             ),
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
 
                                   // date,
@@ -384,37 +460,39 @@ class Orders extends StatelessWidget {
                               ),
 
                               // btn
-                              GestureDetector(
-                                onTap: data.get('status') == 'Pending'
-                                    ? () async {
-                                        await FirebaseFirestore.instance
-                                            .collection('orders')
-                                            .doc(data.get('paymentId'))
-                                            .update({'status': 'Complete'});
-                                      }
-                                    : () async {
-                                        await FirebaseFirestore.instance
-                                            .collection('orders')
-                                            .doc(data.get('paymentId'))
-                                            .update({'status': 'Pending'});
-                                      },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 4, horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: data.get('status') == 'Pending'
-                                        ? Colors.blueAccent
-                                        : Colors.red,
-                                  ),
-                                  child: Text(
-                                    data.get('status') == 'Pending'
-                                        ? 'Confirm'
-                                        : 'Cancel',
-                                    style: const TextStyle(color: Colors.white),
+                              if (data.get('bookType') == 'book')
+                                GestureDetector(
+                                  onTap: data.get('status') == 'Pending'
+                                      ? () async {
+                                          await FirebaseFirestore.instance
+                                              .collection('orders')
+                                              .doc(data.get('paymentId'))
+                                              .update({'status': 'Complete'});
+                                        }
+                                      : () async {
+                                          await FirebaseFirestore.instance
+                                              .collection('orders')
+                                              .doc(data.get('paymentId'))
+                                              .update({'status': 'Pending'});
+                                        },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4, horizontal: 8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: data.get('status') == 'Pending'
+                                          ? Colors.blueAccent
+                                          : Colors.red,
+                                    ),
+                                    child: Text(
+                                      data.get('status') == 'Pending'
+                                          ? 'Confirm'
+                                          : 'Cancel',
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
-                              ),
                             ],
                           ),
                         ],

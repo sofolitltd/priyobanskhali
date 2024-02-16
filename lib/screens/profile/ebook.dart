@@ -4,19 +4,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:priyobanskhali/screens/home/components/see_more_ebook.dart';
 
-class Shelf extends StatelessWidget {
-  const Shelf({super.key});
+import '/screens/home/components/see_more_ebook.dart';
+
+class Ebooks extends StatelessWidget {
+  const Ebooks({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: false,
+        centerTitle: true,
         backgroundColor: Colors.white,
         title: Text(
-          'Shelf',
+          'Ebooks',
           style: GoogleFonts.poppins().copyWith(
             color: Colors.black,
           ),

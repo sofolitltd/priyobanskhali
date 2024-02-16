@@ -20,22 +20,22 @@ class BkashGateway {
   }) async {
     // when use [ Sandbox credentials ]
     // user: 01619777282 pin: 12121 otp: 123456
-    var credentials = const BkashCredentials(
-      username: SandboxCredentials.username,
-      password: SandboxCredentials.password,
-      appKey: SandboxCredentials.appKey,
-      appSecret: SandboxCredentials.appSecret,
-      isSandbox: true,
-    );
+    // var credentials = const BkashCredentials(
+    //   username: SandboxCredentials.username,
+    //   password: SandboxCredentials.password,
+    //   appKey: SandboxCredentials.appKey,
+    //   appSecret: SandboxCredentials.appSecret,
+    //   isSandbox: true,
+    // );
 
     // // when use [ Live credentials ]
-    // var credentials = const BkashCredentials(
-    //   username: LiveCredentials.username,
-    //   password: LiveCredentials.password,
-    //   appKey: LiveCredentials.appKey,
-    //   appSecret: LiveCredentials.appSecret,
-    //   isSandbox: false,
-    // );
+    var credentials = const BkashCredentials(
+      username: LiveCredentials.username,
+      password: LiveCredentials.password,
+      appKey: LiveCredentials.appKey,
+      appSecret: LiveCredentials.appSecret,
+      isSandbox: false,
+    );
 
     final flutterBkash = FlutterBkash(bkashCredentials: credentials);
 
@@ -117,7 +117,7 @@ class BkashGateway {
           Fluttertoast.showToast(msg: 'Congratulations. Payment successful');
         });
       });
-    } on BkashFailure catch (e, st) {
+    } on BkashFailure catch (e) {
       /// if something went wrong then show the log
       // print(e.message);
       // print(st);
@@ -128,7 +128,7 @@ class BkashGateway {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(SnackBar(content: Text(e.message)));
-    } catch (e, st) {
+    } catch (e) {
       /// if something went wrong then show the log
       // print(e);
       // print(st);

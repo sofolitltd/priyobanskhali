@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 
@@ -11,7 +12,7 @@ class FCMSender {
   }) async {
     try {
       //
-      print("fcm");
+      log("fcm");
 
       //
       await http.post(
@@ -37,7 +38,7 @@ class FCMSender {
         ),
       );
     } catch (e) {
-      print("Error push notification $e");
+      log("Error push notification $e");
     }
   }
 }

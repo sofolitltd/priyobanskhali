@@ -7,9 +7,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:priyobanskhali/screens/home/components/see_more_ebook.dart';
 
 import '../../../utils/repo.dart';
+import '/screens/home/components/see_more_ebook.dart';
 import 'ebook_details.dart';
 
 class EbookList extends StatelessWidget {

@@ -7,8 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../admin/admin_dashboard.dart';
 import '../auth/splash.dart';
-import '../shelf/shelf.dart';
 import 'app_settings.dart';
+import 'books.dart';
+import 'ebook.dart';
 import 'edit_profile.dart';
 
 class Profile extends StatelessWidget {
@@ -259,13 +260,13 @@ class ProfileCard extends StatelessWidget {
 
             // shelf title
             Text(
-              'Shelf',
+              'Books and Ebooks ',
               style: Theme.of(context).textTheme.titleMedium!.copyWith(),
             ),
 
             const SizedBox(height: 8),
 
-            // shelf
+            // book
             Card(
               margin: EdgeInsets.zero,
               elevation: 0,
@@ -281,16 +282,48 @@ class ProfileCard extends StatelessWidget {
                   ),
                 ),
                 title: Text(
-                  'Book Shelf',
+                  'Book',
                   // textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
                       .titleMedium!
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
-                subtitle: const Text('Books that you already have.'),
+                subtitle: const Text('Books that you order online.'),
                 onTap: () {
-                  Get.to(const Shelf());
+                  Get.to(const Books());
+                },
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            // book
+            Card(
+              margin: EdgeInsets.zero,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              child: ListTile(
+                trailing: const Icon(Icons.arrow_right_alt_outlined),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.red.shade500.withOpacity(.8),
+                  child: const Icon(
+                    (Icons.book_outlined),
+                    color: Colors.white,
+                  ),
+                ),
+                title: Text(
+                  'EBook',
+                  // textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+                subtitle: const Text('PDF books that you already have.'),
+                onTap: () {
+                  Get.to(const Ebooks());
                 },
               ),
             ),
@@ -365,7 +398,7 @@ class ProfileCard extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // info title
+            // log out
             Text(
               'Account',
               style: Theme.of(context).textTheme.titleMedium!.copyWith(),

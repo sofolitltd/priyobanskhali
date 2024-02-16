@@ -286,6 +286,7 @@ class _ShareButtonRecState extends State<ShareButtonRec> {
           // app link
           String appLink =
               "https://play.google.com/store/apps/details?id=com.sofolit.priyobanskhali";
+
           setState(() {
             _isLoading = true;
           });
@@ -303,10 +304,61 @@ class _ShareButtonRecState extends State<ShareButtonRec> {
           setState(() {
             _isLoading = false;
           });
+
+          if (!mounted) return;
           //
-          Share.shareXFiles([XFile(path)],
-              text:
-                  '${widget.blog.title} \n\n${widget.blog.content} \n\nMore on: $appLink');
+          showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                    title: const Text(
+                      'Share Blog',
+                      textAlign: TextAlign.center,
+                    ),
+                    actionsAlignment: MainAxisAlignment.center,
+                    actionsPadding: const EdgeInsets.all(16),
+                    actions: [
+                      //fb
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            //
+                            Share.share(
+                              '${widget.blog.title}\n\n${widget.blog.content} \n\nImage:${widget.blog.image} \n\nDownload App: $appLink',
+                              subject: widget.blog.title,
+                            ).then((value) {
+                              Navigator.pop(context);
+                            });
+                          },
+                          child: const Text(
+                            'Messenger (only)',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      //
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            //
+                            Share.shareXFiles(
+                              [XFile(path)],
+                              text:
+                                  '${widget.blog.title} \n\n${widget.blog.content} \n\nMore on: $appLink',
+                            ).then((value) {
+                              Navigator.pop(context);
+                            });
+                          },
+                          icon: const Icon(Icons.web_stories),
+                          label: const Text('All Social Media'),
+                        ),
+                      ),
+                    ],
+                  ));
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(
