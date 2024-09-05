@@ -10,8 +10,8 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../utils/repo.dart';
 import '/screens/dashboard.dart';
+import '../../utils/repo.dart';
 
 // 1st
 class Signup extends StatefulWidget {
@@ -347,15 +347,7 @@ class _SignupState extends State<Signup> {
 
     CroppedFile? croppedImage = await imageCropper.cropImage(
       sourcePath: image.path,
-      cropStyle: CropStyle.circle,
       compressQuality: 60,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'image Customization',
@@ -363,6 +355,14 @@ class _SignupState extends State<Signup> {
           toolbarWidgetColor: Colors.deepOrange,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: false,
+          cropStyle: CropStyle.circle,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
         )
       ],
     );

@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:priyobanskhali/notification/fcm_sender.dart';
+import '/notification/fcm_sender.dart';
 
 import '../../models/blog_model.dart';
 

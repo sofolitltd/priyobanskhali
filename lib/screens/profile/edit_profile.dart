@@ -344,15 +344,7 @@ class _EditProfileState extends State<EditProfile> {
 
     CroppedFile? croppedImage = await imageCropper.cropImage(
       sourcePath: image.path,
-      cropStyle: CropStyle.circle,
       compressQuality: 60,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'image Customization',
@@ -360,6 +352,14 @@ class _EditProfileState extends State<EditProfile> {
           toolbarWidgetColor: Colors.deepOrange,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: false,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
+          cropStyle: CropStyle.circle,
         )
       ],
     );

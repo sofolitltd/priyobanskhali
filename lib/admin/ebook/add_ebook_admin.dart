@@ -366,20 +366,20 @@ class _AddEbookAdminState extends State<AddEbookAdmin> {
 
     CroppedFile? croppedImage = await imageCropper.cropImage(
       sourcePath: image.path,
-      cropStyle: CropStyle.rectangle,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'image Customization',
           toolbarColor: ThemeData().cardColor,
           toolbarWidgetColor: Colors.deepOrange,
           initAspectRatio: CropAspectRatioPreset.original,
+          cropStyle: CropStyle.rectangle,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
           lockAspectRatio: false,
         ),
 

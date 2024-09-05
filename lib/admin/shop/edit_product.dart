@@ -362,15 +362,7 @@ class _EditProductState extends State<EditProduct> {
 
     CroppedFile? croppedImage = await imageCropper.cropImage(
       sourcePath: image.path,
-      cropStyle: CropStyle.rectangle,
       compressQuality: 60,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'image Customization',
@@ -378,6 +370,14 @@ class _EditProductState extends State<EditProduct> {
           toolbarWidgetColor: Colors.deepOrange,
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: false,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
+          cropStyle: CropStyle.rectangle,
         ),
 
         //[todo: web only]

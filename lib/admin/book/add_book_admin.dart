@@ -440,14 +440,6 @@ class _AddBookAdminState extends State<AddBookAdmin> {
 
     CroppedFile? croppedImage = await imageCropper.cropImage(
       sourcePath: image.path,
-      cropStyle: CropStyle.rectangle,
-      aspectRatioPresets: [
-        CropAspectRatioPreset.original,
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
-      ],
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'image Customization',
@@ -455,6 +447,14 @@ class _AddBookAdminState extends State<AddBookAdmin> {
           toolbarWidgetColor: Colors.deepOrange,
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: false,
+          cropStyle: CropStyle.rectangle,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.original,
+            CropAspectRatioPreset.square,
+            CropAspectRatioPreset.ratio3x2,
+            CropAspectRatioPreset.ratio4x3,
+            CropAspectRatioPreset.ratio16x9
+          ],
         ),
 
         //[todo: web only]

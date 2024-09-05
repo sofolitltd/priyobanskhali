@@ -55,6 +55,7 @@ class BkashGateway {
     }
 
     var mobileNo = '00011122233';
+
     //
     await FirebaseFirestore.instance
         .collection('users')
@@ -119,8 +120,7 @@ class BkashGateway {
       });
     } on BkashFailure catch (e) {
       /// if something went wrong then show the log
-      // print(e.message);
-      // print(st);
+      print('Failed: ${e.message}');
 
       Navigator.pop(context);
 
@@ -130,8 +130,8 @@ class BkashGateway {
         ..showSnackBar(SnackBar(content: Text(e.message)));
     } catch (e) {
       /// if something went wrong then show the log
-      // print(e);
-      // print(st);
+      print('catch: $e');
+
       Navigator.pop(context);
 
       /// if something went wrong then show the snack-bar
