@@ -6,9 +6,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../screens/home/components/book_details.dart';
-import '../../utils/repo.dart';
 import '/admin/book/edit_book_admin.dart';
+import '../../screens/home/book/book_details.dart';
+import '../../utils/repo.dart';
 import 'add_book_admin.dart';
 import 'add_book_categories.dart';
 

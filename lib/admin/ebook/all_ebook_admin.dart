@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../screens/home/components/ebook_details.dart';
+import '../../screens/home/ebook/ebook_details.dart';
 import '../../utils/repo.dart';
 import 'add_ebook_admin.dart';
 import 'add_ebook_categories.dart';

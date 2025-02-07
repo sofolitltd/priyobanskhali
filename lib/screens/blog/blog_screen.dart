@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '/models/blog_model.dart';
-import '/widgets/blog_card.dart';
+import 'blog_card.dart';
 
 class BlogScreen extends StatelessWidget {
   const BlogScreen({super.key});

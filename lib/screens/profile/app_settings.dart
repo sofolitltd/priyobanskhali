@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../utils/open_app.dart';
 import '/screens/profile/change_password.dart';
 import '/utils/repo.dart';
+import '../../utils/open_app.dart';
 
 class AppSettings extends StatelessWidget {
   const AppSettings({super.key});
@@ -262,7 +262,7 @@ class AppSettings extends StatelessWidget {
                 backgroundColor: Colors.blue.shade50.withOpacity(.5),
                 child: Padding(
                   padding: const EdgeInsets.all(5),
-                  child: Image.network(
+                  child: Image.asset(
                     AppRepo.kDevLogo,
                     fit: BoxFit.cover,
                   ),

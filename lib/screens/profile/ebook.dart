@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/screens/home/components/see_more_ebook.dart';
+import '../home/ebook/see_more_ebook.dart';
 
 class Ebooks extends StatelessWidget {
   const Ebooks({super.key});
@@ -14,7 +14,7 @@ class Ebooks extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: Colors.white,
         title: Text(
           'Ebooks',

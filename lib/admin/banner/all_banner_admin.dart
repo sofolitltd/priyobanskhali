@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-import '../../screens/home/home_banner_details.dart';
+import '../../screens/home/banner/home_banner_details.dart';
 import 'add_banner.dart';
 import 'edit_banner.dart';
 

@@ -43,5 +43,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /lib/screens/payment/credentials.dart
+/lib/bkash/apis/bkash_credentials.dart
 /lib/database
 

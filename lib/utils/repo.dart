@@ -10,7 +10,7 @@ class AppRepo {
   static const kTkSymbol = '৳';
 
 // title text
-  static const kExploreText = 'Explore';
+  static const kEmergencyTitleText = 'বাঁশখালীর জরুরি সেবা';
   static const kRecentText = 'Recent books';
   static const kPopularText = 'Popular books';
 
@@ -70,7 +70,7 @@ class AppRepo {
   static const kUnionText = 'Union';
 
 // btn text
-  static const kSeeMoreText = 'See more';
+  static const kSeeMoreText = 'See More';
   static const kSignupText = 'Create account';
   static const kSignupWithGoogleText = 'Sign up with google';
   static const kForgetText = 'Forget password?';
@@ -80,7 +80,7 @@ class AppRepo {
 // drawer
   static const kHomeText = 'হোম';
   static const kNewBooksText = 'নতুন বই';
-  static const kSettingsText = 'সেটিংস ';
+  static const kSettingsText = 'সেটিংস';
   static const kDownloadText = 'ডাউনলোড';
   static const kSelectYourUnionText = 'Select your union';
 
@@ -111,10 +111,9 @@ class AppRepo {
   //
   static const kDevName = 'Sofol IT';
   static const kDevMobile = '01704340860';
-  static const kDevWebsite = 'www.sofolit.com';
+  static const kDevWebsite = 'https://sofolit.vercel.app';
   static const kDevEmail = 'www.sofolitltd@gmail.com';
-  static const kDevLogo =
-      'https://sofolit.com/wp-content/uploads/2023/01/sofolit-logo-black.png';
+  static const kDevLogo = 'assets/logo/sofol_it.png';
 
   // home
 }

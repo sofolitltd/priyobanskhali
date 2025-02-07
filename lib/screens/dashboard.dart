@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:priyobanskhali/screens/profile/ebook.dart';
 
 import '/screens/profile/profile.dart';
 import '/screens/shop/shop.dart';
@@ -14,6 +16,7 @@ class Dashboard extends StatefulWidget {
 
 List screenList = [
   const Home(),
+  const Ebooks(),
   const BlogScreen(),
   const Shop(),
   const Profile(),
@@ -25,35 +28,36 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: NavigationBar(
         backgroundColor: Colors.white,
-        currentIndex: _selectedScreen,
-        unselectedItemColor: Colors.grey,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) => setState(() => _selectedScreen = index),
-        items: const [
+        selectedIndex: _selectedScreen,
+        onDestinationSelected: (index) =>
+            setState(() => _selectedScreen = index),
+        destinations: const [
           //
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
+          NavigationDestination(
+            icon: Icon(Iconsax.home),
             label: 'Home',
           ),
           //
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book_outlined),
+          NavigationDestination(
+            icon: Icon(Iconsax.book),
+            label: 'E Library',
+          ),
+
+          NavigationDestination(
+            icon: Icon(Iconsax.box),
             label: 'Blog',
           ),
 
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag_outlined),
+          NavigationDestination(
+            icon: Icon(Iconsax.shopping_bag),
             label: 'Shop',
           ),
 
           //
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
+          NavigationDestination(
+            icon: Icon(Iconsax.profile_2user),
             label: 'Profile',
           ),
         ],

@@ -51,63 +51,67 @@ class _ImageSliderState extends State<ImageSlider> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade50),
-                BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade100),
-              ],
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: widget.imageUrls.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                          widget.imageUrls[index]), // Use cached_network_image
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  // child: Image.network(widget.imageUrls[index]),
-                );
-              },
-            ),
+        //
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade50),
+              BoxShadow(blurRadius: 8, color: Colors.blueGrey.shade100),
+            ],
           ),
-        ),
-        // const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            for (int i = 0; i < widget.imageUrls.length; i++)
-              GestureDetector(
-                onTap: () {
-                  _pageController.animateToPage(i,
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeInOut);
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  margin: const EdgeInsets.all(5),
-                  width: _currentIndex == i ? 24 : 10,
-                  height: _currentIndex == i ? 12 : 10,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(32),
-                    color: _currentIndex == i
-                        ? const Color(0xff1A6642)
-                        : Colors.grey,
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: widget.imageUrls.length,
+            itemBuilder: (context, index) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                        widget.imageUrls[index]), // Use cached_network_image
+                    fit: BoxFit.contain,
                   ),
                 ),
-              ),
-          ],
+                // child: Image.network(widget.imageUrls[index]),
+              );
+            },
+          ),
+        ),
+
+        //
+        Positioned(
+          right: 25,
+          bottom: 16,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (int i = 0; i < widget.imageUrls.length; i++)
+                GestureDetector(
+                  onTap: () {
+                    _pageController.animateToPage(i,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeInOut);
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    margin: const EdgeInsets.all(5),
+                    width: _currentIndex == i ? 24 : 10,
+                    height: _currentIndex == i ? 12 : 10,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      color: _currentIndex == i
+                          ? const Color(0xff1A6642)
+                          : Colors.grey,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ],
     );

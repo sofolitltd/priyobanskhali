@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../components/see_more_book.dart';
-import '../components/see_more_ebook.dart';
+import '../book/see_more_book.dart';
+import '../ebook/see_more_ebook.dart';
 
 const List<String> list = <String>['Book', 'Ebook'];
 
@@ -60,7 +60,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
       //
       body: ListView(
-        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(16),
         children: [
           //
@@ -98,7 +97,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
 
-          const SizedBox(width: 8),
+          const SizedBox(height: 8),
 
           //
           StreamBuilder<QuerySnapshot>(

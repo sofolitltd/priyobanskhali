@@ -2,14 +2,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_update/in_app_update.dart';
+import 'package:priyobanskhali/screens/auth/splash.dart';
 
 import 'database/firebase_options.dart';
-import 'notification/fcm_api.dart';
-import 'screens/auth/splash.dart';
 import 'utils/repo.dart';
 import 'utils/style.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   // init firebase
@@ -19,65 +19,111 @@ void main() async {
   );
 
   // fcm
-  await FCMApi().initNotifications();
+  // await FCMApi().initNotifications();
 
   // run main app
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    checkForUpdate();
+  }
+
+  //
+  Future<void> checkForUpdate() async {
+    print('checking for Update');
+    InAppUpdate.checkForUpdate().then((info) {
+      setState(() {
+        if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+          print('update available');
+          update();
+        }
+      });
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  void update() async {
+    print('Updating');
+    await InAppUpdate.startFlexibleUpdate();
+    InAppUpdate.completeFlexibleUpdate().then((_) {}).catchError((e) {
+      print(e.toString());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      key: navigatorKey,
       title: AppRepo.kAppName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          useMaterial3: false,
-          canvasColor: const Color(0xfff8f8f8),
-          primaryColor: const Color(0xff2849a0),
-          appBarTheme: const AppBarTheme(
-            elevation: 0,
-            centerTitle: true,
-            // backgroundColor: Colors.transparent,
-            backgroundColor: Colors.white,
-            iconTheme: IconThemeData(color: Colors.black),
-          ),
-          // cardColor: Colors.blue.shade50,
-          fontFamily: GoogleFonts.poppins().fontFamily,
+        useMaterial3: true,
+        colorSchemeSeed: Colors.white,
+        // canvasColor: const Color(0xfff8f8f8),
+        // primaryColor: const Color(0xff2849a0),
+        // scaffoldBackgroundColor: Colors.white,
+        cardColor: Colors.white,
 
-          // elevated btn
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppStyle.kPrimaryColor,
-              foregroundColor: Colors.white,
-              minimumSize: const Size(48, 48),
-              textStyle: GoogleFonts.poppins().copyWith(
-                fontWeight: FontWeight.w600,
-                letterSpacing: .4,
-              ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
+        cardTheme: CardTheme(
+          color: Colors.white,
+          surfaceTintColor: Colors.white,
+          elevation: 4,
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+          titleTextStyle: TextStyle(fontSize: 18),
+        ),
+        // cardColor: Colors.blue.shade50,
+        fontFamily: GoogleFonts.hindSiliguri().fontFamily,
+
+        // elevated btn
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppStyle.kPrimaryColor,
+            foregroundColor: Colors.white,
+            // minimumSize: const Size(48, 48),
+            textStyle: GoogleFonts.poppins().copyWith(
+              fontWeight: FontWeight.w600,
+              letterSpacing: .4,
             ),
+            // shape:
+            //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
-          outlinedButtonTheme: OutlinedButtonThemeData(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.black,
-              minimumSize: const Size(48, 48),
-              textStyle: GoogleFonts.poppins().copyWith(
-                fontWeight: FontWeight.w600,
-                letterSpacing: .4,
-                color: Colors.black,
-              ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-            ),
-          ),
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            selectedItemColor: AppStyle.kPrimaryColor,
-          )),
-      home: const Splash(),
+        ),
+        // outlinedButtonTheme: OutlinedButtonThemeData(
+        //   style: OutlinedButton.styleFrom(
+        //     foregroundColor: Colors.black,
+        //     minimumSize: const Size(48, 48),
+        //     textStyle: GoogleFonts.poppins().copyWith(
+        //       fontWeight: FontWeight.w600,
+        //       letterSpacing: .4,
+        //       color: Colors.black,
+        //     ),
+        //     shape:
+        //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        //   ),
+        // ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          selectedItemColor: AppStyle.kPrimaryColor,
+        ),
+      ),
+      home: Splash(),
     );
   }
 }
