@@ -30,7 +30,7 @@ class OrderConfirm extends StatelessWidget {
               Icon(
                 Icons.check_circle_outline_rounded,
                 size: 120,
-                color: Colors.green.shade400.withOpacity(.8),
+                color: Colors.green.shade400.withValues(alpha: .8),
               ),
 
               const SizedBox(height: 24),

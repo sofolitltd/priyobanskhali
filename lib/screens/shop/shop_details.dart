@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:priyobanskhali/utils/open_app.dart';
 
+import '/utils/open_app.dart';
 import '/utils/repo.dart';
 
 class ShopDetails extends StatefulWidget {
@@ -150,7 +150,11 @@ class _ShopDetailsState extends State<ShopDetails> {
                 ElevatedButton(
                     onPressed: () {
                       //
-                      OpenApp.withUrl(AppRepo.kWhatsAppLink);
+                      String message =
+                          "${widget.title} \nPrice:${AppRepo.kTkSymbol} ${widget.price} \nSize: $_selectedSize";
+                      var url =
+                          'whatsapp://send?phone=+88${AppRepo.kAdminNumber}&text=${Uri.encodeFull(message)}';
+                      OpenApp.withUrl(url);
                     },
                     child: const Text('Buy now'))
               ],

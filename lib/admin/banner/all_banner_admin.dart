@@ -79,7 +79,7 @@ class AllBannerAdmin extends StatelessWidget {
                       child: GridTile(
                         footer: Container(
                           decoration: BoxDecoration(
-                            color: Colors.blue.shade50.withOpacity(.9),
+                            color: Colors.blue.shade50.withValues(alpha: .9),
                           ),
                           padding: const EdgeInsets.only(left: 16),
                           child: Row(

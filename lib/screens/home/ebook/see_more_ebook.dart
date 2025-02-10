@@ -249,7 +249,8 @@ class _EbookCardFullState extends State<EbookCardFull> {
                                     margin: const EdgeInsets.only(right: 4),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      color: Colors.black12.withOpacity(.05),
+                                      color:
+                                          Colors.black12.withValues(alpha: .05),
                                     ),
                                     child: Text(
                                       '$category',

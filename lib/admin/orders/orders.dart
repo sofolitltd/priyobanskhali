@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../utils/open_app.dart';
 import '/utils/date_time_formatter.dart';
+import '../../utils/open_app.dart';
 
 const List<String> list = <String>['Book', 'Ebook'];
 
@@ -159,8 +159,9 @@ class _OrdersState extends State<Orders> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(16),
                                   color: data.get('bookType') == 'book'
-                                      ? Colors.green.withOpacity(1)
-                                      : Colors.red.shade500.withOpacity(.8),
+                                      ? Colors.green.withValues(alpha: 1)
+                                      : Colors.red.shade500
+                                          .withValues(alpha: .8),
                                 ),
                                 child: Text(
                                   data.get('bookType'),

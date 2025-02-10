@@ -180,7 +180,7 @@ class _AddContactAdminState extends State<AddContactAdmin> {
                               valueColor: AlwaysStoppedAnimation<Color>(
                                   Colors.blueAccent.shade200),
                               backgroundColor: Colors.lightBlueAccent.shade100
-                                  .withOpacity(.2),
+                                  .withValues(alpha: .2),
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -199,7 +199,7 @@ class _AddContactAdminState extends State<AddContactAdmin> {
                               valueColor: AlwaysStoppedAnimation<Color>(
                                   Colors.blueAccent.shade200),
                               backgroundColor: Colors.lightBlueAccent.shade100
-                                  .withOpacity(.2),
+                                  .withValues(alpha: .2),
                             ),
                           ),
                           const SizedBox(height: 8),

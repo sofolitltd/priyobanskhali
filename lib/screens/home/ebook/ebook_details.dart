@@ -1,13 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
 
 import '/utils/open_app.dart';
 import '/utils/repo.dart';
 import '../../../bkash/bkash.dart';
+import '../../auth/login.dart';
 import '../pdf_viewer_cached.dart';
 import 'ebook_list.dart';
 
@@ -306,186 +307,107 @@ class _EbookDetailsState extends State<EbookDetails> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
               child: Column(
                 children: [
-                  //
-                  StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .collection('ebook')
-                          .where('bookId', isEqualTo: widget.bookId)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return const Center(child: Text('Something wrong'));
-                        }
-
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return InkWell(
-                            onTap: null,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                                horizontal: 16,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade100,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.access_time_rounded,
-                                    size: 20,
-                                    color: Colors.grey,
-                                  ),
-
-                                  SizedBox(width: 12),
-
-                                  //
-                                  Text(
-                                    'Loading',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
-                              ),
+                  if (widget.price == 0)
+                    InkWell(
+                      onTap: () async {
+                        // view pdf
+                        Get.to(PdfViewerCached(
+                          title: widget.title,
+                          url: widget.fileUrl,
+                        ));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.greenAccent.shade100,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.chrome_reader_mode_outlined,
+                              size: 20,
+                              color: Colors.black,
                             ),
+
+                            SizedBox(width: 12),
+
+                            //
+                            Text(
+                              'Read now',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+
+                  // var doc = snapshot.data!.docs;
+
+                  //
+                  else
+                    InkWell(
+                      onTap: () async {
+                        final currentUser = FirebaseAuth.instance.currentUser;
+
+                        if (currentUser == null) {
+                          _showLoginDialog();
+                        } else {
+                          showPaymentBottomSheet(
+                            context,
+                            bookType: 'ebook',
+                            bookId: widget.bookId,
+                            price: widget.price.toDouble(),
+                            address: '',
                           );
                         }
-
-                        if (snapshot.data!.size == 0) {
-                          return widget.price == 0
-                              ? InkWell(
-                                  onTap: () async {
-                                    // view pdf
-                                    Get.to(PdfViewerCached(
-                                      title: widget.title,
-                                      url: widget.fileUrl,
-                                    ));
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                      horizontal: 16,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.greenAccent.shade100,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.chrome_reader_mode_outlined,
-                                          size: 20,
-                                          color: Colors.black,
-                                        ),
-
-                                        SizedBox(width: 12),
-
-                                        //
-                                        Text(
-                                          'Read now',
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              : InkWell(
-                                  onTap: () async {
-                                    //
-                                    showPaymentBottomSheet(
-                                      context,
-                                      bookType: 'ebook',
-                                      bookId: widget.bookId,
-                                      price: widget.price.toDouble(),
-                                      address: '',
-                                    );
-                                  },
-                                  child: Material(
-                                    color: Colors.transparent,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 12,
-                                        horizontal: 16,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blueAccent.shade100,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.shopping_cart_outlined,
-                                            size: 20,
-                                            color: Colors.white,
-                                          ),
-
-                                          SizedBox(width: 12),
-
-                                          //
-                                          Text(
-                                            'Buy now',
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                        }
-
-                        // var doc = snapshot.data!.docs;
-
                         //
-                        return InkWell(
-                          onTap: () async {
-                            // view pdf
-                            Get.to(PdfViewerCached(
-                                title: widget.title, url: widget.fileUrl));
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.greenAccent.shade100,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.chrome_reader_mode_outlined,
-                                  size: 20,
-                                  color: Colors.black,
-                                ),
-
-                                SizedBox(width: 12),
-
-                                //
-                                Text(
-                                  'Read now',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
+                      },
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
                           ),
-                        );
-                      }),
+                          decoration: BoxDecoration(
+                            color: Colors.blueAccent.shade100,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.shopping_cart_outlined,
+                                size: 20,
+                                color: Colors.white,
+                              ),
 
-                  const SizedBox(height: 8),
+                              SizedBox(width: 12),
+
+                              //
+                              Text(
+                                'Buy now',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  const SizedBox(height: 12),
 
                   // call to support
                   Material(
-                    color: Colors.transparent,
+                    // color: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     child: ListTile(
                       // tileColor: Colors.white,
                       onTap: () {
@@ -493,16 +415,20 @@ class _EbookDetailsState extends State<EbookDetails> {
                         OpenApp.withNumber(AppRepo.kAdminNumber);
                       },
                       visualDensity: const VisualDensity(vertical: -4),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 10),
                       leading: CircleAvatar(
                         backgroundColor: Colors.blue.shade50,
                         child: Icon(
-                          Icons.support_agent,
-                          color: Colors.black.withOpacity(.8),
+                          Iconsax.call,
+                          color: Colors.black.withValues(alpha: .8),
                         ),
                       ),
-                      title: const Text('Call now'),
-                      subtitle: const Text('call for more query'),
+                      title: const Text(
+                        'Support Center ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: const Text('Call for more query'),
                       trailing: const Icon(
                         Icons.arrow_right_alt_rounded,
                       ),
@@ -718,4 +644,17 @@ class _ChoosePaymentState extends State<ChoosePayment> {
       ),
     );
   }
+}
+
+void _showLoginDialog() {
+  Get.defaultDialog(
+    title: "Login Required",
+    middleText: "You need to log in to like this post.",
+    textConfirm: "Login",
+    textCancel: "Cancel",
+    onConfirm: () {
+      Get.back();
+      Get.to(() => Login()); // Navigate to login page
+    },
+  );
 }

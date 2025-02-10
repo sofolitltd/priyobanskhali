@@ -4,9 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:priyobanskhali/screens/auth/login.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '/models/blog_model.dart';
@@ -25,11 +27,11 @@ class BlogDetails extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.white10.withOpacity(.01),
+        backgroundColor: Colors.white10.withValues(alpha: .01),
         automaticallyImplyLeading: false,
         centerTitle: false,
         title: CircleAvatar(
-          backgroundColor: Colors.white.withOpacity(.8),
+          backgroundColor: Colors.white.withValues(alpha: .8),
           foregroundColor: Colors.black,
           child: const BackButton(),
         ),
@@ -58,7 +60,7 @@ class BlogDetails extends StatelessWidget {
                       bottomLeft: Radius.circular(8),
                       bottomRight: Radius.circular(8),
                     ),
-                    color: Colors.green.shade300.withOpacity(.1),
+                    color: Colors.green.shade300.withValues(alpha: .1),
                     image: DecorationImage(
                       fit:
                           size.width > 1000 ? BoxFit.contain : BoxFit.fitHeight,
@@ -142,7 +144,7 @@ class BlogDetails extends StatelessWidget {
 
                         // see more
                         Material(
-                          color: Colors.black12.withOpacity(.05),
+                          color: Colors.black12.withValues(alpha: .05),
                           borderRadius: BorderRadius.circular(5),
                           child: InkWell(
                             onTap: () {
@@ -283,10 +285,12 @@ class BlogDetails extends StatelessWidget {
 
                                           const SizedBox(width: 4),
 
-                                          // del btn
-                                          if (data[index].get('uid') ==
-                                              FirebaseAuth
-                                                  .instance.currentUser!.uid)
+                                          if (FirebaseAuth
+                                                      .instance.currentUser !=
+                                                  null &&
+                                              data[index].get('uid') ==
+                                                  FirebaseAuth.instance
+                                                      .currentUser!.uid)
                                             Material(
                                               child: InkWell(
                                                 onTap: () async {
@@ -295,7 +299,7 @@ class BlogDetails extends StatelessWidget {
                                                       .collection('blog')
                                                       .doc(blog.blogId)
                                                       .collection('comments');
-                                                  //
+
                                                   await ref
                                                       .doc(data[index].id)
                                                       .delete()
@@ -314,7 +318,7 @@ class BlogDetails extends StatelessWidget {
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                            )
                                         ],
                                       );
                                     }),
@@ -334,19 +338,7 @@ class BlogDetails extends StatelessWidget {
 
                     const SizedBox(height: 8),
 
-                    // comment field
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                      ),
-                      child: MessageField(
-                        ref: FirebaseFirestore.instance
-                            .collection('blog')
-                            .doc(blog.blogId)
-                            .collection('comments'),
-                        uid: FirebaseAuth.instance.currentUser!.uid,
-                      ),
-                    ),
+                    CommentSection(blogId: blog.blogId),
                   ],
                 ),
               )
@@ -354,6 +346,50 @@ class BlogDetails extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CommentSection extends StatelessWidget {
+  final String blogId;
+
+  const CommentSection({super.key, required this.blogId});
+
+  void _showLoginDialog() {
+    Get.defaultDialog(
+      title: "Login Required",
+      middleText: "You need to log in to comment.",
+      textCancel: "Cancel",
+      textConfirm: "Login",
+      confirmTextColor: Colors.white,
+      onConfirm: () {
+        Get.back(); // Close dialog
+        Get.to(() => Login()); // Navigate to login page
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: user != null
+          ? MessageField(
+              ref: FirebaseFirestore.instance
+                  .collection('blog')
+                  .doc(blogId)
+                  .collection('comments'),
+              uid: user.uid,
+            )
+          : ElevatedButton(
+              onPressed: _showLoginDialog,
+              child: const Text(
+                'Login to comment',
+                style: TextStyle(),
+              ),
+            ),
     );
   }
 }
@@ -372,7 +408,7 @@ class _ShareButtonState extends State<ShareButton> {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      backgroundColor: Colors.white.withOpacity(.8),
+      backgroundColor: Colors.white.withValues(alpha: .8),
       foregroundColor: Colors.black,
       child: IconButton(
         tooltip: 'Share',

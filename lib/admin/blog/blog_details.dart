@@ -68,7 +68,7 @@ class BlogDetails extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Colors.green.shade300.withOpacity(.1),
+                    color: Colors.green.shade300.withValues(alpha: .1),
                     image: DecorationImage(
                       fit:
                           size.width > 1000 ? BoxFit.contain : BoxFit.fitHeight,

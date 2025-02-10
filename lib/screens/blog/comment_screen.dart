@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:priyobanskhali/utils/date_time_formatter.dart';
 
+import 'blog_details.dart';
+
 class CommentScreen extends StatefulWidget {
   const CommentScreen({super.key, required this.blogId});
 
@@ -130,20 +132,24 @@ class _CommentScreenState extends State<CommentScreen> {
 
                                   const SizedBox(width: 4),
 
-                                  // del btn
-                                  if (data[index].get('uid') ==
-                                      FirebaseAuth.instance.currentUser!.uid)
+                                  if (FirebaseAuth.instance.currentUser !=
+                                          null &&
+                                      data[index].get('uid') ==
+                                          FirebaseAuth
+                                              .instance.currentUser!.uid)
                                     Material(
                                       child: InkWell(
                                         onTap: () async {
                                           await ref
                                               .doc(data[index].id)
                                               .delete()
-                                              .then((value) {
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    'Delete comment successfully');
-                                          });
+                                              .then(
+                                            (value) {
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                      'Delete comment successfully');
+                                            },
+                                          );
                                         },
                                         child: const Padding(
                                           padding: EdgeInsets.all(5),
@@ -173,19 +179,21 @@ class _CommentScreenState extends State<CommentScreen> {
             ),
           ),
 
+          CommentSection(blogId: widget.blogId),
+
           //
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width > 800
-                  ? MediaQuery.of(context).size.width * .2
-                  : 16,
-              vertical: 16,
-            ),
-            child: MessageField(
-              ref: ref,
-              uid: FirebaseAuth.instance.currentUser!.uid,
-            ),
-          ),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(
+          //     horizontal: MediaQuery.of(context).size.width > 800
+          //         ? MediaQuery.of(context).size.width * .2
+          //         : 16,
+          //     vertical: 16,
+          //   ),
+          //   child: MessageField(
+          //     ref: ref,
+          //     uid: FirebaseAuth.instance.currentUser!.uid,
+          //   ),
+          // ),
         ],
       ),
     );
@@ -238,7 +246,7 @@ class _MessageFieldState extends State<MessageField> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.black12.withOpacity(.05),
+              color: Colors.black12.withValues(alpha: .05),
               borderRadius: BorderRadius.circular(8),
             ),
             child: TextField(
@@ -260,7 +268,7 @@ class _MessageFieldState extends State<MessageField> {
           padding: const EdgeInsets.only(left: 4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: Colors.black12.withOpacity(.05),
+            color: Colors.black12.withValues(alpha: .05),
           ),
           child: IconButton(
             onPressed: isButtonActive

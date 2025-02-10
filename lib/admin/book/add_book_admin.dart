@@ -399,7 +399,7 @@ class _AddBookAdminState extends State<AddBookAdmin> {
                               valueColor: AlwaysStoppedAnimation<Color>(
                                   Colors.blueAccent.shade200),
                               backgroundColor: Colors.lightBlueAccent.shade100
-                                  .withOpacity(.2),
+                                  .withValues(alpha: .2),
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -418,7 +418,7 @@ class _AddBookAdminState extends State<AddBookAdmin> {
                               valueColor: AlwaysStoppedAnimation<Color>(
                                   Colors.blueAccent.shade200),
                               backgroundColor: Colors.lightBlueAccent.shade100
-                                  .withOpacity(.2),
+                                  .withValues(alpha: .2),
                             ),
                           ),
                           const SizedBox(height: 8),

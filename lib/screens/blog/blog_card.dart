@@ -3,10 +3,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:priyobanskhali/screens/auth/login.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '/utils/date_time_formatter.dart';
@@ -140,7 +141,110 @@ class BlogCard extends StatelessWidget {
   }
 }
 
-// like btn
+// // like btn
+// class LikeCounter extends StatefulWidget {
+//   const LikeCounter({super.key, required this.blogId});
+//
+//   final String blogId;
+//
+//   @override
+//   State<LikeCounter> createState() => _LikeCounterState();
+// }
+//
+// class _LikeCounterState extends State<LikeCounter> {
+//   late String _userId;
+//   late CollectionReference _likesRef;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _userId = FirebaseAuth.instance.currentUser!.uid;
+//     _likesRef = FirebaseFirestore.instance
+//         .collection('blog')
+//         .doc(widget.blogId)
+//         .collection('likes');
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Material(
+//       color: Colors.black12.withOpacity(.05),
+//       borderRadius: BorderRadius.circular(5),
+//       child: Padding(
+//         padding: const EdgeInsets.symmetric(vertical: 4.5, horizontal: 5),
+//         child: StreamBuilder<QuerySnapshot>(
+//           stream: _likesRef.snapshots(),
+//           builder: (context, snapshot) {
+//             if (snapshot.hasError ||
+//                 snapshot.connectionState == ConnectionState.waiting) {
+//               return _buildLikeButton(0, false);
+//             }
+//
+//             final data = snapshot.data!.docs;
+//             final likeCount = data.length;
+//             final userLiked = data.any((doc) => doc.id == _userId);
+//
+//             return StreamBuilder<DocumentSnapshot>(
+//               stream: _likesRef.doc(_userId).snapshots(),
+//               builder: (context, snapshot) {
+//                 if (snapshot.hasError ||
+//                     snapshot.connectionState == ConnectionState.waiting) {
+//                   return _buildLikeButton(likeCount, userLiked);
+//                 }
+//
+//                 final userData = snapshot.data!;
+//                 final userExists = userData.exists;
+//
+//                 return _buildLikeButton(likeCount, userLiked, userExists);
+//               },
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildLikeButton(int likeCount, bool userLiked,
+//       [bool userExists = true]) {
+//     return InkWell(
+//       onTap: () async {
+//         if (userLiked) {
+//           Fluttertoast.showToast(msg: 'Unlike');
+//           await _likesRef.doc(_userId).delete();
+//         } else {
+//           Fluttertoast.showToast(msg: 'Like');
+//           await _likesRef.doc(_userId).set({'uid': _userId});
+//         }
+//       },
+//       child: Container(
+//         constraints: const BoxConstraints(minWidth: 40),
+//         child: Row(
+//           children: [
+//             Icon(
+//               userLiked ? Icons.favorite : Icons.favorite_outline_rounded,
+//               size: 16,
+//               color: userLiked ? Colors.red : Colors.black,
+//             ),
+//             const SizedBox(width: 4),
+//             Container(
+//                 constraints: const BoxConstraints(minWidth: 24),
+//                 color: Colors.transparent,
+//                 child: Text(
+//                   '$likeCount',
+//                   textAlign: TextAlign.center,
+//                 )),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+
 class LikeCounter extends StatefulWidget {
   const LikeCounter({super.key, required this.blogId});
 
@@ -151,13 +255,13 @@ class LikeCounter extends StatefulWidget {
 }
 
 class _LikeCounterState extends State<LikeCounter> {
-  late String _userId;
+  String? _userId;
   late CollectionReference _likesRef;
 
   @override
   void initState() {
     super.initState();
-    _userId = FirebaseAuth.instance.currentUser!.uid;
+    _userId = FirebaseAuth.instance.currentUser?.uid;
     _likesRef = FirebaseFirestore.instance
         .collection('blog')
         .doc(widget.blogId)
@@ -167,54 +271,40 @@ class _LikeCounterState extends State<LikeCounter> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.black12.withOpacity(.05),
+      color: Colors.black12.withValues(alpha: .05),
       borderRadius: BorderRadius.circular(5),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.5, horizontal: 5),
         child: StreamBuilder<QuerySnapshot>(
           stream: _likesRef.snapshots(),
           builder: (context, snapshot) {
-            if (snapshot.hasError ||
-                snapshot.connectionState == ConnectionState.waiting) {
+            if (!snapshot.hasData) {
               return _buildLikeButton(0, false);
             }
 
             final data = snapshot.data!.docs;
             final likeCount = data.length;
-            final userLiked = data.any((doc) => doc.id == _userId);
+            final userLiked = _userId != null &&
+                data.any((doc) => doc.id == _userId); // Check if the user liked
 
-            return StreamBuilder<DocumentSnapshot>(
-              stream: _likesRef.doc(_userId).snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError ||
-                    snapshot.connectionState == ConnectionState.waiting) {
-                  return _buildLikeButton(likeCount, userLiked);
-                }
-
-                final userData = snapshot.data!;
-                final userExists = userData.exists;
-
-                return _buildLikeButton(likeCount, userLiked, userExists);
-              },
-            );
+            return _buildLikeButton(likeCount, userLiked);
           },
         ),
       ),
     );
   }
 
-  Widget _buildLikeButton(int likeCount, bool userLiked,
-      [bool userExists = true]) {
+  Widget _buildLikeButton(int likeCount, bool userLiked) {
     return InkWell(
-      onTap: () async {
-        if (userLiked) {
-          Fluttertoast.showToast(msg: 'Unlike');
-          await _likesRef.doc(_userId).delete();
-        } else {
-          Fluttertoast.showToast(msg: 'Like');
-          await _likesRef.doc(_userId).set({'uid': _userId});
-        }
-      },
+      onTap: _userId == null
+          ? () => _showLoginDialog() // Show login prompt
+          : () async {
+              if (userLiked) {
+                await _likesRef.doc(_userId).delete();
+              } else {
+                await _likesRef.doc(_userId).set({'uid': _userId});
+              }
+            },
       child: Container(
         constraints: const BoxConstraints(minWidth: 40),
         child: Row(
@@ -226,15 +316,29 @@ class _LikeCounterState extends State<LikeCounter> {
             ),
             const SizedBox(width: 4),
             Container(
-                constraints: const BoxConstraints(minWidth: 24),
-                color: Colors.transparent,
-                child: Text(
-                  '$likeCount',
-                  textAlign: TextAlign.center,
-                )),
+              constraints: const BoxConstraints(minWidth: 24),
+              color: Colors.transparent,
+              child: Text(
+                '$likeCount',
+                textAlign: TextAlign.center,
+              ),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showLoginDialog() {
+    Get.defaultDialog(
+      title: "Login Required",
+      middleText: "You need to log in to like this post.",
+      textConfirm: "Login",
+      textCancel: "Cancel",
+      onConfirm: () {
+        Get.back();
+        Get.to(() => Login()); // Navigate to login page
+      },
     );
   }
 }
@@ -255,7 +359,7 @@ class _ShareButtonRecState extends State<ShareButtonRec> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.black12.withOpacity(.05),
+      color: Colors.black12.withValues(alpha: .05),
       borderRadius: BorderRadius.circular(5),
       child: InkWell(
         borderRadius: BorderRadius.circular(4),

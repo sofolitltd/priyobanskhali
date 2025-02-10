@@ -195,7 +195,7 @@ class _EmergencyCategoryAdminCardState
             height: 32,
             width: 32,
             decoration: BoxDecoration(
-              color: Colors.grey.shade50.withOpacity(.8),
+              color: Colors.grey.shade50.withValues(alpha: .8),
               shape: BoxShape.circle,
             ),
             child: PopupMenuButton<Menu>(

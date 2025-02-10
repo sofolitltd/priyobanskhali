@@ -259,7 +259,7 @@ class AppSettings extends StatelessWidget {
               ),
               leading: CircleAvatar(
                 radius: 32,
-                backgroundColor: Colors.blue.shade50.withOpacity(.5),
+                backgroundColor: Colors.blue.shade50.withValues(alpha: .5),
                 child: Padding(
                   padding: const EdgeInsets.all(5),
                   child: Image.asset(

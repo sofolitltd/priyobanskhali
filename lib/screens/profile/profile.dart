@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../admin/admin_dashboard.dart';
+import '../auth/login.dart';
 import '../auth/splash.dart';
 import 'app_settings.dart';
 import 'books.dart';
@@ -17,7 +18,12 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var userUid = FirebaseAuth.instance.currentUser!.uid;
+    // var userUid = FirebaseAuth.instance.currentUser!.uid;
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      return const Login();
+    }
 
     return Scaffold(
       // backgroundColor: Colors.white,
@@ -42,7 +48,7 @@ class Profile extends StatelessWidget {
       body: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection('users')
-              .doc(userUid)
+              .doc(currentUser.uid)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -275,7 +281,7 @@ class ProfileCard extends StatelessWidget {
               child: ListTile(
                 trailing: const Icon(Icons.arrow_right_alt_outlined),
                 leading: CircleAvatar(
-                  backgroundColor: Colors.green.shade900.withOpacity(.8),
+                  backgroundColor: Colors.green.shade900.withValues(alpha: .8),
                   child: const Icon(
                     (Icons.book_outlined),
                     color: Colors.white,
@@ -307,7 +313,7 @@ class ProfileCard extends StatelessWidget {
               child: ListTile(
                 trailing: const Icon(Icons.arrow_right_alt_outlined),
                 leading: CircleAvatar(
-                  backgroundColor: Colors.red.shade500.withOpacity(.8),
+                  backgroundColor: Colors.red.shade500.withValues(alpha: .8),
                   child: const Icon(
                     (Icons.book_outlined),
                     color: Colors.white,

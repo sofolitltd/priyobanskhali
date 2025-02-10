@@ -14,16 +14,16 @@ class Dashboard extends StatefulWidget {
   State<Dashboard> createState() => _DashboardState();
 }
 
-List screenList = [
-  const Home(),
-  const Ebooks(),
-  const BlogScreen(),
-  const Shop(),
-  const Profile(),
-];
-
 class _DashboardState extends State<Dashboard> {
   int _selectedScreen = 0;
+
+  List screenList = [
+    const Home(),
+    const Ebooks(),
+    const BlogScreen(),
+    const Shop(),
+    const Profile(),
+  ];
 
   @override
   Widget build(BuildContext context) {

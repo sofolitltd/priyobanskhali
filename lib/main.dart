@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:priyobanskhali/screens/auth/splash.dart';
 
 import 'database/firebase_options.dart';
+import 'screens/dashboard.dart';
 import 'utils/repo.dart';
 import 'utils/style.dart';
 
@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppStyle.kPrimaryColor,
             foregroundColor: Colors.white,
-            // minimumSize: const Size(48, 48),
+            minimumSize: const Size(48, 48),
             textStyle: GoogleFonts.poppins().copyWith(
               fontWeight: FontWeight.w600,
               letterSpacing: .4,
@@ -106,24 +106,24 @@ class _MyAppState extends State<MyApp> {
             //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         ),
-        // outlinedButtonTheme: OutlinedButtonThemeData(
-        //   style: OutlinedButton.styleFrom(
-        //     foregroundColor: Colors.black,
-        //     minimumSize: const Size(48, 48),
-        //     textStyle: GoogleFonts.poppins().copyWith(
-        //       fontWeight: FontWeight.w600,
-        //       letterSpacing: .4,
-        //       color: Colors.black,
-        //     ),
-        //     shape:
-        //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        //   ),
-        // ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.black,
+            minimumSize: const Size(48, 48),
+            textStyle: TextStyle(
+              fontWeight: FontWeight.w600,
+              letterSpacing: .4,
+              color: Colors.black,
+            ),
+            // shape:
+            //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           selectedItemColor: AppStyle.kPrimaryColor,
         ),
       ),
-      home: Splash(),
+      home: Dashboard(),
     );
   }
 }

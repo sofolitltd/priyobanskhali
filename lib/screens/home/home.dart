@@ -117,7 +117,7 @@ class CustomBookSection extends StatelessWidget {
             children: [
               //
               Text(
-                '${collection} collection'.toUpperCase(),
+                '$collection collection'.toUpperCase(),
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

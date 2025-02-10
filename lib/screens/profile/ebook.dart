@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:priyobanskhali/screens/auth/login.dart';
 
 import '../home/ebook/see_more_ebook.dart';
 
@@ -12,6 +13,12 @@ class Ebooks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      return const Login();
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -22,85 +29,60 @@ class Ebooks extends StatelessWidget {
             color: Colors.black,
           ),
         ),
-        // actions: [
-        //   IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded)),
-        // ],
       ),
-
-      //
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(currentUser.uid)
             .collection('ebook')
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('Something wrong'));
+            return const Center(child: Text('Something went wrong'));
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container();
+            return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text(
-                'No book Found!',
-              ),
-            );
+          if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No book found!'));
           }
 
-          var doc = snapshot.data!.docs;
-          List<String> books = [];
-          for (var element in doc) {
-            books.add(element.id);
-          }
+          var userBooks = snapshot.data!.docs;
 
-          // return Text(books.toString());
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemCount: doc.length,
+            itemCount: userBooks.length,
             itemBuilder: (context, index) {
-              var data = doc[index];
-              //
-              return StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('ebook')
-                      .where('id', isEqualTo: data.get('bookId'))
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Center(child: Text('Something wrong'));
-                    }
+              var bookId = userBooks[index].get('bookId');
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+              return FutureBuilder<QuerySnapshot>(
+                future: FirebaseFirestore.instance
+                    .collection('ebook')
+                    .where('id', isEqualTo: bookId)
+                    .get(),
+                builder: (context, bookSnapshot) {
+                  if (bookSnapshot.hasError) {
+                    return const Center(child: Text('Something went wrong'));
+                  }
 
-                    if (snapshot.data!.size == 0) {
-                      return const Center(
-                        child: Text(
-                          'No book Found!',
-                        ),
-                      );
-                    }
+                  if (bookSnapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                    var doc = snapshot.data!.docs;
-                    //
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: doc.length,
-                        itemBuilder: (context, index) {
-                          var data = doc[index];
-                          log(data.id);
+                  if (bookSnapshot.data == null ||
+                      bookSnapshot.data!.docs.isEmpty) {
+                    return const Center(child: Text('No book found!'));
+                  }
 
-                          //
-                          return EbookCardFull(data: data);
-                        });
-                  });
-              // return BookCardFull(data: data);
+                  var ebookData = bookSnapshot.data!.docs.first;
+                  log(ebookData.id);
+
+                  return EbookCardFull(data: ebookData);
+                },
+              );
             },
           );
         },
