@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:priyobanskhali/screens/auth/login.dart';
 
 import '../home/ebook/see_more_ebook.dart';
 
@@ -14,10 +13,6 @@ class Ebooks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
-
-    if (currentUser == null) {
-      return const Login();
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -33,7 +28,7 @@ class Ebooks extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .doc(currentUser.uid)
+            .doc(currentUser!.uid)
             .collection('ebook')
             .snapshots(),
         builder: (context, snapshot) {

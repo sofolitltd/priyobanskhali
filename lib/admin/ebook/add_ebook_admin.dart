@@ -313,16 +313,6 @@ class _AddEbookAdminState extends State<AddEbookAdmin> {
                         fileUrl: downloadedUrl, name: fileName);
 
                     //
-                    FCMSender().sendPushMessage(
-                      topic: 'ebook',
-                      title: _bookTitleController.text.trim(),
-                      body: _bookDescriptionController.text
-                          .trim()
-                          .characters
-                          .take(150)
-                          .toString(),
-                    );
-                    //
                     if (!context.mounted) return;
                     Navigator.pop(this.context);
                   }
@@ -443,6 +433,18 @@ class _AddEbookAdminState extends State<AddEbookAdmin> {
       'price': int.parse(_bookPriceController.text.trim()),
       'categories': _selectedCategories,
     });
+
+    //
+    await FCMSender.sendNotification(
+      topic: 'ebook',
+      title: 'New ebook added - ${_bookTitleController.text.trim()}',
+      body: _bookDescriptionController.text
+          .trim()
+          .characters
+          .take(150)
+          .toString(),
+      image: imageUrl,
+    );
 
     //
     if (!mounted) return;

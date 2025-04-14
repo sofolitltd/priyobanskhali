@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
+import 'package:priyobanskhali/notification/fcm_sender.dart';
 
 import '/bkash/apis/bkash_apis.dart';
 import 'models/create_payment_response.dart';
@@ -93,8 +94,17 @@ class Bkash {
       await _storeOrderData(
           executePaymentResponse, bookType, bookId, bookPrice, address);
 
+      if (bookType == 'book') {
+        // send notification to admin
+        FCMSender.sendNotification(
+          title: 'New $bookType Order – Action Needed',
+          body: 'A customer just placed a $bookType order. Review it now.',
+          topic: 'orders',
+        );
+      }
+
       //
-      // _navigateToSuccessPage(executePaymentResponse.paymentID);
+      _navigateToSuccessPage(executePaymentResponse.paymentID);
     } else {
       Fluttertoast.showToast(msg: "Payment Execution Failed!");
     }

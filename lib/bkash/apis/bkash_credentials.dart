@@ -15,17 +15,17 @@ class BkashCredentialsSandbox {
       "2is7hdktrekvrbljjh44ll3d9l1dtjo4pasmjvs5vl5qr3fug4b";
 }
 
-// wellbeing clinic
-class BkashCredentialsProduction {
-  static const username = "01823161333";
-  static const password = "6&I.2{x,d,2";
-  static const appKey = "qhbEjtuRp09ti9qHKEBThgN1tc";
-  static const appSecret =
-      "VFNHJo7nTwOTfn4pLfzaUpZTBCssOyDLnpuAeIDsHI25Jh1KDEkv";
-}
+// // wellbeing clinic
+// class BkashCredentialsProduction {
+//   static const username = "01823161333";
+//   static const password = "6&I.2{x,d,2";
+//   static const appKey = "qhbEjtuRp09ti9qHKEBThgN1tc";
+//   static const appSecret =
+//       "VFNHJo7nTwOTfn4pLfzaUpZTBCssOyDLnpuAeIDsHI25Jh1KDEkv";
+// }
 
 // priyo banshkhali
-class BkashCredentialsProduction1 {
+class BkashCredentialsProduction {
   static const username = "01700934950";
   static const password = "&:*<6+E*rmQ";
   static const appKey = "2dJMl9YVklbAy6hS5cIMQtQ2tc";

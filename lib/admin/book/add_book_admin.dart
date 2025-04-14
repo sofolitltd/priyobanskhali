@@ -280,17 +280,6 @@ class _AddBookAdminState extends State<AddBookAdmin> {
                 } else if (_formState.currentState!.validate()) {
                   // fire image
                   await uploadImageToFireStore();
-
-                  //
-                  FCMSender().sendPushMessage(
-                    topic: 'book',
-                    title: _bookTitleController.text.trim(),
-                    body: _bookDescriptionController.text
-                        .trim()
-                        .characters
-                        .take(150)
-                        .toString(),
-                  );
                 }
               },
               label: const Text('Save')),
@@ -332,6 +321,18 @@ class _AddBookAdminState extends State<AddBookAdmin> {
       'description': _bookDescriptionController.text.trim(),
       'image': imageUrl,
     });
+
+    //
+    await FCMSender.sendNotification(
+      topic: 'book',
+      title: 'New book added - ${_bookTitleController.text.trim()}',
+      body: _bookDescriptionController.text
+          .trim()
+          .characters
+          .take(150)
+          .toString(),
+      image: imageUrl,
+    );
 
     //
     if (!mounted) return;

@@ -7,8 +7,8 @@ import 'package:iconsax/iconsax.dart';
 
 import '/utils/open_app.dart';
 import '/utils/repo.dart';
-import '../../../bkash/bkash.dart';
 import '../../auth/login.dart';
+import '../choose_payment.dart';
 import '../pdf_viewer_cached.dart';
 import 'ebook_list.dart';
 
@@ -355,13 +355,24 @@ class _EbookDetailsState extends State<EbookDetails> {
                         final currentUser = FirebaseAuth.instance.currentUser;
 
                         if (currentUser == null) {
-                          _showLoginDialog();
+                          showDialog(
+                              context: context,
+                              builder: (context) => Login()).then((v) {
+                            // setState(() {});
+                            showPaymentBottomSheet(
+                              context,
+                              bookType: 'ebook',
+                              bookId: widget.bookId,
+                              price: widget.price,
+                              address: '',
+                            );
+                          });
                         } else {
                           showPaymentBottomSheet(
                             context,
                             bookType: 'ebook',
                             bookId: widget.bookId,
-                            price: widget.price.toDouble(),
+                            price: widget.price,
                             address: '',
                           );
                         }
@@ -500,7 +511,7 @@ Future showPaymentBottomSheet(
   BuildContext context, {
   required String bookType,
   required String bookId,
-  required double price,
+  required int price,
   required String address,
 }) {
   return showModalBottomSheet(
@@ -518,143 +529,6 @@ Future showPaymentBottomSheet(
         price: price,
         address: address,
       );
-    },
-  );
-}
-
-// Choose Payment
-class ChoosePayment extends StatefulWidget {
-  const ChoosePayment({
-    super.key,
-    required this.bookType,
-    required this.bookId,
-    required this.price,
-    required this.address,
-  });
-
-  final String bookType;
-  final String bookId;
-  final double price;
-  final String address;
-
-  @override
-  State<ChoosePayment> createState() => _ChoosePaymentState();
-}
-
-class _ChoosePaymentState extends State<ChoosePayment> {
-  bool isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          //
-          Text(
-            'Choose payment method',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-
-          const Divider(),
-
-          //
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              //
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'price:',
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      //
-                      Text(
-                        '${widget.price}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall!
-                            .copyWith(
-                                color: Colors.redAccent,
-                                fontWeight: FontWeight.bold,
-                                height: 1.2),
-                      ),
-                      const SizedBox(width: 4),
-
-                      //
-                      Text(
-                        AppRepo.kTkSymbol,
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              //
-              isLoading ? const CircularProgressIndicator() : Container(),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          //bkash tile
-          ListTile(
-            tileColor: isLoading ? Colors.pink.shade50 : null,
-            onTap: isLoading
-                ? null
-                : () async {
-                    setState(() => isLoading = true);
-
-                    //
-                    await Bkash.payment(
-                      production: false,
-                      amount: widget.price.toString(),
-                      bookType: widget.bookType,
-                      bookId: widget.bookId,
-                      address: widget.address,
-                    );
-
-                    // Navigator.pop(context);
-                    setState(() => isLoading = false);
-                  },
-            shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: Theme.of(context).dividerColor),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            leading: Image.asset(
-              AppRepo.kBkashLogo,
-              width: 56,
-              height: 56,
-            ),
-            title: const Text('bkash'),
-            subtitle: const Text('pay with your bkash number'),
-          ),
-
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
-  }
-}
-
-void _showLoginDialog() {
-  Get.defaultDialog(
-    title: "Login Required",
-    middleText: "You need to log in to like this post.",
-    textConfirm: "Login",
-    textCancel: "Cancel",
-    onConfirm: () {
-      Get.back();
-      Get.to(() => Login()); // Navigate to login page
     },
   );
 }

@@ -27,7 +27,7 @@ class ContactSection extends StatelessWidget {
       ),
       // padding: const EdgeInsets.all(8),
       child: Container(
-        height: 72,
+        height: 80,
         width: double.infinity,
         padding: const EdgeInsets.symmetric(
           vertical: 0,

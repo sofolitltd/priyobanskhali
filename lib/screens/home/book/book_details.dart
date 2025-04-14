@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '/utils/repo.dart';
 import '../../../utils/open_app.dart';
+import '../../auth/login.dart';
 import '../ebook/ebook_details.dart';
 import 'book_list.dart';
 
@@ -229,372 +231,9 @@ class _BookDetailsState extends State<BookDetails> {
               child: Column(
                 children: [
                   //
-                  // StreamBuilder<QuerySnapshot>(
-                  //     stream: FirebaseFirestore.instance
-                  //         .collection('users')
-                  //         .doc(FirebaseAuth.instance.currentUser!.uid)
-                  //         .collection('books')
-                  //         .where('bookId', isEqualTo: widget.bookId)
-                  //         .snapshots(),
-                  //     builder: (context, snapshot) {
-                  //       if (snapshot.hasError) {
-                  //         return const Center(child: Text('Something wrong'));
-                  //       }
-                  //
-                  //       if (snapshot.connectionState ==
-                  //           ConnectionState.waiting) {
-                  //         return InkWell(
-                  //           onTap: null,
-                  //           child: Container(
-                  //             padding: const EdgeInsets.symmetric(
-                  //               vertical: 12,
-                  //               horizontal: 16,
-                  //             ),
-                  //             decoration: BoxDecoration(
-                  //               color: Colors.grey.shade100,
-                  //               borderRadius: BorderRadius.circular(4),
-                  //             ),
-                  //             child: Row(
-                  //               mainAxisAlignment: MainAxisAlignment.center,
-                  //               children: const [
-                  //                 Icon(
-                  //                   Icons.access_time_rounded,
-                  //                   size: 20,
-                  //                   color: Colors.grey,
-                  //                 ),
-                  //
-                  //                 SizedBox(width: 12),
-                  //
-                  //                 //
-                  //                 Text(
-                  //                   'Loading',
-                  //                   style: TextStyle(color: Colors.grey),
-                  //                 ),
-                  //               ],
-                  //             ),
-                  //           ),
-                  //         );
-                  //       }
-                  //
-                  //       if (snapshot.data!.size == 0) {
-                  //         return widget.price == 0
-                  //             ? InkWell(
-                  //                 onTap: () async {
-                  //                   // view pdf
-                  //                 },
-                  //                 child: Container(
-                  //                   padding: const EdgeInsets.symmetric(
-                  //                     vertical: 12,
-                  //                     horizontal: 16,
-                  //                   ),
-                  //                   decoration: BoxDecoration(
-                  //                     color: Colors.greenAccent.shade100,
-                  //                     borderRadius: BorderRadius.circular(4),
-                  //                   ),
-                  //                   child: Row(
-                  //                     mainAxisAlignment:
-                  //                         MainAxisAlignment.center,
-                  //                     children: const [
-                  //                       Icon(
-                  //                         Icons.chrome_reader_mode_outlined,
-                  //                         size: 20,
-                  //                         color: Colors.black,
-                  //                       ),
-                  //
-                  //                       SizedBox(width: 12),
-                  //
-                  //                       //
-                  //                       Text(
-                  //                         'Read now',
-                  //                         style: TextStyle(color: Colors.black),
-                  //                       ),
-                  //                     ],
-                  //                   ),
-                  //                 ),
-                  //               )
-                  //             : InkWell(
-                  //                 onTap: () async {
-                  //                   //
-                  //                   showModalBottomSheet<void>(
-                  //                     context: context,
-                  //                     shape: const RoundedRectangleBorder(
-                  //                       borderRadius: BorderRadius.only(
-                  //                         topLeft: Radius.circular(8),
-                  //                         topRight: Radius.circular(8),
-                  //                       ),
-                  //                     ),
-                  //                     builder: (BuildContext context) {
-                  //                       return Padding(
-                  //                         padding: const EdgeInsets.all(16),
-                  //                         child: Column(
-                  //                           mainAxisAlignment:
-                  //                               MainAxisAlignment.start,
-                  //                           crossAxisAlignment:
-                  //                               CrossAxisAlignment.start,
-                  //                           mainAxisSize: MainAxisSize.min,
-                  //                           children: [
-                  //                             //
-                  //                             Text(
-                  //                               'Choose payment method',
-                  //                               style: Theme.of(context)
-                  //                                   .textTheme
-                  //                                   .titleMedium,
-                  //                             ),
-                  //
-                  //                             const Divider(),
-                  //
-                  //                             //
-                  //                             Text(
-                  //                               'price:',
-                  //                               style: Theme.of(context)
-                  //                                   .textTheme
-                  //                                   .labelMedium,
-                  //                             ),
-                  //                             Row(
-                  //                               crossAxisAlignment:
-                  //                                   CrossAxisAlignment.start,
-                  //                               children: [
-                  //                                 //
-                  //                                 Text(
-                  //                                   '${widget.price}',
-                  //                                   style: Theme.of(context)
-                  //                                       .textTheme
-                  //                                       .headline5!
-                  //                                       .copyWith(
-                  //                                           color: Colors
-                  //                                               .redAccent,
-                  //                                           fontWeight:
-                  //                                               FontWeight.bold,
-                  //                                           height: 1.2),
-                  //                                 ),
-                  //                                 const SizedBox(width: 4),
-                  //
-                  //                                 //
-                  //                                 Text(
-                  //                                   AppRepo.kTkSymbol,
-                  //                                   style: Theme.of(context)
-                  //                                       .textTheme
-                  //                                       .labelMedium,
-                  //                                 ),
-                  //                               ],
-                  //                             ),
-                  //
-                  //                             const SizedBox(height: 16),
-                  //
-                  //                             //bkash tile
-                  //                             ListTile(
-                  //                               onTap: () async {
-                  //                                 Get.to(
-                  //                                   PlaceOrder(
-                  //                                     method: 'Bkash',
-                  //                                     id: widget.bookId,
-                  //                                     title: widget.title,
-                  //                                     month: widget.author,
-                  //                                     year: widget.stock,
-                  //                                     price: widget.price,
-                  //                                   ),
-                  //                                 );
-                  //                               },
-                  //                               shape: RoundedRectangleBorder(
-                  //                                 side: BorderSide(
-                  //                                     width: 1,
-                  //                                     color: Theme.of(context)
-                  //                                         .dividerColor),
-                  //                                 borderRadius:
-                  //                                     BorderRadius.circular(8),
-                  //                               ),
-                  //                               leading: Image.asset(
-                  //                                 AppRepo.kBkashLogo,
-                  //                                 width: 56,
-                  //                                 height: 56,
-                  //                               ),
-                  //                               title: const Text('bkash'),
-                  //                               subtitle: const Text(
-                  //                                   'pay with your bkash number'),
-                  //                             ),
-                  //
-                  //                             const SizedBox(height: 8),
-                  //                           ],
-                  //                         ),
-                  //                       );
-                  //                     },
-                  //                   );
-                  //                 },
-                  //                 child: Material(
-                  //                   color: Colors.transparent,
-                  //                   child: Container(
-                  //                     padding: const EdgeInsets.symmetric(
-                  //                       vertical: 12,
-                  //                       horizontal: 16,
-                  //                     ),
-                  //                     decoration: BoxDecoration(
-                  //                       color: Colors.blueAccent.shade100,
-                  //                       borderRadius: BorderRadius.circular(4),
-                  //                     ),
-                  //                     child: Row(
-                  //                       mainAxisAlignment:
-                  //                           MainAxisAlignment.center,
-                  //                       children: const [
-                  //                         Icon(
-                  //                           Icons.shopping_cart_outlined,
-                  //                           size: 20,
-                  //                           color: Colors.white,
-                  //                         ),
-                  //
-                  //                         SizedBox(width: 12),
-                  //
-                  //                         //
-                  //                         Text(
-                  //                           'Buy now',
-                  //                           style:
-                  //                               TextStyle(color: Colors.white),
-                  //                         ),
-                  //                       ],
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //               );
-                  //       }
-                  //
-                  //       // var doc = snapshot.data!.docs;
-                  //
-                  //       //
-                  //       return InkWell(
-                  //         onTap: () async {
-                  //           // view pdf
-                  //           Get.to(PdfViewerCached(
-                  //               title: widget.title, url: widget.fileUrl));
-                  //         },
-                  //         child: Container(
-                  //           padding: const EdgeInsets.symmetric(
-                  //             vertical: 12,
-                  //             horizontal: 16,
-                  //           ),
-                  //           decoration: BoxDecoration(
-                  //             color: Colors.greenAccent.shade100,
-                  //             borderRadius: BorderRadius.circular(4),
-                  //           ),
-                  //           child: Row(
-                  //             mainAxisAlignment: MainAxisAlignment.center,
-                  //             children: const [
-                  //               Icon(
-                  //                 Icons.chrome_reader_mode_outlined,
-                  //                 size: 20,
-                  //                 color: Colors.black,
-                  //               ),
-                  //
-                  //               SizedBox(width: 12),
-                  //
-                  //               //
-                  //               Text(
-                  //                 'Read now',
-                  //                 style: TextStyle(color: Colors.black),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ),
-                  //       );
-                  //     }),
-
-                  // buy
-                  GestureDetector(
-                    onTap: () {
-                      String address = '';
-                      //
-                      showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text('Address'),
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Icon(Icons.clear),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                titlePadding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 10),
-                                actions: [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                        onPressed: () {
-                                          if (address == '') {
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    'Enter address to continue.');
-                                          } else {
-                                            Navigator.pop(context);
-
-                                            //
-                                            showPaymentBottomSheet(
-                                              context,
-                                              bookType: 'book',
-                                              bookId: widget.bookId,
-                                              price: widget.price.toDouble(),
-                                              address: address,
-                                            );
-                                          }
-                                        },
-                                        child: const Text('Continue')),
-                                  ),
-                                ],
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 10),
-                                content: TextField(
-                                  onChanged: (value) {
-                                    address = value;
-                                  },
-                                  minLines: 5,
-                                  maxLines: 7,
-                                  decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                        vertical: 4,
-                                        horizontal: 8,
-                                      ),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      hintText: 'Enter your address ...'),
-                                ),
-                              ));
-                    },
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 16,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent.shade100,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.shopping_cart_outlined,
-                              size: 20,
-                              color: Colors.white,
-                            ),
-
-                            SizedBox(width: 12),
-
-                            //
-                            Text(
-                              'Buy now',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        )),
+                  BuyNowButton(
+                    bookId: widget.bookId,
+                    price: widget.price,
                   ),
 
                   const SizedBox(height: 10),
@@ -689,6 +328,139 @@ class _BookDetailsState extends State<BookDetails> {
             categoryName: widget.categories[0],
           ),
         ],
+      ),
+    );
+  }
+}
+
+//
+class BuyNowButton extends StatefulWidget {
+  final String bookId;
+  final int price;
+
+  const BuyNowButton({
+    super.key,
+    required this.bookId,
+    required this.price,
+  });
+
+  @override
+  State<BuyNowButton> createState() => _BuyNowButtonState();
+}
+
+class _BuyNowButtonState extends State<BuyNowButton> {
+  final TextEditingController _addressController = TextEditingController();
+
+  void _showAddressDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        titlePadding: const EdgeInsets.only(top: 16, left: 16, right: 8),
+        contentPadding: EdgeInsets.all(16),
+        insetPadding: EdgeInsets.all(16),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Shipping Address'),
+            InkWell(
+              onTap: () => Navigator.pop(context),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(Icons.clear),
+              ),
+            ),
+          ],
+        ),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 400),
+          child: TextField(
+            controller: _addressController,
+            minLines: 4,
+            maxLines: 7,
+            decoration: InputDecoration(
+              hintText: 'Enter your address ...',
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+              contentPadding: const EdgeInsets.all(16),
+            ),
+          ),
+        ),
+        actionsPadding: const EdgeInsets.all(16),
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                final address = _addressController.text.trim();
+                if (address.isEmpty) {
+                  Fluttertoast.showToast(msg: 'Enter address to continue.');
+                  return;
+                }
+
+                Navigator.pop(context);
+                showPaymentBottomSheet(
+                  context,
+                  bookType: 'book',
+                  bookId: widget.bookId,
+                  price: widget.price,
+                  address: address,
+                );
+              },
+              child: const Text('Continue'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _handleTap() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      showDialog(
+        context: context,
+        builder: (context) => const Login(),
+      ).then((v) {
+        _showAddressDialog();
+      });
+    } else {
+      _showAddressDialog();
+    }
+  }
+
+  @override
+  void dispose() {
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _handleTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.blueAccent.shade100,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.shopping_cart_outlined,
+              size: 20,
+              color: Colors.white,
+            ),
+            SizedBox(width: 12),
+            Text(
+              'Buy now',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
       ),
     );
   }

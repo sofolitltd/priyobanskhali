@@ -7,7 +7,8 @@ class DTFormatter {
     String t = '';
     var tm = timestamp as Timestamp;
     // t = DateFormat('EEE, dd MMMM, yyyy  - hh:mm a').format(tm.toDate());
-    t = DateFormat('dd MMM, yy - hh:mm a').format(tm.toDate());
+    t = DateFormat('hh:mm a dd/MM/yyyy').format(tm.toDate());
+    // t = DateFormat('dd MMM, yy - hh:mm a').format(tm.toDate());
     return t.toString();
   }
 

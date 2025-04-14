@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/screens/profile/change_password.dart';
 import '/utils/repo.dart';
 import '../../utils/open_app.dart';
 
@@ -27,42 +25,42 @@ class AppSettings extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // pass change
-          Text(
-            'Change Password',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-          ),
-
-          // pass
-          Card(
-            elevation: 0,
-            margin: const EdgeInsets.only(top: 8),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            child: ListTile(
-              onTap: () {
-                Get.to(const ChangePassword());
-              },
-              visualDensity: const VisualDensity(vertical: -1),
-              subtitle: Text(
-                'Change your old password',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              title: Text(
-                'Change Password',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              leading: CircleAvatar(
-                backgroundColor: Colors.blue.shade50,
-                child: const Icon(
-                  (Icons.lock_outline),
-                  color: Colors.purple,
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 24),
+          // // pass change
+          // Text(
+          //   'Change Password',
+          //   style: Theme.of(context).textTheme.titleMedium!.copyWith(),
+          // ),
+          //
+          // // pass
+          // Card(
+          //   elevation: 0,
+          //   margin: const EdgeInsets.only(top: 8),
+          //   shape:
+          //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          //   child: ListTile(
+          //     onTap: () {
+          //       Get.to(const ChangePassword());
+          //     },
+          //     visualDensity: const VisualDensity(vertical: -1),
+          //     subtitle: Text(
+          //       'Change your old password',
+          //       style: Theme.of(context).textTheme.bodySmall,
+          //     ),
+          //     title: Text(
+          //       'Change Password',
+          //       style: Theme.of(context).textTheme.titleMedium,
+          //     ),
+          //     leading: CircleAvatar(
+          //       backgroundColor: Colors.blue.shade50,
+          //       child: const Icon(
+          //         (Icons.lock_outline),
+          //         color: Colors.purple,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          //
+          // const SizedBox(height: 24),
 
           // info title
           Text(
@@ -257,14 +255,19 @@ class AppSettings extends StatelessWidget {
                 'Contact to developer',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              leading: CircleAvatar(
-                radius: 32,
-                backgroundColor: Colors.blue.shade50.withValues(alpha: .5),
-                child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: Image.asset(
-                    AppRepo.kDevLogo,
-                    fit: BoxFit.cover,
+              leading: Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.black12,
+                  ),
+                  image: DecorationImage(
+                    // fit: BoxFit.cover,
+                    image: AssetImage(
+                      AppRepo.kDevLogo,
+                    ),
                   ),
                 ),
               ),

@@ -34,11 +34,12 @@ class _OrdersState extends State<Orders> {
               child: DropdownMenu<String>(
                 width: 120,
                 initialSelection: list.first,
-                inputDecorationTheme: const InputDecorationTheme(
-                  contentPadding: EdgeInsets.only(left: 12),
+                inputDecorationTheme: InputDecorationTheme(
+                  contentPadding: const EdgeInsets.only(left: 16),
                   isDense: true,
-                  border: OutlineInputBorder(gapPadding: 0),
-                  constraints: BoxConstraints(maxHeight: 40),
+                  border: OutlineInputBorder(
+                      gapPadding: 0, borderRadius: BorderRadius.circular(50)),
+                  constraints: const BoxConstraints(maxHeight: 40),
                 ),
                 onSelected: (String? value) {
                   // This is called when the user selects an item.
@@ -61,7 +62,7 @@ class _OrdersState extends State<Orders> {
           stream: FirebaseFirestore.instance
               .collection('orders')
               .where('bookType', isEqualTo: dropdownValue.toLowerCase())
-              // .orderBy('date', descending: true)
+              .orderBy('date', descending: true)
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -74,13 +75,13 @@ class _OrdersState extends State<Orders> {
             var docs = snapshot.data!.docs;
 
             if (docs.isEmpty) {
-              return const Center(child: Text('No order found'));
+              return Center(child: Text('No $dropdownValue order found!'));
             }
 
             return ListView.separated(
               physics: const BouncingScrollPhysics(),
               itemCount: docs.length,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
               separatorBuilder: (BuildContext context, int index) =>
                   const SizedBox(height: 16),
               itemBuilder: (_, index) {
@@ -95,8 +96,6 @@ class _OrdersState extends State<Orders> {
                     elevation: 0,
                     child: Container(
                       padding: const EdgeInsets.all(10),
-                      decoration:
-                          BoxDecoration(borderRadius: BorderRadius.circular(8)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -106,48 +105,97 @@ class _OrdersState extends State<Orders> {
                             children: [
                               //
                               Container(
-                                  constraints:
-                                      const BoxConstraints(minWidth: 40),
                                   alignment: Alignment.center,
-                                  padding: const EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
+                                    shape: BoxShape.circle,
                                     border: Border.all(color: Colors.black12),
                                   ),
-                                  child: Text('${docs.length - index}')),
+                                  child: Text(
+                                    '${docs.length - index}',
+                                    style: TextStyle(height: 1),
+                                  )),
 
                               const SizedBox(width: 16),
                               //
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                  spacing: 2,
                                   children: [
                                     //title
                                     Text('ORDER ID',
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall!
-                                            .copyWith(height: 1)),
+                                            .copyWith(
+                                              height: 1,
+                                              fontSize: 10,
+                                            )),
 
                                     //order
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        //
-                                        Text(
-                                          data.get('orderId'),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium!
-                                              .copyWith(
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 1),
-                                        ),
-                                      ],
+                                    Text(
+                                      data.get('orderId'),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              height: 1),
                                     ),
                                   ],
                                 ),
+                              ),
+
+                              //
+                              IconButton(
+                                onPressed: () async {
+                                  final confirm = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Confirm Delete'),
+                                      content: const Text(
+                                          'Are you sure you want to delete this order?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(true),
+                                          child: const Text('Delete',
+                                              style:
+                                                  TextStyle(color: Colors.red)),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
+                                  if (confirm == true) {
+                                    try {
+                                      await FirebaseFirestore.instance
+                                          .collection('orders')
+                                          .doc(data.get('paymentId'))
+                                          .delete();
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text('Order deleted')),
+                                      );
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content:
+                                                Text('Failed to delete: $e')),
+                                      );
+                                    }
+                                  }
+                                },
+                                icon: const Icon(Icons.delete),
                               ),
 
                               //
@@ -177,17 +225,12 @@ class _OrdersState extends State<Orders> {
                             ],
                           ),
 
-                          const SizedBox(height: 10),
+                          const Divider(height: 10),
 
                           // book
-                          Container(
-                            height: 72,
+                          SizedBox(
+                            height: 48,
                             width: double.infinity,
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Theme.of(context).dividerColor),
-                                borderRadius: BorderRadius.circular(4)),
                             child: StreamBuilder<DocumentSnapshot>(
                                 stream: FirebaseFirestore.instance
                                     .collection(dropdownValue.toLowerCase())
@@ -217,14 +260,9 @@ class _OrdersState extends State<Orders> {
                                         imageBuilder:
                                             (context, imageProvider) =>
                                                 Container(
-                                          height: 64,
-                                          width: 64,
+                                          height: 40,
+                                          width: 40,
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                              topLeft: Radius.circular(8),
-                                              topRight: Radius.circular(8),
-                                            ),
                                             image: DecorationImage(
                                               image: imageProvider,
                                               fit: BoxFit.cover,
@@ -234,8 +272,8 @@ class _OrdersState extends State<Orders> {
                                         progressIndicatorBuilder:
                                             (context, url, downloadProgress) =>
                                                 Container(
-                                          height: 64,
-                                          width: 64,
+                                          height: 40,
+                                          width: 40,
                                           decoration: BoxDecoration(
                                             color: Colors.blue.shade50,
                                             borderRadius:
@@ -263,7 +301,7 @@ class _OrdersState extends State<Orders> {
                                               // title
                                               Text(
                                                 data.get('title'),
-                                                maxLines: 2,
+                                                maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.hindSiliguri(
                                                   textStyle: Theme.of(context)
@@ -396,19 +434,52 @@ class _OrdersState extends State<Orders> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       //title
-                                      Text('Date:',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall!
-                                              .copyWith(
-                                                color: Colors.blueGrey,
-                                                height: 1.2,
-                                              )),
+                                      Text(
+                                        'Date:',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              color: Colors.blueGrey,
+                                              height: 1.2,
+                                            ),
+                                      ),
 
                                       //mobile
                                       Text(
                                         DTFormatter.dateTimeFormat(
                                             data.get('date')),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              fontWeight: FontWeight.w400,
+                                              height: 1.2,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  // price,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      //title
+                                      Text(
+                                        'Price:',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              color: Colors.blueGrey,
+                                              height: 1.2,
+                                            ),
+                                      ),
+
+                                      //mobile
+                                      Text(
+                                        data.get('price'),
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium!
@@ -431,21 +502,21 @@ class _OrdersState extends State<Orders> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               //status
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
+                                // crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    child: Text(
-                                      'STATUS',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!
-                                          .copyWith(height: 1),
-                                    ),
-                                  ),
+                                  //
                                   Text(
-                                    data.get('status'),
+                                    'Status:  ',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(height: 1),
+                                  ),
+
+                                  //
+                                  Text(
+                                    data.get('status').toUpperCase(),
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium!

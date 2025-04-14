@@ -74,7 +74,7 @@ class _ImageSliderState extends State<ImageSlider> {
                   image: DecorationImage(
                     image: CachedNetworkImageProvider(
                         widget.imageUrls[index]), // Use cached_network_image
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 // child: Image.network(widget.imageUrls[index]),

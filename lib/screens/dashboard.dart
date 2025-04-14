@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:priyobanskhali/screens/profile/ebook.dart';
 
 import '/screens/profile/profile.dart';
 import '/screens/shop/shop.dart';
@@ -19,7 +18,6 @@ class _DashboardState extends State<Dashboard> {
 
   List screenList = [
     const Home(),
-    const Ebooks(),
     const BlogScreen(),
     const Shop(),
     const Profile(),
@@ -40,10 +38,6 @@ class _DashboardState extends State<Dashboard> {
             label: 'Home',
           ),
           //
-          NavigationDestination(
-            icon: Icon(Iconsax.book),
-            label: 'E Library',
-          ),
 
           NavigationDestination(
             icon: Icon(Iconsax.box),
@@ -55,7 +49,6 @@ class _DashboardState extends State<Dashboard> {
             label: 'Shop',
           ),
 
-          //
           NavigationDestination(
             icon: Icon(Iconsax.profile_2user),
             label: 'Profile',

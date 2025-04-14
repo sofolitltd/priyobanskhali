@@ -1,29 +1,30 @@
 import 'package:basic_utils/basic_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:priyobanskhali/screens/auth/login.dart';
 
 import '../../admin/admin_dashboard.dart';
-import '../auth/login.dart';
-import '../auth/splash.dart';
+import '../dashboard.dart';
 import 'app_settings.dart';
 import 'books.dart';
 import 'ebook.dart';
 import 'edit_profile.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // var userUid = FirebaseAuth.instance.currentUser!.uid;
-    final currentUser = FirebaseAuth.instance.currentUser;
+  State<Profile> createState() => _ProfileState();
+}
 
-    if (currentUser == null) {
-      return const Login();
-    }
+class _ProfileState extends State<Profile> {
+  @override
+  Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       // backgroundColor: Colors.white,
@@ -45,33 +46,59 @@ class Profile extends StatelessWidget {
               icon: const Icon(Icons.settings)),
         ],
       ),
-      body: StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(currentUser.uid)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const Center(child: Text('Something wrong'));
-            }
+      body: currentUser == null
+          ? Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 16,
+                  children: [
+                    Text(
+                      "Please Login or Register ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        //
+                        showDialog(
+                            context: context,
+                            builder: (context) => Login()).then((v) {
+                          setState(() {});
+                        });
+                      },
+                      child: Text('Login/Register'),
+                    ),
+                  ]),
+            )
+          : StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(currentUser.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(child: Text('Something wrong'));
+                }
 
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            if (!snapshot.data!.exists) {
-              return const Center(
-                child: Text(
-                  'No data Found!',
-                ),
-              );
-            }
+                if (!snapshot.data!.exists) {
+                  return const Center(
+                    child: Text(
+                      'No data Found!',
+                    ),
+                  );
+                }
 
-            var data = snapshot.data!;
+                var data = snapshot.data!;
 
-            // card
-            return ProfileCard(data: data);
-          }),
+                // card
+                return ProfileCard(data: data);
+              }),
     );
   }
 }
@@ -95,168 +122,157 @@ class ProfileCard extends StatelessWidget {
               elevation: 0,
               margin: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
+                  borderRadius: BorderRadius.circular(10)),
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                child: Row(
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                child: Column(
                   children: [
-                    data.get('image') == ''
-                        ? Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          )
-                        : Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(data.get('image')),
-                              ),
-                            ),
-                          ),
-
-                    const SizedBox(width: 16),
-
                     //
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // name
-                          Text(
-                            StringUtils.capitalize(data.get('name'),
-                                allWords: true),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(fontWeight: FontWeight.bold),
+                    Row(
+                      children: [
+                        //
+                        Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            shape: BoxShape.circle,
+                            image: (data.get('image') != null &&
+                                    data.get('image').toString().isNotEmpty)
+                                ? DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(data.get('image')),
+                                  )
+                                : null,
                           ),
+                          child: (data.get('image') == null ||
+                                  data.get('image').toString().isEmpty)
+                              ? const Icon(Icons.person,
+                                  size: 40, color: Colors.grey)
+                              : null,
+                        ),
 
-                          // id
-                          Row(
+                        const SizedBox(width: 16),
+
+                        //
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Id:  '),
-                              SelectableText(
-                                '${data.get('uid')}',
+                              // name
+                              Text(
+                                StringUtils.capitalize(data.get('name'),
+                                    allWords: true),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .titleSmall!
-                                    .copyWith(fontWeight: FontWeight.w600),
+                                    .titleMedium!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+
+                              // id
+                              Row(
+                                children: [
+                                  const Text('Id:  '),
+                                  SelectableText(
+                                    '${data.get('uid')}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+
+                              //
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size(150, 45),
+                                  ),
+                                  onPressed: () {
+                                    Get.to(EditProfile(data: data));
+                                  },
+                                  child: const Text('Edit profile')),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // info details
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //
+                        if (data.get('union') != '')
+                          // union
+                          Row(
+                            spacing: 12,
+                            children: [
+                              //
+                              CircleAvatar(
+                                radius: 14,
+                                backgroundColor: Colors.blueAccent,
+                                child: const Icon(
+                                  (Icons.location_on),
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
+                              ),
+                              Text(
+                                data.get('union'),
+                                style: Theme.of(context).textTheme.titleMedium,
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
 
-                          //
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(150, 45),
+                        if (data.get('union') != '') const SizedBox(height: 8),
+
+                        // mobile
+                        if (data.get('mobile') != '')
+                          Row(
+                            spacing: 12,
+                            children: [
+                              CircleAvatar(
+                                radius: 10,
+                                backgroundColor: Colors.green,
+                                child: const Icon(
+                                  (Icons.call),
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
                               ),
-                              onPressed: () {
-                                Get.to(EditProfile(data: data));
-                              },
-                              child: const Text('Edit profile')),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // info title
-            Text(
-              'Information',
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(),
-            ),
-
-            const SizedBox(height: 8),
-
-            // info details
-            Card(
-              elevation: 0,
-              margin: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //
-                    if (data.get('union') != '')
-                      // union
-                      ListTile(
-                        visualDensity: const VisualDensity(vertical: -2),
-                        subtitle: Text(
-                          'Union name',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        title: Text(
-                          data.get('union'),
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue.shade50,
-                          child: const Icon(
-                            (Icons.location_on),
-                            color: Colors.black,
+                              Text(
+                                data.get('mobile'),
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ],
                           ),
+                        if (data.get('mobile') != '') const SizedBox(height: 8),
+                        //email
+                        Row(
+                          spacing: 12,
+                          children: [
+                            CircleAvatar(
+                              radius: 10,
+                              backgroundColor: Colors.red,
+                              child: const Icon(
+                                (Icons.email_rounded),
+                                color: Colors.white,
+                                size: 14,
+                              ),
+                            ),
+                            Text(
+                              data.get('email'),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                          ],
                         ),
-                      ),
-
-                    if (data.get('union') != '') const Divider(height: 2),
-
-                    //email
-                    ListTile(
-                      visualDensity: const VisualDensity(vertical: -2),
-                      subtitle: Text(
-                        'Email address',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      title: Text(
-                        data.get('email'),
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.blue.shade50,
-                        child: const Icon(
-                          (Icons.email_rounded),
-                          color: Colors.red,
-                        ),
-                      ),
+                      ],
                     ),
-
-                    if (data.get('mobile') != '') const Divider(height: 2),
-
-                    //
-                    if (data.get('mobile') != '')
-                      ListTile(
-                        visualDensity: const VisualDensity(vertical: -2),
-                        subtitle: Text('Mobile number',
-                            style: Theme.of(context).textTheme.bodySmall),
-                        title: Text(
-                          data.get('mobile'),
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue.shade50,
-                          child: const Icon(
-                            (Icons.call),
-                            color: Colors.green,
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
@@ -378,10 +394,10 @@ class ProfileCard extends StatelessWidget {
                         child: ListTile(
                           trailing: const Icon(Icons.keyboard_arrow_down),
                           leading: CircleAvatar(
-                            backgroundColor: Theme.of(context).dividerColor,
+                            backgroundColor: Colors.blueAccent,
                             child: const Icon(
                               (Icons.admin_panel_settings_outlined),
-                              color: Colors.deepPurpleAccent,
+                              color: Colors.white,
                             ),
                           ),
                           title: Text(
@@ -392,7 +408,9 @@ class ProfileCard extends StatelessWidget {
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
                           subtitle: const Text('Manage app content'),
-                          onTap: () {
+                          onTap: () async {
+                            await FirebaseMessaging.instance
+                                .subscribeToTopic('orders');
                             //
                             Get.to(const AdminDashboard());
                           },
@@ -470,14 +488,31 @@ class ProfileCard extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(minimumSize: const Size(80, 40)),
-              child: const Text('Yes'),
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                //
-                Get.offAll(const Splash());
-              },
-            ),
+                style:
+                    ElevatedButton.styleFrom(minimumSize: const Size(80, 40)),
+                child: const Text('Yes'),
+                onPressed: () async {
+                  final user = FirebaseAuth.instance.currentUser;
+
+                  if (user != null) {
+                    final email = user.email;
+
+                    final adminDoc = await FirebaseFirestore.instance
+                        .collection('admin')
+                        .where('email', isEqualTo: email)
+                        .limit(1)
+                        .get();
+
+                    // If user is in admin collection, unsubscribe from 'orders'
+                    if (adminDoc.docs.isNotEmpty) {
+                      await FirebaseMessaging.instance
+                          .unsubscribeFromTopic('orders');
+                    }
+                  }
+
+                  await FirebaseAuth.instance.signOut();
+                  Get.offAll(const Dashboard());
+                }),
           ],
         );
       },

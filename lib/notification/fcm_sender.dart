@@ -1,44 +1,71 @@
 import 'dart:convert';
-import 'dart:developer';
+import 'dart:developer' as devtools;
 
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+import 'package:googleapis_auth/auth_io.dart' as auth;
 
 class FCMSender {
-//
-  sendPushMessage({
-    required String topic,
+  //
+  static Future<bool> sendNotification({
+    // required String token,
     required String title,
     required String body,
+    required String topic,
+    String? image,
   }) async {
-    try {
-      //
-      log("fcm");
+    // change this path according to project
+    var filePath = 'assets/data/priyobanskhalibd.json';
 
-      //
-      await http.post(
-        Uri.parse('https://fcm.googleapis.com/fcm/send'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization':
-              'key=AAAAJ3jraTs:APA91bHWfyErZWnPrFaNKS3GU568MECGA987ZSkGwqWlTscJWwXJ9dEZC-tOWtdno4KOi50ewzHlmuRbfB7e-UTw8Lmb0_o-TU9CZQqww9Pjh10EnLBjgv34208ZJNf6zlvTizOSq3V4',
+    //
+    final jsonCredentials = await rootBundle.loadString(filePath);
+    final credentials =
+        auth.ServiceAccountCredentials.fromJson(jsonCredentials);
+
+    //
+    final client = await auth.clientViaServiceAccount(
+      credentials,
+      ['https://www.googleapis.com/auth/cloud-platform'],
+    );
+
+    //
+    final notificationData = {
+      'message': {
+        'topic': topic,
+        'notification': {
+          'title': title,
+          'body': body,
+          if (image != null) 'image': image,
         },
-        body: jsonEncode(
-          <String, dynamic>{
-            'notification': <String, dynamic>{
-              'title': title,
-              'body': body,
-            },
-            'priority': 'high',
-            'data': <String, dynamic>{
-              'type': 'notice',
-              'status': 'done',
-            },
-            "to": '/topics/$topic',
-          },
-        ),
-      );
-    } catch (e) {
-      log("Error push notification $e");
+        'data': {
+          'type': topic,
+          if (image != null) 'image': image,
+        },
+      },
+    };
+
+    //change as your project id
+    const String senderId = 'priyobanskhalibd';
+
+    //
+    final response = await client.post(
+      Uri.parse(
+          'https://fcm.googleapis.com/v1/projects/$senderId/messages:send'),
+      headers: {
+        'content-type': 'application/json',
+      },
+      body: jsonEncode(notificationData),
+    );
+
+    client.close();
+    if (response.statusCode == 200) {
+      devtools.log('Notification Response code: ${response.statusCode}');
+
+      return true; // Success!
     }
+
+    devtools.log(
+        'Notification Sending Error Response status: ${response.statusCode}');
+    devtools.log('Notification Response body: ${response.body}');
+    return false;
   }
 }

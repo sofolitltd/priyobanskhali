@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -5,11 +7,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:in_app_update/in_app_update.dart';
 
 import 'database/firebase_options.dart';
+import 'notification/fcm_api.dart';
 import 'screens/dashboard.dart';
 import 'utils/repo.dart';
 import 'utils/style.dart';
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   // init firebase
@@ -17,9 +18,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  // fcm
-  // await FCMApi().initNotifications();
 
   // run main app
   runApp(const MyApp());
@@ -36,7 +34,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    checkForUpdate();
+    _initApp(); // call your async stuff here
+  }
+
+  Future<void> _initApp() async {
+    await checkForUpdate();
+    await FcmApi().initPushNotifications();
   }
 
   //
@@ -65,7 +68,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      key: navigatorKey,
       title: AppRepo.kAppName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

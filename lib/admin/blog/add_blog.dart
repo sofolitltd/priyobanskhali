@@ -6,8 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import '/notification/fcm_sender.dart';
 
+import '/notification/fcm_sender.dart';
 import '../../models/blog_model.dart';
 
 class AddBlog extends StatefulWidget {
@@ -150,14 +150,7 @@ class _AddBlogState extends State<AddBlog> {
                       setState(() => isUpload = true);
 
                       //
-                      await uploadImage(content: content, title: title);
-
-                      //fcm
-                      FCMSender().sendPushMessage(
-                        topic: 'blog',
-                        title: title,
-                        body: content.characters.take(150).toString(),
-                      );
+                      await uploadBlog(content: content, title: title);
 
                       //
                       setState(() => isUpload = false);
@@ -200,7 +193,7 @@ class _AddBlogState extends State<AddBlog> {
   }
 
   //upload image
-  uploadImage({required String content, required String title}) async {
+  uploadBlog({required String content, required String title}) async {
     String uid = DateTime.now().millisecondsSinceEpoch.toString();
 
     //
@@ -234,6 +227,15 @@ class _AddBlogState extends State<AddBlog> {
         Fluttertoast.showToast(msg: 'Upload blog successfully');
         Navigator.pop(context);
       },
+    );
+
+    //
+    //fcm
+    await FCMSender.sendNotification(
+      topic: 'blog',
+      title: title,
+      body: content.characters.take(150).toString(),
+      image: imageUrl,
     );
   }
 }

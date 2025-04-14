@@ -7,6 +7,7 @@ import 'package:iconsax/iconsax.dart';
 import '/screens/home/ebook/ebook_list.dart';
 import '/screens/home/search/search_screen.dart';
 import '/utils/repo.dart';
+import '../../notification/notification_screen.dart';
 import 'banner/home_banner.dart';
 import 'book/all_book.dart';
 import 'book/book_list.dart';
@@ -40,12 +41,12 @@ class Home extends StatelessWidget {
               size: 20,
             ),
           ),
-          // IconButton(
-          //   onPressed: () {
-          //     Get.to(() => const NotificationScreen());
-          //   },
-          //   icon: const Icon(Icons.notifications_outlined, size: 20),
-          // ),
+          IconButton(
+            onPressed: () {
+              Get.to(() => const NotificationScreen());
+            },
+            icon: const Icon(Iconsax.notification, size: 20),
+          ),
           const SizedBox(width: 8),
         ],
       ),

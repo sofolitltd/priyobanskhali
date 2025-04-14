@@ -1,4 +1,6 @@
 class AppRepo {
+  static const kProduction = true;
+
   static const kAppName = 'Priyo Banskhali';
   static const kAdminNumber = '01816120472';
   static const kAdminBkashNumber = '01700934950';
@@ -45,8 +47,8 @@ class AppRepo {
   static const kNagadLogo = 'assets/logo/nagad.png';
 
 // login
-  static const kLoginText = 'Welcome back';
-  static const kLoginWith = 'Login with email and password';
+  static const kLoginText = 'Login';
+  static const kLoginWith = 'Provide your email and password';
 
   static const kEmailText = 'Email';
   static const kEmailHint = 'Enter your email';

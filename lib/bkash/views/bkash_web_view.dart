@@ -27,7 +27,12 @@ class _BkashWebViewState extends State<BkashWebView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("bKash Payment")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+          title: const Text(
+        "bKash Payment",
+        style: TextStyle(color: Colors.pink),
+      )),
       body: Stack(
         children: [
           //
@@ -46,9 +51,11 @@ class _BkashWebViewState extends State<BkashWebView> {
               } else if (urlStr.startsWith(widget.failureURL)) {
                 Fluttertoast.showToast(msg: "Payment Failed!");
                 Navigator.pop(context, "failure");
+                Navigator.pop(context);
               } else if (urlStr.startsWith(widget.cancelURL)) {
                 Fluttertoast.showToast(msg: "Payment Cancelled!");
                 Navigator.pop(context, "cancel");
+                Navigator.pop(context);
               }
             },
             onLoadStop: (controller, url) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:priyobanskhali/screens/dashboard.dart';
 
 class PaymentSuccessPage extends StatelessWidget {
   final String orderNo;
@@ -24,25 +26,18 @@ class PaymentSuccessPage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                "Order No: $orderNo",
+                "Payment ID: $orderNo",
                 style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(
-                      context, '/dashboard'); // Navigate to Dashboard
+                  Get.offAll(() => Dashboard()); // Navigate to Dashboard
                 },
                 child: const Text("Go to Dashboard"),
               ),
               const SizedBox(height: 10),
-              OutlinedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/home'); // Navigate to Home
-                },
-                child: const Text("Go to Home"),
-              ),
             ],
           ),
         ),
