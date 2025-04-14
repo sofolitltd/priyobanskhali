@@ -46,5 +46,4 @@ app.*.map.json
 /lib/bkash/apis/bkash_credentials.dart
 /lib/database
 
-/assets/data
-
+assets/data/priyobanskhalibd.json
