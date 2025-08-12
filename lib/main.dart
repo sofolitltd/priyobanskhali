@@ -77,8 +77,7 @@ class _MyAppState extends State<MyApp> {
         // primaryColor: const Color(0xff2849a0),
         // scaffoldBackgroundColor: Colors.white,
         cardColor: Colors.white,
-
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: Colors.white,
           surfaceTintColor: Colors.white,
           elevation: 4,

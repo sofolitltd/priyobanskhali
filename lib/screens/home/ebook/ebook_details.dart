@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -296,7 +297,7 @@ class _EbookDetailsState extends State<EbookDetails> {
 
           const SizedBox(height: 16),
 
-          //sec 2 - download/buy
+          //sec 2 - download/buy/read
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
@@ -307,6 +308,7 @@ class _EbookDetailsState extends State<EbookDetails> {
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
               child: Column(
                 children: [
+                  //
                   if (widget.price == 0)
                     InkWell(
                       onTap: () async {
@@ -346,70 +348,159 @@ class _EbookDetailsState extends State<EbookDetails> {
                       ),
                     )
 
-                  // var doc = snapshot.data!.docs;
-
                   //
                   else
-                    InkWell(
-                      onTap: () async {
-                        final currentUser = FirebaseAuth.instance.currentUser;
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .collection('ebook')
+                        .where('bookId', isEqualTo: widget.bookId)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Center(child: Text('Something wrong'));
+                      }
 
-                        if (currentUser == null) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => Login()).then((v) {
-                            // setState(() {});
-                            showPaymentBottomSheet(
-                              context,
-                              bookType: 'ebook',
-                              bookId: widget.bookId,
-                              price: widget.price,
-                              address: '',
-                            );
-                          });
-                        } else {
-                          showPaymentBottomSheet(
-                            context,
-                            bookType: 'ebook',
-                            bookId: widget.bookId,
-                            price: widget.price,
-                            address: '',
-                          );
-                        }
-                        //
-                      },
-                      child: Material(
-                        color: Colors.transparent,
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                               Icon(
+                                Icons.access_time_rounded,
+                                size: 16,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(width: 12),
+
+                              //
+                              Text(
+                                'Loading...',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        );
+                        return Text(
+                          'Loading',
+                          style: TextStyle(color: Colors.grey),
+                        );
+                      }
+
+                      if (snapshot.data!.docs.isEmpty ) {
+                        return InkWell(
+                          onTap: () async {
+                            final currentUser = FirebaseAuth.instance.currentUser;
+
+                            if (currentUser == null) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => Login()).then((v) {
+                                // setState(() {});
+                                showPaymentBottomSheet(
+                                  context,
+                                  bookType: 'ebook',
+                                  bookId: widget.bookId,
+                                  price: widget.price,
+                                  address: '',
+                                );
+                              });
+                            } else {
+                              showPaymentBottomSheet(
+                                context,
+                                bookType: 'ebook',
+                                bookId: widget.bookId,
+                                price: widget.price,
+                                address: '',
+                              );
+                            }
+                            //
+                          },
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 16,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.blueAccent.shade100,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.shopping_cart_outlined,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+
+                                  SizedBox(width: 12),
+
+                                  //
+                                  Text(
+                                    'Buy now',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      return InkWell(
+                        onTap: () async {
+                          // view pdf
+                          Get.to(PdfViewerCached(
+                            title: widget.title,
+                            url: widget.fileUrl,
+                          ));
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             vertical: 12,
                             horizontal: 16,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.blueAccent.shade100,
+                            color: Colors.greenAccent.shade100,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons.shopping_cart_outlined,
+                                Icons.chrome_reader_mode_outlined,
                                 size: 20,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
 
                               SizedBox(width: 12),
 
                               //
                               Text(
-                                'Buy now',
-                                style: TextStyle(color: Colors.white),
+                                'Read now',
+                                style: TextStyle(color: Colors.black),
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
+                  ),
+
+
+
 
                   const SizedBox(height: 12),
 
